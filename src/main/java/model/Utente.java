@@ -1,29 +1,20 @@
 package model;
 
-/**
- * The type Utente.
- */
 public class Utente {
-    private final String login;
-    private String password;
+    public String nome;
+    public String cognome;
+    public Piattaforma piattaforma;
 
-    /**
-     * Instantiates a new Utente.
-     *
-     * @param login    the login
-     * @param password the password
-     */
-    public Utente(String login, String password) {
-        this.login = login;
-        this.password = password;
-    }
+   public Utente(String nome, String cognome, Piattaforma piattaforma) {
+       this.nome = nome;
+       this.cognome = cognome;
+       this.piattaforma = piattaforma;
+   }
 
-    /**
-     * Gets login.
-     *
-     * @return the login
-     */
-    public String getLogin() {
-        return login;
-    }
+   public Utente(Piattaforma piattaforma) {
+       this.piattaforma = piattaforma;
+   }
+
+
+
 }
