@@ -14,7 +14,6 @@ public class Organizzatore  extends Utente {
 
     public Organizzatore(String nome, String cognome, Piattaforma piattaforma) {
         super(nome, cognome, piattaforma);
-        this.getHackaton().add(new Hackaton(this));
     }
 
     public List<Hackaton> getHackaton() {
@@ -25,7 +24,13 @@ public class Organizzatore  extends Utente {
         this.hackaton = hackaton;
     }
 
+    public void addHackaton(Hackaton hackaton) {
+        this.hackaton.add(hackaton);
+    }
+
     public void invitaGiudici(List<Giudice> giudici) {}
 
     public void apriRegisteazioni() {}
+
+    public void chiudiRegistrazioni() {}
 }
