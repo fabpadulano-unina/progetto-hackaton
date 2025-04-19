@@ -3,23 +3,23 @@ package model;
 import java.util.ArrayList;
 
 public class Team {
-    private String name;
+    private String nome;
     private ArrayList<Partecipante> partecipanti = new ArrayList<>();
     private ArrayList<Documento> documenti = new ArrayList<>();
 
     public Team(String nome, Partecipante partecipante) {
-        this.setName(nome);
+        this.setNome(nome);
         this.getPartecipanti().add(partecipante);
         partecipante.setTeam(this);
     }
 
 
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public ArrayList<Partecipante> getPartecipanti() {

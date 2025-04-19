@@ -9,6 +9,4 @@ public class Giudice extends Utente {
 
     public void esaminaDocumento(Documento documento) {}
 
-    public void commentaDocumento(Documento documento) {}
-
 }
