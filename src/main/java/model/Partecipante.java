@@ -1,18 +1,28 @@
 package model;
 
 public class Partecipante extends Utente {
-    public Team team;
-    public ERuoloTeam ruoloTeam;
+    private Team team;
+    private ERuoloTeam ruoloTeam;
 
     public Partecipante(String nome, String cognome, Piattaforma piattaforma, Team team, ERuoloTeam ruoloTeam) {
         super(nome, cognome, piattaforma);
-        this.team = team;
-        this.ruoloTeam = ruoloTeam;
+        this.setTeam(team);
+        this.setRuoloTeam(ruoloTeam);
     }
 
-    public Partecipante(Piattaforma piattaforma, Team team, ERuoloTeam ruoloTeam) {
-        super(piattaforma);
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public ERuoloTeam getRuoloTeam() {
+        return ruoloTeam;
+    }
+
+    public void setRuoloTeam(ERuoloTeam ruoloTeam) {
         this.ruoloTeam = ruoloTeam;
     }
 
