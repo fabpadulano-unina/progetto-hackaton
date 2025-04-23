@@ -2,9 +2,15 @@ package model;
 
 public class Partecipante extends Utente {
     private Team team;
-    private ERuoloTeam ruoloTeam;
+    private String ruoloTeam;
 
-    public Partecipante(String nome, String cognome, Piattaforma piattaforma, Team team, ERuoloTeam ruoloTeam) {
+    public Partecipante(String nome, String cognome, Piattaforma piattaforma) {
+        super(nome, cognome, piattaforma);
+        this.setTeam(team);
+        this.setRuoloTeam(ruoloTeam);
+    }
+
+    public Partecipante(String nome, String cognome, Piattaforma piattaforma, Team team, String ruoloTeam) {
         super(nome, cognome, piattaforma);
         this.setTeam(team);
         this.setRuoloTeam(ruoloTeam);
@@ -18,11 +24,11 @@ public class Partecipante extends Utente {
         this.team = team;
     }
 
-    public ERuoloTeam getRuoloTeam() {
+    public String getRuoloTeam() {
         return ruoloTeam;
     }
 
-    public void setRuoloTeam(ERuoloTeam ruoloTeam) {
+    public void setRuoloTeam(String ruoloTeam) {
         this.ruoloTeam = ruoloTeam;
     }
 
