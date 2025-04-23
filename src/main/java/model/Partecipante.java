@@ -35,4 +35,6 @@ public class Partecipante extends Utente {
     public void registra(Piattaforma piattaforma) {
         // registrazione
     }
+
+    public void creaTeam() {}
 }
