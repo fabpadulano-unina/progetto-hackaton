@@ -4,14 +4,14 @@ public class Partecipante extends Utente {
     private Team team;
     private String ruoloTeam;
 
-    public Partecipante(String nome, String cognome, Piattaforma piattaforma) {
-        super(nome, cognome, piattaforma);
+    public Partecipante(String nome, String cognome, String email, Piattaforma piattaforma) {
+        super(nome, cognome, email, piattaforma);
         this.setTeam(team);
         this.setRuoloTeam(ruoloTeam);
     }
 
-    public Partecipante(String nome, String cognome, Piattaforma piattaforma, Team team, String ruoloTeam) {
-        super(nome, cognome, piattaforma);
+    public Partecipante(String nome, String cognome, String email, Piattaforma piattaforma, Team team, String ruoloTeam) {
+        super(nome, cognome, email, piattaforma);
         this.setTeam(team);
         this.setRuoloTeam(ruoloTeam);
     }

@@ -1,8 +1,8 @@
 package model;
 
 public class Giudice extends Utente {
-    public Giudice(String nome, String cognome, Piattaforma piattaforma) {
-        super(nome, cognome, piattaforma);
+    public Giudice(String nome, String cognome, String email, Piattaforma piattaforma) {
+        super(nome, cognome, email, piattaforma);
     }
 
     public void pubblicaDescProblema(String descProblema) {}

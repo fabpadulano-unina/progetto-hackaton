@@ -6,14 +6,14 @@ import java.util.List;
 public class Organizzatore  extends Utente {
     private List<Hackaton> hackaton = new ArrayList<>();
 
-    public Organizzatore(String nome, String cognome, Piattaforma piattaforma, Hackaton hackaton) {
-        super(nome, cognome, piattaforma);
+    public Organizzatore(String nome, String cognome, String email, Piattaforma piattaforma, Hackaton hackaton) {
+        super(nome, cognome, email, piattaforma);
         this.getHackaton().add(hackaton);
         hackaton.setOrganizzatore(this);
     }
 
-    public Organizzatore(String nome, String cognome, Piattaforma piattaforma) {
-        super(nome, cognome, piattaforma);
+    public Organizzatore(String nome, String cognome, String email, Piattaforma piattaforma) {
+        super(nome, cognome, email, piattaforma);
     }
 
     public List<Hackaton> getHackaton() {
