@@ -1,6 +1,7 @@
 package controller;
 
 import gui.Login;
+import gui.RegistrationForm;
 
 import javax.swing.*;
 
@@ -16,8 +17,18 @@ public class Controller {
         new Login(homeFrame, this);
     }
 
+
+    public void openRegisterForm(Login login) {
+        homeFrame.setVisible(false);
+        new RegistrationForm(login, this);
+    }
+
     public void backToHomeFrame(JFrame frame) {
         homeFrame.setVisible(true);
+        dispose(frame);
+    }
+
+    public static void dispose(JFrame frame) {
         frame.setVisible(false);
         frame.dispose();
     }
