@@ -1,5 +1,7 @@
 package gui;
 
+import controller.Controller;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
@@ -20,38 +22,34 @@ class ButtonRenderer extends JButton implements TableCellRenderer {
 class ButtonEditor extends DefaultCellEditor {
     private JButton button;
     private boolean clicked;
+    private int row;
+    private Controller controller;
 
-    public ButtonEditor(JCheckBox checkBox) {
+    public ButtonEditor(JCheckBox checkBox, Controller controller) {
         super(checkBox);
-        button = new JButton("Apri");
+        button = new JButton("Dettaglio");
         button.addActionListener(e -> fireEditingStopped());
+        this.controller = controller;
     }
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value,
                                                  boolean isSelected, int row, int column) {
         clicked = true;
+        this.row = row;
         return button;
     }
 
     @Override
     public Object getCellEditorValue() {
         if (clicked) {
-            showDialog();
+            showHackatonDetails();
         }
         clicked = false;
         return "Apri";
     }
 
-    private void showDialog() {
-        JDialog dialog = new JDialog((Frame) null, "Dialog aperta", true);
-        dialog.setLayout(new BorderLayout());
-        dialog.add(new JLabel("Hai premuto il bottone!"), BorderLayout.CENTER);
-        JButton closeBtn = new JButton("Chiudi");
-        closeBtn.addActionListener(e -> dialog.dispose());
-        dialog.add(closeBtn, BorderLayout.SOUTH);
-        dialog.setSize(200, 100);
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
+    private void showHackatonDetails() {
+        controller.openHackatonDetail(row);
     }
 }

@@ -49,4 +49,14 @@ public class Controller {
         //invita giudici
     }
 
+    public Object[][] getHackatons() {
+        return new Object[][]{
+                {"Hackathon 1", "2025-01-01", "2025-01-10", "Dettaglio", 0},
+                {"Hackathon 2", "2025-02-15", "2025-02-20", "Dettaglio", 1}
+        };
+    }
+
+    public void openHackatonDetail(int row) {
+
+    }
 }
