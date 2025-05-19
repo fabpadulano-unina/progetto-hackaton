@@ -1,5 +1,6 @@
 package controller;
 
+import gui.HackatonDetails;
 import gui.HackatonForm;
 import gui.Login;
 import gui.RegistrationForm;
@@ -57,6 +58,7 @@ public class Controller {
     }
 
     public void openHackatonDetail(int row) {
+        new HackatonDetails(this);
 
     }
 }

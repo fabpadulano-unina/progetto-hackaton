@@ -8,7 +8,7 @@ import java.awt.*;
 
 class ButtonRenderer extends JButton implements TableCellRenderer {
     public ButtonRenderer() {
-        setText("Apri");
+        setText("Dettaglio");
     }
 
     @Override
@@ -46,7 +46,7 @@ class ButtonEditor extends DefaultCellEditor {
             showHackatonDetails();
         }
         clicked = false;
-        return "Apri";
+        return "Dettaglio";
     }
 
     private void showHackatonDetails() {
