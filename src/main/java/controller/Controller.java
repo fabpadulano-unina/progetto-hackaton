@@ -28,7 +28,7 @@ public class Controller {
     }
 
     public void openHackatonForm() {
-        homeFrame.setVisible(false);
+//        homeFrame.setVisible(false);
         new HackatonForm(this);
     }
 
