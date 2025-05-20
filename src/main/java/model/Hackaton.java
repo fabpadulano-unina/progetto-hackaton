@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Hackaton {
     private String titolo;
@@ -11,6 +12,7 @@ public class Hackaton {
     private int dimMaxTeam;
 
     private Organizzatore organizzatore;
+    private ArrayList<Utente> utenti = new ArrayList<>();
 
     public Hackaton(String titolo, String sede, LocalDate dataInizio, LocalDate dataFine, int numMaxIscritti, int dimMaxTeam, Organizzatore organizzatore) {
         this.setTitolo(titolo);
@@ -80,5 +82,21 @@ public class Hackaton {
 
     public void setOrganizzatore(Organizzatore organizzatore) {
         this.organizzatore = organizzatore;
+    }
+
+    public void acquisisciVoti() {}
+
+    public void pubblicaClassifica() {}
+
+    public ArrayList<Utente> getUtenti() {
+        return utenti;
+    }
+
+    public void setUtenti(ArrayList<Utente> utenti) {
+        this.utenti = utenti;
+    }
+
+    private void addutente(Utente utente) {
+        this.utenti.add(utente);
     }
 }

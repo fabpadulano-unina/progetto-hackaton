@@ -1,17 +1,28 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Utente {
     private String nome;
     private String cognome;
     private String email;
-    private Piattaforma piattaforma;
+    private List<Hackaton> hackatons = new ArrayList<>();
 
-   public Utente(String nome, String cognome, String email, Piattaforma piattaforma) {
+   public Utente(String nome, String cognome, String email, Hackaton hackaton) {
        this.setNome(nome);
        this.setCognome(cognome);
        this.setEmail(email);
-       this.setPiattaforma(piattaforma);
+       //controlla questa inizializzazione
+       this.hackatons= new ArrayList<>();
+       this.getHackatons().add(hackaton);
    }
+    public Utente(String nome, String cognome, String email) {
+        this.setNome(nome);
+        this.setCognome(cognome);
+        this.setEmail(email);
+
+    }
 
     public String getNome() {
         return nome;
@@ -37,11 +48,11 @@ public class Utente {
         this.email = email;
     }
 
-    public Piattaforma getPiattaforma() {
-        return piattaforma;
+    public List<Hackaton> getHackatons() {
+        return hackatons;
     }
 
-    public void setPiattaforma(Piattaforma piattaforma) {
-        this.piattaforma = piattaforma;
+    public void setHackaton(List<Hackaton> hackatons) {
+        this.hackatons = hackatons;
     }
 }

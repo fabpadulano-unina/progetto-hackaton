@@ -4,6 +4,7 @@ import gui.HackatonDetails;
 import gui.HackatonForm;
 import gui.Login;
 import gui.RegistrationForm;
+import model.Giudice;
 import model.Hackaton;
 
 import javax.swing.*;
@@ -38,6 +39,7 @@ public class Controller {
         dispose(frame);
     }
 
+    // non va messo nel codice della gui?
     public static void dispose(JFrame frame) {
         frame.setVisible(false);
         frame.dispose();
@@ -61,4 +63,10 @@ public class Controller {
         new HackatonDetails(this);
 
     }
+
+    public void invitaGiudici(List<Giudice> giudici) {}
+
+    public void apriRegisteazioni() {}
+
+    public void chiudiRegistrazioni() {}
 }

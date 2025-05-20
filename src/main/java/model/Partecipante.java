@@ -4,14 +4,14 @@ public class Partecipante extends Utente {
     private Team team;
     private String ruoloTeam;
 
-    public Partecipante(String nome, String cognome, String email, Piattaforma piattaforma) {
-        super(nome, cognome, email, piattaforma);
+    public Partecipante(String nome, String cognome, String email, Hackaton hackaton) {
+        super(nome, cognome, email, hackaton);
         this.setTeam(team);
         this.setRuoloTeam(ruoloTeam);
     }
 
-    public Partecipante(String nome, String cognome, String email, Piattaforma piattaforma, Team team, String ruoloTeam) {
-        super(nome, cognome, email, piattaforma);
+    public Partecipante(String nome, String cognome, String email, Hackaton hackaton, Team team, String ruoloTeam) {
+        super(nome, cognome, email, hackaton);
         this.setTeam(team);
         this.setRuoloTeam(ruoloTeam);
     }
@@ -32,7 +32,7 @@ public class Partecipante extends Utente {
         this.ruoloTeam = ruoloTeam;
     }
 
-    public void registra(Piattaforma piattaforma) {
+    public void registra(Hackaton hackaton) {
         // registrazione
     }
 
