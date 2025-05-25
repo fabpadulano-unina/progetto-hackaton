@@ -2,6 +2,7 @@ package model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Hackaton {
     private String titolo;
@@ -10,11 +11,21 @@ public class Hackaton {
     private LocalDate dataFine;
     private int numMaxIscritti;
     private int dimMaxTeam;
-
     private Organizzatore organizzatore;
-    private ArrayList<Utente> utenti = new ArrayList<>();
+    private List<Partecipante> partecipanti = new ArrayList<>();
+    private List<Giudice> giudici = new ArrayList<>();
 
-    public Hackaton(String titolo, String sede, LocalDate dataInizio, LocalDate dataFine, int numMaxIscritti, int dimMaxTeam, Organizzatore organizzatore) {
+
+    public Hackaton(
+            String titolo,
+            String sede,
+            LocalDate dataInizio,
+            LocalDate dataFine,
+            int numMaxIscritti,
+            int dimMaxTeam,
+            Organizzatore organizzatore,
+            List<Giudice> giudici
+    ) {
         this.setTitolo(titolo);
         this.setSede(sede);
         this.setDataInizio(dataInizio);
@@ -22,10 +33,7 @@ public class Hackaton {
         this.setNumMaxIscritti(numMaxIscritti);
         this.setDimMaxTeam(dimMaxTeam);
         this.setOrganizzatore(organizzatore);
-    }
-
-    public Hackaton(Organizzatore organizzatore) {
-        this.setOrganizzatore(organizzatore);
+        this.giudici.addAll(giudici);
     }
 
     public String getTitolo() {
@@ -88,15 +96,19 @@ public class Hackaton {
 
     public void pubblicaClassifica() {}
 
-    public ArrayList<Utente> getUtenti() {
-        return utenti;
+    public List<Partecipante> getPartecipanti() {
+        return partecipanti;
     }
 
-    public void setUtenti(ArrayList<Utente> utenti) {
-        this.utenti = utenti;
+    public void addPartecipante(Partecipante partecipante) {
+        this.partecipanti.add(partecipante);
     }
 
-    private void addutente(Utente utente) {
-        this.utenti.add(utente);
+    public List<Giudice> getGiudici() {
+        return giudici;
+    }
+
+    public void addGiudice(Giudice giudice) {
+        this.giudici.add(giudice);
     }
 }

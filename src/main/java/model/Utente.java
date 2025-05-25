@@ -7,16 +7,7 @@ public class Utente {
     private String nome;
     private String cognome;
     private String email;
-    private List<Hackaton> hackatons = new ArrayList<>();
 
-   public Utente(String nome, String cognome, String email, Hackaton hackaton) {
-       this.setNome(nome);
-       this.setCognome(cognome);
-       this.setEmail(email);
-       //controlla questa inizializzazione
-       this.hackatons= new ArrayList<>();
-       this.getHackatons().add(hackaton);
-   }
     public Utente(String nome, String cognome, String email) {
         this.setNome(nome);
         this.setCognome(cognome);
@@ -48,11 +39,4 @@ public class Utente {
         this.email = email;
     }
 
-    public List<Hackaton> getHackatons() {
-        return hackatons;
-    }
-
-    public void setHackaton(List<Hackaton> hackatons) {
-        this.hackatons = hackatons;
-    }
 }
