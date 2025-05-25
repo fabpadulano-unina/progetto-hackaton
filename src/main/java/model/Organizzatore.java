@@ -5,10 +5,11 @@ import java.util.List;
 
 public class Organizzatore  extends Utente {
 
+    private List<Hackaton> hackatonOrganizzati = new ArrayList<>();
 
     public Organizzatore(String nome, String cognome, String email, Hackaton hackaton) {
-        super(nome, cognome, email, hackaton);
-        hackaton.setOrganizzatore(this);
+        super(nome, cognome, email);
+        addHackaton(hackaton);
     }
 
     public Organizzatore(String nome, String cognome, String email) {
@@ -18,8 +19,12 @@ public class Organizzatore  extends Utente {
 
 
     public void addHackaton(Hackaton hackaton) {
-        this.getHackatons().add(hackaton);
+        hackaton.setOrganizzatore(this);
+        hackatonOrganizzati.add(hackaton);
     }
 
+    public List<Hackaton> getHackatonOrganizzati() {
+        return hackatonOrganizzati;
+    }
 
 }
