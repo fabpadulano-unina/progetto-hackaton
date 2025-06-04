@@ -3,6 +3,7 @@ package gui;
 import controller.Controller;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -23,6 +24,7 @@ public class Login extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
+        this.registerLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         this.homeFrame = homeFrame;
         this.controller = controller;

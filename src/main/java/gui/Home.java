@@ -4,8 +4,6 @@ import controller.Controller;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,6 +11,14 @@ public class Home {
     private JPanel mainPanel;
     private JButton organizzaHackatonButton;
     private JTable table;
+    private JTabbedPane tabbedPane1;
+    private JPanel homeTab;
+    private JPanel teamTab;
+    private JComboBox registratiBtn;
+    private JList list1;
+    private JButton caricaNuovoProgressoButton;
+    private JButton uniscitiButton;
+    private JButton creaUnTeamButton;
     private static JFrame frameHome;
     private static Controller controller;
 

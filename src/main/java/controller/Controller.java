@@ -5,7 +5,6 @@ import gui.HackatonForm;
 import gui.Login;
 import gui.RegistrationForm;
 import model.Giudice;
-import model.Hackaton;
 
 import javax.swing.*;
 import java.time.LocalDate;
