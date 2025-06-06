@@ -6,10 +6,10 @@ import javax.swing.*;
 
 public class Progress extends JFrame {
     private JPanel mainPanel;
-    private JList list1;
     private JTextArea textArea1;
     private JButton caricaButton;
     private JList list2;
+    private JButton salvaButton;
     private Controller controller;
 
     public Progress( Controller controller) {
