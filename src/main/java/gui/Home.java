@@ -1,11 +1,13 @@
 package gui;
 
 import controller.Controller;
+import model.Hackaton;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Home {
     private JPanel mainPanel;
@@ -81,19 +83,18 @@ public class Home {
 
 
     private void setTable() {
+
+
         String[] columnNames = {"Descrizione", "Data Inizio", "Data Fine", "Dettaglio"};
         Object[][] data = controller.getHackatons();
-
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 3;
             }
         };
-
         table.setModel(model);
         table.setRowHeight(30);
-
         for (int i = 0; i < 3; i++) {
             table.getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(new JTextField()));
         }

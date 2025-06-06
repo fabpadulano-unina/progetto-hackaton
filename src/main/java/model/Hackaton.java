@@ -36,6 +36,24 @@ public class Hackaton {
         this.giudici.addAll(giudici);
     }
 
+    //solo per far vedere la tabella
+    public Hackaton(
+            String titolo,
+            String sede,
+            LocalDate dataInizio,
+            LocalDate dataFine,
+            int numMaxIscritti
+
+
+    ) {
+        this.setTitolo(titolo);
+        this.setSede(sede);
+        this.setDataInizio(dataInizio);
+        this.setDataFine(dataFine);
+        this.setNumMaxIscritti(numMaxIscritti);;
+
+    }
+
     public String getTitolo() {
         return titolo;
     }

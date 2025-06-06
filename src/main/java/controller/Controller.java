@@ -2,9 +2,11 @@ package controller;
 
 import gui.*;
 import model.Giudice;
+import model.Hackaton;
 
 import javax.swing.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
@@ -38,7 +40,7 @@ public class Controller {
         dispose(frame);
     }
 
-    // non va messo nel codice della gui?
+
     public static void dispose(JFrame frame) {
         frame.setVisible(false);
         frame.dispose();
@@ -57,6 +59,15 @@ public class Controller {
                 {"Hackathon 2", "2025-02-15", "2025-02-20", "Dettaglio", 1}
         };
     }
+    public Object[][] getGiudici() {
+        return new Object[][]{
+                {"Antonio", "Esposito", "antesp@gmail.com"},
+                {"Ciro", "Esposito", "cirosp@gmail.com"},
+        };
+    }
+
+
+
 
     public void openHackatonDetail(int row) {
         new HackatonDetails(this);
