@@ -18,7 +18,7 @@ public class Home {
     private JList list1;
     private JButton caricaNuovoProgressoButton;
     private JButton uniscitiButton;
-    private JButton creaUnTeamButton;
+    private JButton addTeamBtn;
     private static JFrame frameHome;
     private static Controller controller;
 
@@ -38,6 +38,8 @@ public class Home {
         controller = new Controller(frameHome);
         setTable();
         handleClicks();
+
+
     }
 
 
@@ -45,6 +47,9 @@ public class Home {
 
     private void handleClicks() {
         handleAddHackaton();
+        handleAddTeam();
+        handleProgress();
+
     }
 
     private void handleAddHackaton() {
@@ -55,6 +60,25 @@ public class Home {
             }
         });
     }
+
+    private void handleAddTeam() {
+        addTeamBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.openTeamForm();
+            }
+        });
+    }
+
+    private void handleProgress() {
+        caricaNuovoProgressoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.openProgress();
+            }
+        });
+    }
+
 
     private void setTable() {
         String[] columnNames = {"Descrizione", "Data Inizio", "Data Fine", "Dettaglio"};

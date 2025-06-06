@@ -1,9 +1,6 @@
 package controller;
 
-import gui.HackatonDetails;
-import gui.HackatonForm;
-import gui.Login;
-import gui.RegistrationForm;
+import gui.*;
 import model.Giudice;
 
 import javax.swing.*;
@@ -29,8 +26,11 @@ public class Controller {
     }
 
     public void openHackatonForm() {
-//        homeFrame.setVisible(false);
         new HackatonForm(this);
+    }
+
+    public void openTeamForm() {
+        new TeamForm(this);
     }
 
     public void backToHomeFrame(JFrame frame) {
@@ -68,4 +68,8 @@ public class Controller {
     public void apriRegisteazioni() {}
 
     public void chiudiRegistrazioni() {}
+
+    public void openProgress() {
+        new Progress(this);
+    }
 }
