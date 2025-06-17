@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import model.Organizzatore;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

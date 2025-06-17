@@ -22,7 +22,6 @@ class ButtonRenderer extends JButton implements TableCellRenderer {
 class ButtonEditor extends DefaultCellEditor {
     private JButton button;
     private boolean clicked;
-    private int row;
     private Controller controller;
 
     public ButtonEditor(JCheckBox checkBox, Controller controller) {
@@ -36,7 +35,6 @@ class ButtonEditor extends DefaultCellEditor {
     public Component getTableCellEditorComponent(JTable table, Object value,
                                                  boolean isSelected, int row, int column) {
         clicked = true;
-        this.row = row;
         return button;
     }
 
@@ -50,6 +48,6 @@ class ButtonEditor extends DefaultCellEditor {
     }
 
     private void showHackatonDetails() {
-        controller.openHackatonDetail(row);
+        controller.openHackatonDetail();
     }
 }

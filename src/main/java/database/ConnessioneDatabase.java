@@ -1,39 +1,43 @@
-package Database;
+package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static java.lang.System.*;
+
 public class ConnessioneDatabase {
 
 	// ATTRIBUTI
 	private static ConnessioneDatabase instance;
-	public Connection connection = null;
-	private String nome = "postgres";
-	private String password = "password";
-	private String url = "jdbc:postgresql://localhost:5433/Borsa";
-	private String driver = "org.postgresql.Driver";
+	private Connection connection = null;
 
-	// COSTRUTTORE
+    // COSTRUTTORE
 	private ConnessioneDatabase() throws SQLException {
 		try {
-			Class.forName(driver);
-			connection = DriverManager.getConnection(url, nome, password);
+            String driver = "org.postgresql.Driver";
+            Class.forName(driver);
+			String nome = "myuser";
+			String password = "mypassword";
+			String url = "jdbc:postgresql://localhost:5432/mydb";
+            connection = DriverManager.getConnection(url, nome, password);
 
 		} catch (ClassNotFoundException ex) {
-			System.out.println("Database Connection Creation Failed : " + ex.getMessage());
-			ex.printStackTrace();
+			out.println("Database Connection Creation Failed : " + ex.getMessage());
 		}
 
 	}
 
 
 	public static ConnessioneDatabase getInstance() throws SQLException {
-		if (instance == null) {
-			instance = new ConnessioneDatabase();
-		} else if (instance.connection.isClosed()) {
+		if (instance == null || instance.connection.isClosed()) {
 			instance = new ConnessioneDatabase();
 		}
+
 		return instance;
+	}
+
+	public Connection getConnection() {
+		return connection;
 	}
 }

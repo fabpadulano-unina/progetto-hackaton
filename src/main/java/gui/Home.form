@@ -106,7 +106,7 @@
                       <text value="TEAM"/>
                     </properties>
                   </component>
-                  <component id="eda96" class="javax.swing.JComboBox" binding="registratiBtn">
+                  <component id="eda96" class="javax.swing.JComboBox" binding="teamSelect">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -156,7 +156,7 @@
                       <text value="Progressi"/>
                     </properties>
                   </component>
-                  <component id="259b3" class="javax.swing.JList" binding="list1" default-binding="true">
+                  <component id="259b3" class="javax.swing.JList" binding="progressiList">
                     <constraints>
                       <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="50"/>

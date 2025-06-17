@@ -1,19 +1,29 @@
 package controller;
 
+import dao.HackatonDAO;
 import gui.*;
+import implementazionePostgresDAO.HackatonImplementazionePostgresDAO;
 import model.Giudice;
-import model.Hackaton;
+import model.Organizzatore;
+import model.Utente;
 
 import javax.swing.*;
+import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
-    JFrame homeFrame;
+    private JFrame homeFrame;
+    private HackatonDAO hackatonDAO;
+    private Utente utente;
 
     public Controller(JFrame homeFrame) {
         this.homeFrame = homeFrame;
+        try {
+            hackatonDAO = new HackatonImplementazionePostgresDAO();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void openLoginForm() {
@@ -28,7 +38,9 @@ public class Controller {
     }
 
     public void openHackatonForm() {
-        new HackatonForm(this);
+        if(utente instanceof Organizzatore) {
+            new HackatonForm(this);
+        }
     }
 
     public void openTeamForm() {
@@ -50,6 +62,7 @@ public class Controller {
                              LocalDate dataFine, int numMaxIscritti, int dimMaxIscritti,
                              List<String> giudici
                              ) {
+        hackatonDAO.addHackaton(titolo, sede, dataInizio, dataFine, numMaxIscritti, dimMaxIscritti, utente.getId());
         //invita giudici
     }
 
@@ -69,7 +82,7 @@ public class Controller {
 
 
 
-    public void openHackatonDetail(int row) {
+    public void openHackatonDetail() {
         new HackatonDetails(this);
 
     }

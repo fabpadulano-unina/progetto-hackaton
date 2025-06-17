@@ -1,13 +1,11 @@
 package gui;
 
 import controller.Controller;
-import model.Hackaton;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class Home {
     private JPanel mainPanel;
@@ -16,8 +14,8 @@ public class Home {
     private JTabbedPane tabbedPane1;
     private JPanel homeTab;
     private JPanel teamTab;
-    private JComboBox registratiBtn;
-    private JList list1;
+    private JComboBox<String> teamSelect;
+    private JList<String> progressiList;
     private JButton caricaNuovoProgressoButton;
     private JButton uniscitiButton;
     private JButton addTeamBtn;
@@ -40,8 +38,6 @@ public class Home {
         controller = new Controller(frameHome);
         setTable();
         handleClicks();
-
-
     }
 
 
