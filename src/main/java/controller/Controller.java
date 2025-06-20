@@ -1,8 +1,10 @@
 package controller;
 
 import dao.HackatonDAO;
+import dao.UtenteDAO;
 import gui.*;
 import implementazionePostgresDAO.HackatonImplementazionePostgresDAO;
+import implementazionePostgresDAO.UtenteImplementazionePostgresDAO;
 import model.Giudice;
 import model.Organizzatore;
 import model.Utente;
@@ -15,12 +17,14 @@ import java.util.List;
 public class Controller {
     private JFrame homeFrame;
     private HackatonDAO hackatonDAO;
+    private UtenteDAO utenteDAO;
     private Utente utente;
 
     public Controller(JFrame homeFrame) {
         this.homeFrame = homeFrame;
         try {
             hackatonDAO = new HackatonImplementazionePostgresDAO();
+            utenteDAO = new UtenteImplementazionePostgresDAO();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -63,7 +67,12 @@ public class Controller {
                              List<String> giudici
                              ) {
         hackatonDAO.addHackaton(titolo, sede, dataInizio, dataFine, numMaxIscritti, dimMaxIscritti, utente.getId());
-        //invita giudici
+        //todo invita giudici
+    }
+
+    public void saveUser(String nome, String cognome, String email) {
+        utente = new Utente(nome, cognome, email);
+        utenteDAO.addUtente(nome, cognome, email);
     }
 
     public Object[][] getHackatons() {

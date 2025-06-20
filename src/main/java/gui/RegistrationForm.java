@@ -35,6 +35,7 @@ public class RegistrationForm extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //todo controlloer.saveUser(.......)
+                controller.saveUser(nomeInput.getText(), cognomeinput.getText(), emailInput.getText());
                 loginFrame.setEmailInput(emailInput.getText());
                 loginFrame.setPasswordInput(passwordInput.getText());
                 controller.dispose(RegistrationForm.this);

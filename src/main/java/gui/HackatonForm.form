@@ -107,7 +107,11 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <text value="DD/MM/YYYY"/>
+          <toolTipText value="DD/MM/YYYY"/>
+        </properties>
       </component>
       <component id="29aff" class="javax.swing.JSeparator">
         <constraints>
@@ -172,7 +176,11 @@
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <text value="DD/MM/YYYY"/>
+          <toolTipText value="DD/MM/YYYY"/>
+        </properties>
       </component>
       <component id="cb380" class="javax.swing.JLabel">
         <constraints>
