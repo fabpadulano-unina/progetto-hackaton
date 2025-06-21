@@ -17,6 +17,7 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
         connection = ConnessioneDatabase.getInstance().getConnection();
     }
 
+    @Override
     public boolean addUtente(String nome, String cognome, String email) {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS Utente (" +
                 "id SERIAL PRIMARY KEY, " +

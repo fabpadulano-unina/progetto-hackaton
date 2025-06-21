@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="38" width="2315" height="617"/>
+      <xy x="20" y="38" width="2315" height="763"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -287,6 +287,15 @@
                   </grid>
                 </children>
               </grid>
+              <grid id="d7d28" binding="classificaTab" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <tabbedpane title="Classifica"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children/>
+              </grid>
               <grid id="1062e" binding="orgazinerToolTab" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
@@ -411,7 +420,7 @@
                   </scrollpane>
                 </children>
               </grid>
-              <grid id="fbfda" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="fbfda" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <tabbedpane title="Tool per giudici"/>
@@ -505,6 +514,32 @@
                       </grid>
                     </children>
                   </grid>
+                  <scrollpane id="1b703" binding="ScrollPanPrinc">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <grid id="4b15" binding="MainCont" layout-manager="BorderLayout" hgap="0" vgap="0">
+                        <constraints/>
+                        <properties>
+                          <alignmentX value="0.0"/>
+                          <alignmentY value="0.0"/>
+                          <autoscrolls value="false"/>
+                        </properties>
+                        <border type="none"/>
+                        <children>
+                          <grid id="17701" binding="containerPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+                            <constraints border-constraint="Center"/>
+                            <properties/>
+                            <border type="none"/>
+                            <children/>
+                          </grid>
+                        </children>
+                      </grid>
+                    </children>
+                  </scrollpane>
                 </children>
               </grid>
             </children>
