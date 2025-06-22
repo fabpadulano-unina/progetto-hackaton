@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Controller {
     private JFrame homeFrame;
@@ -26,7 +28,7 @@ public class Controller {
             hackatonDAO = new HackatonImplementazionePostgresDAO();
             utenteDAO = new UtenteImplementazionePostgresDAO();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella connessione con il db" + e.getMessage(), e);
         }
     }
 
@@ -70,9 +72,9 @@ public class Controller {
         //todo invita giudici
     }
 
-    public void saveUser(String nome, String cognome, String email) {
-        utente = new Utente(nome, cognome, email);
-        utenteDAO.addUtente(nome, cognome, email);
+    public void saveUser(String nome, String cognome, String email, String password) {
+        utente = new Utente(nome, cognome, email, password);
+        utenteDAO.addUtente(nome, cognome, email, password);
     }
 
     public Object[][] getHackatons() {

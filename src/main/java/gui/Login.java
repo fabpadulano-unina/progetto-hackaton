@@ -15,6 +15,7 @@ public class Login extends JFrame {
     private JButton loginButton;
     private JPanel panel;
     private JLabel registerLabel;
+    private JPanel panelCredentialsError;
     private JFrame homeFrame;
     private Controller controller;
 

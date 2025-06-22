@@ -6,8 +6,8 @@ import java.util.List;
 public class Giudice extends Utente {
     private List<Hackaton> hackatonGiudicati = new ArrayList<>();
 
-    public Giudice(String nome, String cognome, String email, Hackaton hackaton) {
-        super(nome, cognome, email);
+    public Giudice(String nome, String cognome, String email, String password, Hackaton hackaton) {
+        super(nome, cognome, email, password);
 
     }
 

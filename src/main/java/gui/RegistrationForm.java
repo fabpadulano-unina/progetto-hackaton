@@ -5,6 +5,7 @@ import controller.Controller;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 public class RegistrationForm extends JFrame {
     private JPanel panel;
@@ -35,7 +36,7 @@ public class RegistrationForm extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //todo controlloer.saveUser(.......)
-                controller.saveUser(nomeInput.getText(), cognomeinput.getText(), emailInput.getText());
+                controller.saveUser(nomeInput.getText(), cognomeinput.getText(), emailInput.getText(), Arrays.toString(passwordInput.getPassword()));
                 loginFrame.setEmailInput(emailInput.getText());
                 loginFrame.setPasswordInput(passwordInput.getText());
                 controller.dispose(RegistrationForm.this);

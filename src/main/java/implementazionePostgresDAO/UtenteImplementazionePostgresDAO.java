@@ -18,20 +18,23 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
     }
 
     @Override
-    public boolean addUtente(String nome, String cognome, String email) {
+    public boolean addUtente(String nome, String cognome, String email, String password) {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS Utente (" +
                 "id SERIAL PRIMARY KEY, " +
                 "nome VARCHAR(100) NOT NULL, " +
                 "cognome VARCHAR(100) NOT NULL, " +
                 "email VARCHAR(100) NOT NULL UNIQUE" +
+                "password VARCHAR(100) NOT NULL" +
                 ");";
 
         String insertSQL = String.format(
-                "INSERT INTO Utente (nome, cognome, email) " +
+                "INSERT INTO Utente (nome, cognome, email, password) " +
                         "VALUES ('%s', '%s', '%s');",
                 nome.replace("'", "''"),
                 cognome.replace("'", "''"),
-                email.replace("'", "''")
+                email.replace("'", "''"),
+                password.replace("'", "''")
+
         );
 
         Statement statement = null;

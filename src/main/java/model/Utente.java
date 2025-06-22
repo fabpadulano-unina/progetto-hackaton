@@ -5,12 +5,13 @@ public class Utente {
     private String nome;
     private String cognome;
     private String email;
+    private String password;
 
-    public Utente(String nome, String cognome, String email) {
+    public Utente(String nome, String cognome, String email, String password) {
         this.setNome(nome);
         this.setCognome(cognome);
         this.setEmail(email);
-
+        this.setPassword(password);
     }
 
     public Integer getId() {
@@ -45,4 +46,10 @@ public class Utente {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

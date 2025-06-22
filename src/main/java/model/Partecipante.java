@@ -4,15 +4,15 @@ public class Partecipante extends Utente {
     private Team team;
     private String ruoloTeam;
 
-    public Partecipante(String nome, String cognome, String email, Hackaton hackaton) {
-        super(nome, cognome, email);
+    public Partecipante(String nome, String cognome, String email, String password, Hackaton hackaton) {
+        super(nome, cognome, email, password);
         this.setTeam(team);
         this.setRuoloTeam(ruoloTeam);
         hackaton.addPartecipante(this);
     }
 
-    public Partecipante(String nome, String cognome, String email, Hackaton hackaton, Team team, String ruoloTeam) {
-        super(nome, cognome, email);
+    public Partecipante(String nome, String cognome, String email, String password, Hackaton hackaton, Team team, String ruoloTeam) {
+        super(nome, cognome, email, password);
         this.setTeam(team);
         this.setRuoloTeam(ruoloTeam);
         hackaton.addPartecipante(this);
