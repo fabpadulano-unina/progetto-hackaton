@@ -6,12 +6,14 @@ public class Utente {
     private String cognome;
     private String email;
     private String password;
+    private String tipoUtente;
 
-    public Utente(String nome, String cognome, String email, String password) {
+    public Utente(String nome, String cognome, String email, String password, String tipoUtente) {
         this.setNome(nome);
         this.setCognome(cognome);
         this.setEmail(email);
         this.setPassword(password);
+        this.setTipoUtente(tipoUtente);
     }
 
     public Integer getId() {
@@ -51,5 +53,13 @@ public class Utente {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getTipoUtente() {
+        return tipoUtente;
+    }
+
+    public void setTipoUtente(String tipoUtente) {
+        this.tipoUtente = tipoUtente;
     }
 }

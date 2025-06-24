@@ -35,11 +35,12 @@ public class RegistrationForm extends JFrame {
         registerBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //todo controlloer.saveUser(.......)
-                controller.saveUser(nomeInput.getText(), cognomeinput.getText(), emailInput.getText(), Arrays.toString(passwordInput.getPassword()));
+                //TODO HARDCODATO ORGANIZZATORE
+                String password = Arrays.toString(passwordInput.getPassword());
+                controller.saveUser(nomeInput.getText(), cognomeinput.getText(), emailInput.getText(), password, "ORGANIZZATORE");
                 loginFrame.setEmailInput(emailInput.getText());
-                loginFrame.setPasswordInput(passwordInput.getText());
-                controller.dispose(RegistrationForm.this);
+                loginFrame.setPasswordInput(password);
+                Controller.dispose(RegistrationForm.this);
             }
         });
     }

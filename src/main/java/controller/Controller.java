@@ -72,9 +72,12 @@ public class Controller {
         //todo invita giudici
     }
 
-    public void saveUser(String nome, String cognome, String email, String password) {
-        utente = new Utente(nome, cognome, email, password);
-        utenteDAO.addUtente(nome, cognome, email, password);
+    public void saveUser(String nome, String cognome, String email, String password, String tipoUtente) {
+        utenteDAO.addUtente(nome, cognome, email, password, tipoUtente);
+        switch (tipoUtente) {
+            case "ORGANIZZATORE":
+                utente = new Organizzatore(nome, cognome, email, password);
+        }
     }
 
     public Object[][] getHackatons() {

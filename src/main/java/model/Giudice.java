@@ -7,7 +7,7 @@ public class Giudice extends Utente {
     private List<Hackaton> hackatonGiudicati = new ArrayList<>();
 
     public Giudice(String nome, String cognome, String email, String password, Hackaton hackaton) {
-        super(nome, cognome, email, password);
+        super(nome, cognome, email, password, "GIUDICE");
 
     }
 
