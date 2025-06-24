@@ -19,7 +19,7 @@ public class Login extends JFrame {
     private JLabel credentialsErrorLabel;
     private Controller controller;
 
-    public Login(Controller controller) {
+    public Login() {
         this.setTitle("Login");
         this.setContentPane(panel);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -27,7 +27,7 @@ public class Login extends JFrame {
         this.setVisible(true);
         this.registerLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         credentialsErrorLabel.setVisible(false);
-        this.controller = controller;
+        this.controller = new Controller();
 
         handleClicks();
     }
@@ -37,14 +37,17 @@ public class Login extends JFrame {
         handleRegisterLabelClick();
     }
 
-
+    public static void main(String[] args) {
+        new Login();
+    }
 
     private void handleLoginBtnClick() {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(controller.loginUtente(emailInput.getText(), Arrays.toString(passwordInput.getPassword()))) {
-                    controller.backToHomeFrame(Login.this);
+                    controller.openHomeFrame();
+                    Login.this.dispose();
                 } else {
                     credentialsErrorLabel.setVisible(true);
                 }

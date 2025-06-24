@@ -7,7 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Home {
+public class Home extends JFrame {
     private JPanel mainPanel;
     private JButton organizzaHackatonButton;
     private JTable table;
@@ -19,27 +19,23 @@ public class Home {
     private JButton caricaNuovoProgressoButton;
     private JButton uniscitiButton;
     private JButton addTeamBtn;
-    private static JFrame frameHome;
-    private static Controller controller;
-
-    public static void main(String[] args) {
-        frameHome = new JFrame("Home");
-        frameHome.setContentPane(new Home().mainPanel);
-        frameHome.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frameHome.pack();
-        frameHome.setVisible(true);
-
-        controller.openLoginForm();
+    private Controller controller;
 
 
-    }
 
-    public Home() {
-        controller = new Controller(frameHome);
+    public Home(Controller controller) {
+        this.setContentPane(mainPanel);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.pack();
+        this.setVisible(true);
+
+        this.controller = controller;
+        controller.setHomeFrame(this);
+
+        this.organizzaHackatonButton.setVisible(controller.utente.isOrganizzatore());
         setTable();
         handleClicks();
     }
-
 
 
 

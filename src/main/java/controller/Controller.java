@@ -20,10 +20,9 @@ public class Controller {
     private JFrame homeFrame;
     private HackatonDAO hackatonDAO;
     private UtenteDAO utenteDAO;
-    private Utente utente;
+    public Utente utente;
 
-    public Controller(JFrame homeFrame) {
-        this.homeFrame = homeFrame;
+    public Controller() {
         try {
             hackatonDAO = new HackatonImplementazionePostgresDAO();
             utenteDAO = new UtenteImplementazionePostgresDAO();
@@ -32,9 +31,13 @@ public class Controller {
         }
     }
 
+    public void setHomeFrame(JFrame homeFrame) {
+        this.homeFrame = homeFrame;
+    }
+
     public void openLoginForm() {
         homeFrame.setVisible(false);
-        new Login(this);
+
     }
 
 
@@ -124,6 +127,10 @@ public class Controller {
     public void apriRegisteazioni() {}
 
     public void chiudiRegistrazioni() {}
+
+    public void openHomeFrame() {
+        new Home(this);
+    }
 
     public void openProgress() {
         new Progress(this);

@@ -55,11 +55,11 @@ public class Utente {
         this.password = password;
     }
 
-    public String getTipoUtente() {
-        return tipoUtente;
-    }
-
     public void setTipoUtente(String tipoUtente) {
         this.tipoUtente = tipoUtente;
+    }
+
+    public boolean isOrganizzatore() {
+        return this.tipoUtente.equals("ORGANIZZATORE");
     }
 }
