@@ -26,7 +26,7 @@ public class HackatonDetails extends JFrame {
     public HackatonDetails(Controller controller) {
         this.setTitle("Dettaglio Hackaton");
         this.setContentPane(mainPanel);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.pack();
         this.setVisible(true);
 

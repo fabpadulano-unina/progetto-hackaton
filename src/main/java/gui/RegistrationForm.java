@@ -21,7 +21,7 @@ public class RegistrationForm extends JFrame {
     public RegistrationForm(Login loginFrame, Controller controller) {
         this.setTitle("Registra");
         this.setContentPane(panel);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.pack();
         this.setVisible(true);
 

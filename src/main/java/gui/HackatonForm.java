@@ -26,7 +26,7 @@ public class HackatonForm extends JFrame {
     public HackatonForm(Controller controller) {
         this.setTitle("Crea Hackaton");
         this.setContentPane(panel);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.pack();
         this.setVisible(true);
         setGiudiciList();
