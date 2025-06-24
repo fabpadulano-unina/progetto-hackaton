@@ -1,4 +1,4 @@
-package implementazionePostgresDAO;
+package dao.implementazione.postgres;
 
 import dao.HackatonDAO;
 import database.ConnessioneDatabase;
@@ -6,7 +6,6 @@ import database.ConnessioneDatabase;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,10 +30,9 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
                             "data_inizio DATE NOT NULL, " +
                             "data_fine DATE NOT NULL, " +
                             "num_max_iscritti INTEGER NOT NULL, " +
-                            "eta_min INTEGER NOT NULL, " +
-                            "eta_max INTEGER NOT NULL, " +
+                            "dim_max_team INTEGER NOT NULL, " +
                             "id_organizzatore INTEGER NOT NULL, " +
-                            "FOREIGN KEY (id_organizzatore) REFERENCES Organizzatore(id)" +
+                            "FOREIGN KEY (id_organizzatore) REFERENCES Utente(id)" +
                             ")"
             );
             createTableHackatonPS.executeUpdate();

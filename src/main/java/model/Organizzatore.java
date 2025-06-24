@@ -7,13 +7,13 @@ public class Organizzatore  extends Utente {
 
     private List<Hackaton> hackatonOrganizzati = new ArrayList<>();
 
-    public Organizzatore(String nome, String cognome, String email, String password, Hackaton hackaton) {
-        super(nome, cognome, email, password, "ORGANIZZATORE");
+    public Organizzatore(Integer id, String nome, String cognome, String email, String password, Hackaton hackaton) {
+        super(id, nome, cognome, email, password, "ORGANIZZATORE");
         addHackaton(hackaton);
     }
 
-    public Organizzatore(String nome, String cognome, String email, String password) {
-        super(nome, cognome, email, password, "ORGANIZZATORE");
+    public Organizzatore(Integer id, String nome, String cognome, String email, String password) {
+        super(id, nome, cognome, email, password, "ORGANIZZATORE");
     }
 
 

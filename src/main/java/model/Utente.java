@@ -8,7 +8,8 @@ public class Utente {
     private String password;
     private String tipoUtente;
 
-    public Utente(String nome, String cognome, String email, String password, String tipoUtente) {
+    public Utente(Integer id, String nome, String cognome, String email, String password, String tipoUtente) {
+        this.setId(id);
         this.setNome(nome);
         this.setCognome(cognome);
         this.setEmail(email);

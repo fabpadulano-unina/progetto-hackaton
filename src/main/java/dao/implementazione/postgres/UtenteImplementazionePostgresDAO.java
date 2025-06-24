@@ -1,4 +1,4 @@
-package implementazionePostgresDAO;
+package dao.implementazione.postgres;
 
 import dao.UtenteDAO;
 import database.ConnessioneDatabase;
@@ -72,20 +72,21 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
     }
 
     @Override
-    public void getUtente(String email, String password,
+    public void getUtente(Integer[] id, String email, String password,
                               StringBuilder nome,
                               StringBuilder cognome,
                               StringBuilder tipoUtente) {
         PreparedStatement loginUtentePS = null;
         try {
             loginUtentePS = connection.prepareStatement(
-                    "SELECT nome, cognome, tipo_utente FROM Utente WHERE email = ? AND password = ?"
+                    "SELECT id, nome, cognome, tipo_utente FROM Utente WHERE email = ? AND password = ?"
             );
             loginUtentePS.setString(1, email);
             loginUtentePS.setString(2, password);
 
             var rs = loginUtentePS.executeQuery();
             if (rs.next()) {
+                id[0] = rs.getInt("id");
                 nome.append(rs.getString("nome"));
                 cognome.append(rs.getString("cognome"));
                 tipoUtente.append(rs.getString("tipo_utente"));

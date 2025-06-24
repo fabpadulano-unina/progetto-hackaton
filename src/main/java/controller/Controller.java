@@ -3,16 +3,14 @@ package controller;
 import dao.HackatonDAO;
 import dao.UtenteDAO;
 import gui.*;
-import implementazionePostgresDAO.HackatonImplementazionePostgresDAO;
-import implementazionePostgresDAO.UtenteImplementazionePostgresDAO;
-import model.Giudice;
-import model.Organizzatore;
-import model.Partecipante;
-import model.Utente;
+import dao.implementazione.postgres.HackatonImplementazionePostgresDAO;
+import dao.implementazione.postgres.UtenteImplementazionePostgresDAO;
+import model.*;
 
 import javax.swing.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +41,7 @@ public class Controller {
 
     public void openHackatonForm() {
         if(utente instanceof Organizzatore) {
-            new HackatonForm(this);
+            new HackatonForm(this, new ArrayList<>());
         }
     }
 
@@ -63,11 +61,16 @@ public class Controller {
     }
 
     public void saveHackaton(String titolo, String sede, LocalDate dataInizio,
-                             LocalDate dataFine, int numMaxIscritti, int dimMaxIscritti,
-                             List<String> giudici
+                             LocalDate dataFine, int numMaxIscritti, int dimMaxTeam,
+                             List<Giudice> giudici
                              ) {
-        hackatonDAO.addHackaton(titolo, sede, dataInizio, dataFine, numMaxIscritti, dimMaxIscritti, utente.getId());
-        //todo invita giudici
+        if(utente instanceof Organizzatore organizzatore) {
+            var hackaton = new Hackaton(titolo, sede, dataInizio,dataFine, numMaxIscritti, dimMaxTeam, organizzatore, giudici);
+            hackatonDAO.addHackaton(titolo, sede, dataInizio, dataFine, numMaxIscritti, dimMaxTeam, utente.getId());
+            for (Giudice giudice : giudici) {
+                giudice.addHackaton(hackaton);
+            }
+        }
     }
 
     public void saveUser(String nome, String cognome, String email, String password, String tipoUtente) {
@@ -75,30 +78,31 @@ public class Controller {
     }
 
     public boolean loginUtente(String email, String password) {
+        Integer[] id = new Integer[1];
         StringBuilder nome = new StringBuilder();
         StringBuilder cognome = new StringBuilder();
         StringBuilder tipoUtente = new StringBuilder();
 
-        utenteDAO.getUtente(email, password, nome, cognome, tipoUtente);
+        utenteDAO.getUtente(id, email, password, nome, cognome, tipoUtente);
 
         if (!nome.isEmpty()) {  // se login riuscito
-            setUtente(nome.toString(), cognome.toString(), email, password, tipoUtente.toString());
+            setUtente(id[0], nome.toString(), cognome.toString(), email, password, tipoUtente.toString());
             return true;
         }
 
         return false;
     }
 
-    private void setUtente(String nome, String cognome, String email, String password, String tipoUtente) {
+    private void setUtente(Integer id, String nome, String cognome, String email, String password, String tipoUtente) {
         switch (tipoUtente) {
             case "ORGANIZZATORE":
-                utente = new Organizzatore(nome, cognome, email, password);
+                utente = new Organizzatore(id, nome, cognome, email, password);
                 break;
             case "PARTECIPANTE":
-                utente = new Partecipante(nome, cognome, email, password);
+                utente = new Partecipante(id, nome, cognome, email, password);
                 break;
             default:
-                utente = new Partecipante(nome, cognome, email, password);
+                utente = new Utente(id, nome, cognome, email, password, tipoUtente);
 
         }
     }

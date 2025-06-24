@@ -1,13 +1,15 @@
 package gui;
 
 import controller.Controller;
-import model.Organizzatore;
+import model.Giudice;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class HackatonForm extends JFrame {
@@ -19,19 +21,18 @@ public class HackatonForm extends JFrame {
     private JTextField dataInizioInput;
     private JTextField dimensioneMaxTeamInput;
     private JPanel panel;
-    private JList giudiciList;
+    private JList<String> giudiciList;
     private Controller controller;
+    private List<Giudice> giudici;
 
-
-    public HackatonForm(Controller controller) {
+    public HackatonForm(Controller controller, List<Giudice> giudici) {
         this.setTitle("Crea Hackaton");
         this.setContentPane(panel);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.pack();
         this.setVisible(true);
+        this.giudici = giudici;
         setGiudiciList();
-//        JScrollPane scrollPane = new JScrollPane(giudiciList);
-
 
         this.controller = controller;
 
@@ -41,10 +42,13 @@ public class HackatonForm extends JFrame {
 
     private void setGiudiciList() {
         giudiciList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        //aggiungere i giudici
-        String[] giudici = { "Giudice 1", "Giudice 2", "Giudice 3", "Giudice 5" };
-        giudiciList.setVisibleRowCount(4);
-        giudiciList.setListData(giudici);
+        String[] nomiGiudici = new String[giudici.size()];
+        for (int i = 0; i < giudici.size(); i++) {
+            nomiGiudici[i] = giudici.get(i).getNome();
+        }
+
+        giudiciList.setVisibleRowCount(nomiGiudici.length);
+        giudiciList.setListData(nomiGiudici);
     }
 
     private void handleClicks() {
@@ -54,6 +58,10 @@ public class HackatonForm extends JFrame {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 formatter = formatter.withLocale( Locale.ITALIAN );
 
+                List<Giudice> giudiciSelezionati = new ArrayList<>();
+                for (int i : giudiciList.getSelectedIndices()) {
+                    giudiciSelezionati.add(giudici.get(i));
+                }
                 controller.saveHackaton(
                         titoloInput.getText(),
                         sedeInput.getText(),
@@ -61,7 +69,7 @@ public class HackatonForm extends JFrame {
                         LocalDate.parse(dataFineInput.getText(), formatter),
                         Integer.parseInt(numeroMaxIscrittiInput.getText()),
                         Integer.parseInt(dimensioneMaxTeamInput.getText()),
-                        giudiciList.getSelectedValuesList()
+                        giudiciSelezionati
                 );
                 controller.backToHomeFrame(HackatonForm.this);
             }

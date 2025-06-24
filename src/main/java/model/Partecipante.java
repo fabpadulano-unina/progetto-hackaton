@@ -2,8 +2,8 @@ package model;
 
 public class Partecipante extends Utente {
 
-    public Partecipante(String nome, String cognome, String email, String password ) {
-        super(nome, cognome, email, password, "PARTECIPANTE");
+    public Partecipante(Integer id, String nome, String cognome, String email, String password ) {
+        super(id, nome, cognome, email, password, "PARTECIPANTE");
     }
 
 
