@@ -28,13 +28,13 @@ public class Controller {
             hackatonDAO = new HackatonImplementazionePostgresDAO();
             utenteDAO = new UtenteImplementazionePostgresDAO();
         } catch (SQLException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella connessione con il db" + e.getMessage(), e);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella connessione con il db", e);
         }
     }
 
     public void openLoginForm() {
         homeFrame.setVisible(false);
-        new Login(homeFrame, this);
+        new Login(this);
     }
 
 
@@ -74,6 +74,24 @@ public class Controller {
 
     public void saveUser(String nome, String cognome, String email, String password, String tipoUtente) {
         utenteDAO.addUtente(nome, cognome, email, password, tipoUtente);
+    }
+
+    public boolean loginUtente(String email, String password) {
+        StringBuilder nome = new StringBuilder();
+        StringBuilder cognome = new StringBuilder();
+        StringBuilder tipoUtente = new StringBuilder();
+
+        utenteDAO.getUtente(email, password, nome, cognome, tipoUtente);
+
+        if (!nome.isEmpty()) {  // se login riuscito
+            setUtente(nome.toString(), cognome.toString(), email, password, tipoUtente.toString());
+            return true;
+        }
+
+        return false;
+    }
+
+    private void setUtente(String nome, String cognome, String email, String password, String tipoUtente) {
         switch (tipoUtente) {
             case "ORGANIZZATORE":
                 utente = new Organizzatore(nome, cognome, email, password);
