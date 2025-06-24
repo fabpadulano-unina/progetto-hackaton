@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
 
 public class Login extends JFrame {
     private JTextField emailInput;
@@ -45,7 +44,7 @@ public class Login extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(controller.loginUtente(emailInput.getText(), Arrays.toString(passwordInput.getPassword()))) {
+                if(controller.loginUtente(emailInput.getText(), new String(passwordInput.getPassword()))) {
                     controller.openHomeFrame();
                     Login.this.dispose();
                 } else {

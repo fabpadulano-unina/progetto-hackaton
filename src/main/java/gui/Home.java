@@ -32,7 +32,7 @@ public class Home extends JFrame {
         this.controller = controller;
         controller.setHomeFrame(this);
 
-        this.organizzaHackatonButton.setVisible(controller.utente.isOrganizzatore());
+        this.organizzaHackatonButton.setVisible(controller.getUtente().isOrganizzatore());
         setTable();
         handleClicks();
     }

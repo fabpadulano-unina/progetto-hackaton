@@ -1,16 +1,15 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Team {
     private String nome;
-    private ArrayList<Partecipante> partecipanti = new ArrayList<>();
-    private ArrayList<Documento> documenti = new ArrayList<>();
+    private List<Partecipante> partecipanti = new ArrayList<>();
+    private List<Documento> documenti = new ArrayList<>();
 
-    public Team(String nome, Partecipante partecipante) {
+    public Team(String nome) {
         this.setNome(nome);
-        this.getPartecipanti().add(partecipante);
-        partecipante.setTeam(this);
     }
 
 
@@ -22,11 +21,11 @@ public class Team {
         this.nome = nome;
     }
 
-    public ArrayList<Partecipante> getPartecipanti() {
+    public List<Partecipante> getPartecipanti() {
         return partecipanti;
     }
 
-    public ArrayList<Documento> getDocumenti() {
+    public List<Documento> getDocumenti() {
         return documenti;
     }
 
@@ -34,7 +33,7 @@ public class Team {
         documenti.add(documento);
     }
 
-    public void setPartecipanti(ArrayList<Partecipante> partecipanti) {
+    public void setPartecipanti(List<Partecipante> partecipanti) {
         this.partecipanti = partecipanti;
     }
 

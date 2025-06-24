@@ -7,6 +7,7 @@ import implementazionePostgresDAO.HackatonImplementazionePostgresDAO;
 import implementazionePostgresDAO.UtenteImplementazionePostgresDAO;
 import model.Giudice;
 import model.Organizzatore;
+import model.Partecipante;
 import model.Utente;
 
 import javax.swing.*;
@@ -20,7 +21,7 @@ public class Controller {
     private JFrame homeFrame;
     private HackatonDAO hackatonDAO;
     private UtenteDAO utenteDAO;
-    public Utente utente;
+    private Utente utente;
 
     public Controller() {
         try {
@@ -35,14 +36,8 @@ public class Controller {
         this.homeFrame = homeFrame;
     }
 
-    public void openLoginForm() {
-        homeFrame.setVisible(false);
-
-    }
-
 
     public void openRegisterForm(Login login) {
-        homeFrame.setVisible(false);
         new RegistrationForm(login, this);
     }
 
@@ -98,6 +93,13 @@ public class Controller {
         switch (tipoUtente) {
             case "ORGANIZZATORE":
                 utente = new Organizzatore(nome, cognome, email, password);
+                break;
+            case "PARTECIPANTE":
+                utente = new Partecipante(nome, cognome, email, password);
+                break;
+            default:
+                utente = new Partecipante(nome, cognome, email, password);
+
         }
     }
 
@@ -134,5 +136,9 @@ public class Controller {
 
     public void openProgress() {
         new Progress(this);
+    }
+
+    public Utente getUtente() {
+        return utente;
     }
 }

@@ -5,7 +5,6 @@ import controller.Controller;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 public class RegistrationForm extends JFrame {
     private JPanel panel;
@@ -14,6 +13,7 @@ public class RegistrationForm extends JFrame {
     private JTextField emailInput;
     private JPasswordField passwordInput;
     private JButton registerBtn;
+    private JList<String> tipoUtenteSelect;
 
     private Login loginFrame;
     private Controller controller;
@@ -21,23 +21,26 @@ public class RegistrationForm extends JFrame {
     public RegistrationForm(Login loginFrame, Controller controller) {
         this.setTitle("Registra");
         this.setContentPane(panel);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.pack();
         this.setVisible(true);
 
         this.loginFrame = loginFrame;
         this.controller = controller;
 
-        handleClicks(loginFrame);
+        handleClicks();
+
+        String[] tipiUtente = { "ORGANIZZATORE", "PARTECIPANTE", "GIUDICE"};
+        tipoUtenteSelect.setVisibleRowCount(tipiUtente.length);
+        tipoUtenteSelect.setListData(tipiUtente);
     }
 
-    private void handleClicks(JFrame homeFrame) {
+    private void handleClicks() {
         registerBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO HARDCODATO ORGANIZZATORE
-                String password = Arrays.toString(passwordInput.getPassword());
-                controller.saveUser(nomeInput.getText(), cognomeinput.getText(), emailInput.getText(), password, "ORGANIZZATORE");
+                String password = new String(passwordInput.getPassword());
+                controller.saveUser(nomeInput.getText(), cognomeinput.getText(), emailInput.getText(), password, tipoUtenteSelect.getSelectedValue());
                 loginFrame.setEmailInput(emailInput.getText());
                 loginFrame.setPasswordInput(password);
                 Controller.dispose(RegistrationForm.this);
