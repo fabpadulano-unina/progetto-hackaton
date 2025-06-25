@@ -1,2 +1,2 @@
-un partecipante può avere più team (per ogni hackaton a cui partecipa)
+un partecipante può partecipare a più hackaton diversi MA non nello stesso periodo di tempo
 un team deve avere l'hackaton di appartenenza (serve perchè da un hackaton voglio estrarre tutti i team)
