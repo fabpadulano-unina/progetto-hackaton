@@ -5,7 +5,9 @@ import database.ConnessioneDatabase;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -149,4 +151,38 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
         }
     }
 
+    @Override
+    public void leggiGiudici(List<Integer> ids, List<String> nomi, List<String> cognomi, List<String> email) {
+        PreparedStatement selectGiudiciPS = null;
+        ResultSet rs = null;
+
+        try {
+            String selectSQL = "SELECT id, nome, cognome, email FROM Utente WHERE tipo_utente = ?";
+            selectGiudiciPS = connection.prepareStatement(selectSQL);
+            selectGiudiciPS.setString(1, "GIUDICE");
+
+            rs = selectGiudiciPS.executeQuery();
+
+            while (rs.next()) {
+                ids.add(rs.getInt("id"));
+                nomi.add(rs.getString("nome"));
+                cognomi.add(rs.getString("cognome"));
+                email.add(rs.getString("email"));
+            }
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella selezione dei giudici", e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura del ResultSet", e);
+            }
+            try {
+                if (selectGiudiciPS != null) selectGiudiciPS.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement select", e);
+            }
+        }
+    }
 }

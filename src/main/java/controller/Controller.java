@@ -41,7 +41,7 @@ public class Controller {
 
     public void openHackatonForm() {
         if(utente instanceof Organizzatore) {
-            new HackatonForm(this, new ArrayList<>());
+            new HackatonForm(this, getListaGiudici());
         }
     }
 
@@ -151,5 +151,30 @@ public class Controller {
 
     public Utente getUtente() {
         return utente;
+    }
+
+    public List<Giudice> getListaGiudici() {
+        List<Integer> ids = new ArrayList<>();
+        List<String> nomi = new ArrayList<>();
+        List<String> cognomi = new ArrayList<>();
+        List<String> email = new ArrayList<>();
+
+        // Chiamata al DAO per riempire le liste
+        utenteDAO.leggiGiudici(ids, nomi, cognomi, email);
+
+        List<Giudice> giudici = new ArrayList<>();
+
+        for (int i = 0; i < ids.size(); i++) {
+            Giudice g = new Giudice(
+                    ids.get(i),
+                    nomi.get(i),
+                    cognomi.get(i),
+                    email.get(i),
+                    null
+            );
+            giudici.add(g);
+        }
+
+        return giudici;
     }
 }
