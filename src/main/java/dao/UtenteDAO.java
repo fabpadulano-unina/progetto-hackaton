@@ -7,4 +7,6 @@ public interface UtenteDAO {
                        StringBuilder nome,
                        StringBuilder cognome,
                        StringBuilder tipoUtente);
+
+    void invitaGiudice(Integer id, Integer hackatonId);
 }

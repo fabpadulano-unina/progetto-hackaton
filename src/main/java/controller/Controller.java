@@ -65,11 +65,14 @@ public class Controller {
                              List<Giudice> giudici
                              ) {
         if(utente instanceof Organizzatore organizzatore) {
-            var hackaton = new Hackaton(titolo, sede, dataInizio,dataFine, numMaxIscritti, dimMaxTeam, organizzatore, giudici);
-            hackatonDAO.addHackaton(titolo, sede, dataInizio, dataFine, numMaxIscritti, dimMaxTeam, utente.getId());
+            Integer id = hackatonDAO.addHackaton(titolo, sede, dataInizio, dataFine, numMaxIscritti, dimMaxTeam, utente.getId());
+            var hackaton = new Hackaton(id, titolo, sede, dataInizio,dataFine, numMaxIscritti, dimMaxTeam, organizzatore, giudici);
+
             for (Giudice giudice : giudici) {
                 giudice.addHackaton(hackaton);
             }
+
+            invitaGiudici(giudici, id);
         }
     }
 
@@ -128,7 +131,11 @@ public class Controller {
 
     }
 
-    public void invitaGiudici(List<Giudice> giudici) {}
+    public void invitaGiudici(List<Giudice> giudici, Integer hackatonId) {
+        for (Giudice giudice : giudici) {
+            utenteDAO.invitaGiudice(giudice.getId(), hackatonId);
+        }
+    }
 
     public void apriRegisteazioni() {}
 

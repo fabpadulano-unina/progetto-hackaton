@@ -47,15 +47,16 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
         }
 
         try {
-            insertUtentePS = connection.prepareStatement(String.format(
-                    "INSERT INTO Utente (nome, cognome, email, password, tipo_utente)" +
-                            "VALUES ('%s', '%s', '%s','%s', '%s');",
-                    nome.replace("'", "''"),
-                    cognome.replace("'", "''"),
-                    email.replace("'", "''"),
-                    password.replace("'", "''"),
-                    tipoUtente
-            ));
+            String insertSQL = "INSERT INTO Utente (nome, cognome, email, password, tipo_utente) " +
+                    "VALUES (?, ?, ?, ?, ?)";
+
+            insertUtentePS = connection.prepareStatement(insertSQL);
+            insertUtentePS.setString(1, nome);
+            insertUtentePS.setString(2, cognome);
+            insertUtentePS.setString(3, email);
+            insertUtentePS.setString(4, password);
+            insertUtentePS.setString(5, tipoUtente);
+
             insertUtentePS.executeUpdate();
         }
         catch (SQLException e) {
@@ -103,4 +104,49 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
             }
         }
     }
+
+    @Override
+    public void invitaGiudice(Integer idGiudice, Integer hackatonId) {
+        PreparedStatement createTablePS = null;
+        PreparedStatement insertPS = null;
+
+        try {
+            createTablePS = connection.prepareStatement(
+                    "CREATE TABLE IF NOT EXISTS Giudici_Hackaton (" +
+                            "id SERIAL PRIMARY KEY, " +
+                            "id_giudice INTEGER NOT NULL, " +
+                            "id_hackaton INTEGER NOT NULL, " +
+                            "FOREIGN KEY (id_giudice) REFERENCES Utente(id), " +
+                            "FOREIGN KEY (id_hackaton) REFERENCES Hackaton(id), " +
+                            "UNIQUE (id_giudice, id_hackaton)" +
+                            ");"
+            );
+            createTablePS.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella creazione della tabella Giudici_Hackaton", e);
+        } finally {
+            try {
+                if (createTablePS != null) createTablePS.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement create table", e);
+            }
+        }
+
+        try {
+            String insertSQL = "INSERT INTO Giudici_Hackaton (id_giudice, id_hackaton) VALUES (?, ?)";
+            insertPS = connection.prepareStatement(insertSQL);
+            insertPS.setInt(1, idGiudice);
+            insertPS.setInt(2, hackatonId);
+            insertPS.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nell'inserimento del giudice nell'hackaton", e);
+        } finally {
+            try {
+                if (insertPS != null) insertPS.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement insert", e);
+            }
+        }
+    }
+
 }

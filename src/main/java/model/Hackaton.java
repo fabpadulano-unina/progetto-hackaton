@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Hackaton {
+    private Integer id;
     private String titolo;
     private String sede;
     private LocalDate dataInizio;
@@ -17,6 +18,7 @@ public class Hackaton {
 
 
     public Hackaton(
+            Integer id,
             String titolo,
             String sede,
             LocalDate dataInizio,
@@ -26,6 +28,7 @@ public class Hackaton {
             Organizzatore organizzatore,
             List<Giudice> giudici
     ) {
+        this.setId(id);
         this.setTitolo(titolo);
         this.setSede(sede);
         this.setDataInizio(dataInizio);
@@ -38,19 +41,20 @@ public class Hackaton {
 
     //solo per far vedere la tabella
     public Hackaton(
+            Integer id,
             String titolo,
             String sede,
             LocalDate dataInizio,
             LocalDate dataFine,
             int numMaxIscritti
 
-
     ) {
+        this.setId(id);
         this.setTitolo(titolo);
         this.setSede(sede);
         this.setDataInizio(dataInizio);
         this.setDataFine(dataFine);
-        this.setNumMaxIscritti(numMaxIscritti);;
+        this.setNumMaxIscritti(numMaxIscritti);
 
     }
 
@@ -128,5 +132,13 @@ public class Hackaton {
 
     public void addGiudice(Giudice giudice) {
         this.giudici.add(giudice);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
