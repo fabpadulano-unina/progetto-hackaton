@@ -12,4 +12,5 @@ public interface UtenteDAO {
 
     void invitaGiudice(Integer id, Integer hackatonId);
     void leggiGiudici(List<Integer> ids, List<String> nomi, List<String> cognomi, List<String> email);
+
 }

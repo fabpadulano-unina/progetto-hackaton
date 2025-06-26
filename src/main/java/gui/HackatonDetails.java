@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class HackatonDetails extends JFrame {
+    public static final String DIALOG = "Dialog";
+    public static final String FONT = "Arial";
     private JButton registratiBtn;
     private JTabbedPane tabbedPane1;
     private JPanel overviewTab;
@@ -23,10 +25,10 @@ public class HackatonDetails extends JFrame {
     private Controller controller;
 
 
-    public HackatonDetails(Controller controller) {
+    public HackatonDetails(Controller controller, Object[][] giudici) {
         this.setTitle("Dettaglio Hackaton");
         this.setContentPane(mainPanel);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.pack();
         this.setVisible(true);
 
@@ -36,8 +38,7 @@ public class HackatonDetails extends JFrame {
         aggiornaVisibilitaPulsanti();
 
         String[] columnNames = {"Nome", "Cognome", "Email"};
-        Object[][] data = controller.getGiudici();
-        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+        DefaultTableModel model = new DefaultTableModel(giudici, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 2;
@@ -133,7 +134,7 @@ public class HackatonDetails extends JFrame {
 
         JLabel titleLabel = new JLabel(titolo);
         titleLabel.setForeground(Color.BLACK);
-        titleLabel.setFont(new Font("Dialog", Font.BOLD, 13));
+        titleLabel.setFont(new Font(DIALOG, Font.BOLD, 13));
 
         titlePanel.add(iconLabel);
         titlePanel.add(titleLabel);
@@ -243,7 +244,7 @@ public class HackatonDetails extends JFrame {
 
         // Titolo
         JLabel titleLabel = new JLabel("Top Teams");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setFont(new Font(FONT, Font.BOLD, 20));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         classificaTab.add(titleLabel, BorderLayout.NORTH);
@@ -278,11 +279,11 @@ public class HackatonDetails extends JFrame {
 
         // Nome team
         JLabel nameLabel = new JLabel(teamName);
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        nameLabel.setFont(new Font(FONT, Font.BOLD, 16));
 
         // Punteggio
         JLabel scoreLabel = new JLabel("Score: " + score);
-        scoreLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        scoreLabel.setFont(new Font(FONT, Font.PLAIN, 14));
         scoreLabel.setForeground(new Color(100, 100, 100));
 
         // Pannello per allineare il punteggio a destra

@@ -5,6 +5,7 @@ import database.ConnessioneDatabase;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,6 +90,73 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         }
 
         return null;
+    }
+
+    @Override
+    public void getHackatons(
+            List<Integer> ids,
+            List<String> titoli,
+            List<String> sedi,
+            List<LocalDate> dateInizio,
+            List<LocalDate> dateFine,
+            List<Integer> numMaxIscritti,
+            List<Integer> dimMaxTeam,
+            List<Integer> idOrganizzatori
+    ) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String query = "SELECT id, titolo, sede, data_inizio, data_fine, num_max_iscritti, dim_max_team, id_organizzatore FROM Hackaton";
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ids.add(rs.getInt("id"));
+                titoli.add(rs.getString("titolo"));
+                sedi.add(rs.getString("sede"));
+                dateInizio.add(rs.getDate("data_inizio").toLocalDate());
+                dateFine.add(rs.getDate("data_fine").toLocalDate());
+                numMaxIscritti.add(rs.getInt("num_max_iscritti"));
+                dimMaxTeam.add(rs.getInt("dim_max_team"));
+                idOrganizzatori.add(rs.getInt("id_organizzatore"));
+            }
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore lettura hackaton", e);
+        } finally {
+            try {
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore chiusura risorse", e);
+            }
+        }
+    }
+
+
+    @Override
+    public void leggiInvitiGiudice(List<Integer> idHackaton, List<Integer> idGiudice) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String query = "SELECT id_hackaton, id_giudice FROM giudici_hackaton";
+            ps = connection.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                idHackaton.add(rs.getInt("id_hackaton"));
+                idGiudice.add(rs.getInt("id_giudice"));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore lettura inviti giudice", e);
+        } finally {
+            try {
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura", e);
+            }
+        }
     }
 
 }

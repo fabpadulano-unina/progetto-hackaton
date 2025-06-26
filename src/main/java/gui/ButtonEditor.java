@@ -7,8 +7,9 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 class ButtonRenderer extends JButton implements TableCellRenderer {
+    private static final String LABEL = "Dettaglio";
     public ButtonRenderer() {
-        setText("Dettaglio");
+        setText(LABEL);
     }
 
     @Override
@@ -20,13 +21,15 @@ class ButtonRenderer extends JButton implements TableCellRenderer {
 
 // Editor per il bottone
 class ButtonEditor extends DefaultCellEditor {
+    public static final String BUTTON_TEXT = "Dettaglio";
     private JButton button;
+    private int row = -1;
     private boolean clicked;
     private Controller controller;
 
     public ButtonEditor(JCheckBox checkBox, Controller controller) {
         super(checkBox);
-        button = new JButton("Dettaglio");
+        button = new JButton(BUTTON_TEXT);
         button.addActionListener(e -> fireEditingStopped());
         this.controller = controller;
     }
@@ -34,6 +37,7 @@ class ButtonEditor extends DefaultCellEditor {
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value,
                                                  boolean isSelected, int row, int column) {
+        this.row = row;
         clicked = true;
         return button;
     }
@@ -44,10 +48,10 @@ class ButtonEditor extends DefaultCellEditor {
             showHackatonDetails();
         }
         clicked = false;
-        return "Dettaglio";
+        return BUTTON_TEXT;
     }
 
     private void showHackatonDetails() {
-        controller.openHackatonDetail();
+        controller.openHackatonDetail(row);
     }
 }

@@ -20,6 +20,7 @@ public class Controller {
     private HackatonDAO hackatonDAO;
     private UtenteDAO utenteDAO;
     private Utente utente;
+    private List<Hackaton> hackatons = new ArrayList<>();
 
     public Controller() {
         try {
@@ -111,24 +112,39 @@ public class Controller {
     }
 
     public Object[][] getHackatons() {
-        return new Object[][]{
-                {"Hackathon 1", "2025-01-01", "2025-01-10", "Dettaglio", 0},
-                {"Hackathon 2", "2025-02-15", "2025-02-20", "Dettaglio", 1}
-        };
+        List<Hackaton> listaHackaton = getListaHackaton();
+        Object[][] matrice = new Object[listaHackaton.size()][5];
+
+        for (int i = 0; i < listaHackaton.size(); i++) {
+            Hackaton h = listaHackaton.get(i);
+            matrice[i][0] = h.getTitolo();
+            matrice[i][1] = h.getDataInizio().toString();
+            matrice[i][2] = h.getDataFine().toString();
+            matrice[i][3] = "Dettaglio";
+            matrice[i][4] = h.getId();
+        }
+
+        return matrice;
     }
-    public Object[][] getGiudici() {
-        return new Object[][]{
-                {"Antonio", "Esposito", "antesp@gmail.com"},
-                {"Ciro", "Esposito", "cirosp@gmail.com"},
-        };
+
+    public Object[][] getGiudici(List<Giudice> giudici) {
+        Object[][] matrice = new Object[giudici.size()][3];
+
+        for (int i = 0; i < giudici.size(); i++) {
+            Giudice g = giudici.get(i);
+            matrice[i][0] = g.getNome();
+            matrice[i][1] = g.getCognome();
+            matrice[i][2] = g.getEmail();
+        }
+
+        return matrice;
     }
 
 
 
-
-    public void openHackatonDetail() {
-        new HackatonDetails(this);
-
+    public void openHackatonDetail(int row) {
+        Hackaton hackaton = this.getListaHackaton().get(row);
+        new HackatonDetails(this, getGiudici(hackaton.getGiudici()));
     }
 
     public void invitaGiudici(List<Giudice> giudici, Integer hackatonId) {
@@ -159,7 +175,6 @@ public class Controller {
         List<String> cognomi = new ArrayList<>();
         List<String> email = new ArrayList<>();
 
-        // Chiamata al DAO per riempire le liste
         utenteDAO.leggiGiudici(ids, nomi, cognomi, email);
 
         List<Giudice> giudici = new ArrayList<>();
@@ -177,4 +192,75 @@ public class Controller {
 
         return giudici;
     }
+
+    private List<Hackaton> getListaHackaton() {
+        if(!hackatons.isEmpty()) return hackatons;
+
+        ArrayList<Integer> ids = new ArrayList<>();
+        ArrayList<String> titoli = new ArrayList<>();
+        ArrayList<String> sedi = new ArrayList<>();
+        ArrayList<LocalDate> dateInizio = new ArrayList<>();
+        ArrayList<LocalDate> dateFine = new ArrayList<>();
+        ArrayList<Integer> numMaxIscritti = new ArrayList<>();
+        ArrayList<Integer> dimMaxTeam = new ArrayList<>();
+        ArrayList<Integer> idOrganizzatori = new ArrayList<>();
+
+        ArrayList<Integer> idGiudici = new ArrayList<>();
+        ArrayList<String> nomiGiudici = new ArrayList<>();
+        ArrayList<String> cognomiGiudici = new ArrayList<>();
+        ArrayList<String> emailGiudici = new ArrayList<>();
+
+        ArrayList<Integer> idHackatonInviti = new ArrayList<>();
+        ArrayList<Integer> idGiudiciInvitati = new ArrayList<>();
+
+        hackatonDAO.getHackatons(ids, titoli, sedi, dateInizio, dateFine, numMaxIscritti, dimMaxTeam, idOrganizzatori);
+        utenteDAO.leggiGiudici(idGiudici, nomiGiudici, cognomiGiudici, emailGiudici);
+        hackatonDAO.leggiInvitiGiudice(idHackatonInviti, idGiudiciInvitati);
+
+        List<Hackaton> lista = new ArrayList<>();
+
+        for (int i = 0; i < ids.size(); i++) {
+            Organizzatore organizzatore = new Organizzatore(
+                    idOrganizzatori.get(i),
+                    "nome",
+                    "cognome",
+                    "email",
+                    "password"
+            );
+
+            List<Giudice> giudici = new ArrayList<>();
+            for (int j = 0; j < idHackatonInviti.size(); j++) {
+                if (idHackatonInviti.get(j).equals(ids.get(i))) {
+                    int idG = idGiudiciInvitati.get(j);
+                    int indexG = idGiudici.indexOf(idG);
+                    if (indexG != -1) {
+                        Giudice g = new Giudice(
+                                idGiudici.get(indexG),
+                                nomiGiudici.get(indexG),
+                                cognomiGiudici.get(indexG),
+                                emailGiudici.get(indexG),
+                                null
+                        );
+                        giudici.add(g);
+                    }
+                }
+            }
+
+            Hackaton h = new Hackaton(
+                    ids.get(i),
+                    titoli.get(i),
+                    sedi.get(i),
+                    dateInizio.get(i),
+                    dateFine.get(i),
+                    numMaxIscritti.get(i),
+                    dimMaxTeam.get(i),
+                    organizzatore,
+                    giudici
+            );
+            lista.add(h);
+        }
+
+        return lista;
+    }
+
 }
