@@ -12,6 +12,7 @@ public class Hackaton {
     private LocalDate dataFine;
     private int numMaxIscritti;
     private int dimMaxTeam;
+    private boolean registrazioniAperte;
     private Organizzatore organizzatore;
     private List<Partecipante> partecipanti = new ArrayList<>();
     private List<Giudice> giudici = new ArrayList<>();
@@ -140,5 +141,13 @@ public class Hackaton {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public boolean isRegistrazioniAperte() {
+        return registrazioniAperte;
+    }
+
+    public void setRegistrazioniAperte(boolean registrazioniAperte) {
+        this.registrazioniAperte = registrazioniAperte;
     }
 }

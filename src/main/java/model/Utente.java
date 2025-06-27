@@ -60,6 +60,10 @@ public class Utente {
         this.tipoUtente = tipoUtente;
     }
 
+    public String getTipoUtente() {
+        return tipoUtente;
+    }
+
     public boolean isOrganizzatore() {
         return this.tipoUtente.equals("ORGANIZZATORE");
     }

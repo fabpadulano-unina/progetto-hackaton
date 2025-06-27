@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 public class Home extends JFrame {
     private JPanel mainPanel;
     private JButton organizzaHackatonButton;
-    private JTable table;
+    private JTable hackatonsTable;
     private JTabbedPane tabbedPane1;
     private JPanel homeTab;
     private JPanel teamTab;
@@ -25,7 +25,7 @@ public class Home extends JFrame {
 
     public Home(Controller controller) {
         this.setContentPane(mainPanel);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
 
@@ -33,7 +33,7 @@ public class Home extends JFrame {
         controller.setHomeFrame(this);
 
         this.organizzaHackatonButton.setVisible(controller.getUtente().isOrganizzatore());
-        setTable();
+        setHackatonsTable();
         handleClicks();
     }
 
@@ -74,7 +74,7 @@ public class Home extends JFrame {
     }
 
 
-    private void setTable() {
+    public void setHackatonsTable() {
 
 
         String[] columnNames = {"Descrizione", "Data Inizio", "Data Fine", "Dettaglio"};
@@ -85,14 +85,14 @@ public class Home extends JFrame {
                 return column == 3;
             }
         };
-        table.setModel(model);
-        table.setRowHeight(30);
+        hackatonsTable.setModel(model);
+        hackatonsTable.setRowHeight(30);
         for (int i = 0; i < 3; i++) {
-            table.getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(new JTextField()));
+            hackatonsTable.getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(new JTextField()));
         }
 
-        table.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
-        table.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox(), controller));
+        hackatonsTable.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
+        hackatonsTable.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox(), controller));
 
     }
 }

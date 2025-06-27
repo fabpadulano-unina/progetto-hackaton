@@ -7,25 +7,49 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class HackatonDetails extends JFrame {
     public static final String DIALOG = "Dialog";
     public static final String FONT = "Arial";
     private JButton registratiBtn;
-    private JTabbedPane tabbedPane1;
+    private JTabbedPane tabbedPane;
     private JPanel overviewTab;
     private JPanel giudiciTab;
-    private JPanel orgazinerToolTab;
+    private JPanel organizerToolTab;
     private JPanel mainPanel;
-    private JTable table;
+    private JTable tableGiudici;
     private JPanel containerPanel;
     private JScrollPane ScrollPanPrinc;
     private JPanel MainCont;
     private JPanel classificaTab;
+    private JLabel descrizioneLabel;
+    private JLabel nomeHackatonLabel;
+    private JLabel sedeLabel;
+    private JLabel organizzatoreLabel;
+    private JLabel dataInizioLabel;
+    private JLabel dataFineLabel;
+    private JPanel giudiciToolTab;
+    private JButton apriRegistrazioniButton;
+    private JTextField deadlineRegistrazioniField;
     private Controller controller;
+    private Integer hackatonId = null;
 
 
-    public HackatonDetails(Controller controller, Object[][] giudici) {
+    public HackatonDetails(
+            Controller controller,
+            Integer idHackaton,
+            String titolo,
+            String sede,
+            LocalDate dataInizio,
+            LocalDate dataFine,
+            int numMaxIscritti,
+            int dimMaxTeam,
+            boolean isRegistrazioneAperte,
+            String nomeOrganizzatore,
+            String cognomeOrganizzatore,
+            Object[][] giudici) {
         this.setTitle("Dettaglio Hackaton");
         this.setContentPane(mainPanel);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -33,10 +57,41 @@ public class HackatonDetails extends JFrame {
         this.setVisible(true);
 
         this.controller = controller;
+        this.hackatonId = idHackaton;
+
+        setDettagli(titolo, sede, dataInizio, dataFine, numMaxIscritti, dimMaxTeam, nomeOrganizzatore, cognomeOrganizzatore);
+        aggiornaVisibilitaPulsanti(isRegistrazioneAperte);
+        setTableGiudici(giudici);
+        inizializzaContainerPanel();
+        aggiungiEsempiFeedback();
+        inizializzaClassificaTab();
+        handleApriRegistraioni(apriRegistrazioniButton);
+        handleRegistrati(registratiBtn);
+        setRegistraBtnText();
+    }
 
 
-        aggiornaVisibilitaPulsanti();
 
+    private void setDettagli(String titolo, String sede, LocalDate dataInizio, LocalDate dataFine, int numMaxIscritti, int dimMaxTeam, String nomeOrganizzatore, String cognomeOrganizzatore) {
+        nomeHackatonLabel.setText(titolo);
+        descrizioneLabel.setText(String.format(
+                "L'hackaton \"%s\" si terrà presso la sede di %s dal %s al %s. " +
+                        "Il numero massimo di iscritti è %d e ogni team potrà essere composto da un massimo di %d partecipanti.",
+                titolo,
+                sede,
+                dataInizio.toString(),
+                dataFine.toString(),
+                numMaxIscritti,
+                dimMaxTeam
+        ));
+
+        sedeLabel.setText(sede);
+        dataInizioLabel.setText(dataInizio.toString());
+        dataFineLabel.setText(dataFine.toString());
+        organizzatoreLabel.setText(nomeOrganizzatore + " " + cognomeOrganizzatore);
+    }
+
+    private void setTableGiudici(Object[][] giudici) {
         String[] columnNames = {"Nome", "Cognome", "Email"};
         DefaultTableModel model = new DefaultTableModel(giudici, columnNames) {
             @Override
@@ -44,23 +99,13 @@ public class HackatonDetails extends JFrame {
                 return column == 2;
             }
         };
-        table.setModel(model);
-        table.setRowHeight(30);
+        tableGiudici.setModel(model);
+        tableGiudici.setRowHeight(30);
         for (int i = 0; i < 2; i++) {
-            table.getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(new JTextField()));
+            tableGiudici.getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(new JTextField()));
         }
-
-        // Inizializza il container panel con layout appropriato
-        inizializzaContainerPanel();
-
-        // Aggiungi alcuni pannelli di esempio
-        aggiungiEsempiFeedback();
-
-        inizializzaClassificaTab();
-
-
-
     }
+
     private void inizializzaContainerPanel() {
         // Imposta il layout del container per i pannelli dinamici
         containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
@@ -81,27 +126,27 @@ public class HackatonDetails extends JFrame {
         aggiungiPannelloFeedback("Team Alpha - Final Submission", "Oct 28, 2024",
                 "Provide feedback to Team Alpha's Final Submission");
     }
-    private void aggiornaVisibilitaPulsanti() {
-        String ruolo = null;
+    private void aggiornaVisibilitaPulsanti(boolean isRegistrazioneAperte) {
+        String ruolo = controller.getUtente().getTipoUtente();
+        registratiBtn.setVisible(false);
+        tabbedPane.remove(organizerToolTab);
+        tabbedPane.remove(giudiciToolTab);
 
-        boolean isPartecipante = "PARTECIPANTE".equals(ruolo);
-        boolean isGiudice = "GIUDICE".equals(ruolo);
-        boolean isOrganizzatore = "ORGANIZZATORE".equals(ruolo);
+        switch (ruolo) {
+            case "ORGANIZZATORE":
+                tabbedPane.add("Tool per organizzatori", organizerToolTab);
+                break;
+            case "PARTECIPANTE":
+                if(isRegistrazioneAperte) registratiBtn.setVisible(true);
+                break;
+            case "GIUDICE":
+                tabbedPane.add("Tool per giudici", giudiciToolTab);
+                break;
+            default:
+                break;
+        }
 
     }
-
-    /*private void aggiungiPannelloFeedback(String titolo, String data, String descrizione) {
-        // Crea il pannello per questo feedback
-        JPanel feedbackPanel = new JPanel(new BorderLayout());
-
-        // Aggiungi titolo, data, textarea, bottone
-        // ...
-
-        // Aggiungi al contenitore principale
-        containerPanel.add(feedbackPanel);
-        containerPanel.revalidate();
-        containerPanel.repaint();
-    }*/
 
     private void aggiungiPannelloFeedback(String titolo, String data, String descrizione) {
         // Crea il pannello principale per questo feedback
@@ -303,4 +348,35 @@ public class HackatonDetails extends JFrame {
         container.add(teamPanel);
         container.add(Box.createVerticalStrut(5));
     }
+
+
+    private void handleApriRegistraioni(JButton apriRegistrazioniButton) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        apriRegistrazioniButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.apriRegistrazioni(hackatonId, LocalDate.parse(deadlineRegistrazioniField.getText(), formatter));
+            }
+        });
+    }
+
+    private void handleRegistrati(JButton registratiBtn ) {
+        registratiBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.registraUtenteHackaton(hackatonId);
+                setRegistraBtnText();
+            }
+        });
+    }
+
+    private void setRegistraBtnText() {
+        if(controller.isUtenteRegistrato(hackatonId)) {
+            registratiBtn.setText("Registrato ✓");
+            registratiBtn.setEnabled(false);
+            registratiBtn.setForeground(Color.getColor("#013220"));
+        }
+    }
+
 }

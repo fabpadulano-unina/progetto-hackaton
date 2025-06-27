@@ -35,6 +35,8 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
                             "data_fine DATE NOT NULL, " +
                             "num_max_iscritti INTEGER NOT NULL, " +
                             "dim_max_team INTEGER NOT NULL, " +
+                            "registrazioni_aperte BOOLEAN NOT NULL DEFAULT FALSE, " +
+                            "deadline_registrazioni DATE, " +
                             "id_organizzatore INTEGER NOT NULL, " +
                             "FOREIGN KEY (id_organizzatore) REFERENCES Utente(id)" +
                             ");"
@@ -101,13 +103,15 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             List<LocalDate> dateFine,
             List<Integer> numMaxIscritti,
             List<Integer> dimMaxTeam,
-            List<Integer> idOrganizzatori
+            List<Boolean> registrazioniAperte,
+            List<String> nomiOrganizzatori,
+            List<String> cognomiOrganizzatori
     ) {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            String query = "SELECT id, titolo, sede, data_inizio, data_fine, num_max_iscritti, dim_max_team, id_organizzatore FROM Hackaton";
+            String query = "SELECT h.id as id, titolo, sede, data_inizio, data_fine, num_max_iscritti, dim_max_team, registrazioni_aperte, o.nome as nome, o.cognome as cognome FROM Hackaton h join Utente o on h.id_organizzatore=o.id ";
             ps = connection.prepareStatement(query);
             rs = ps.executeQuery();
 
@@ -119,7 +123,9 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
                 dateFine.add(rs.getDate("data_fine").toLocalDate());
                 numMaxIscritti.add(rs.getInt("num_max_iscritti"));
                 dimMaxTeam.add(rs.getInt("dim_max_team"));
-                idOrganizzatori.add(rs.getInt("id_organizzatore"));
+                registrazioniAperte.add(rs.getBoolean("registrazioni_aperte"));
+                nomiOrganizzatori.add(rs.getString("nome"));
+                cognomiOrganizzatori.add(rs.getString("cognome"));
             }
 
         } catch (SQLException e) {
@@ -127,6 +133,12 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         } finally {
             try {
                 if (ps != null) ps.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore chiusura risorse", e);
+            }
+
+            try {
+                if (rs != null) rs.close();
             } catch (SQLException e) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore chiusura risorse", e);
             }
@@ -156,7 +168,119 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             } catch (SQLException e) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura", e);
             }
+
+            try {
+                if (rs != null) rs.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura", e);
+            }
         }
     }
+
+    @Override
+    public void apriRegistrazioni(Integer hackatonId, LocalDate deadline) {
+        PreparedStatement updatePS = null;
+
+        try {
+            String updateSQL = "UPDATE Hackaton SET registrazioni_aperte = TRUE, deadline_registrazioni = ? WHERE id = ?";
+
+            updatePS = connection.prepareStatement(updateSQL);
+            updatePS.setDate(1, Date.valueOf(deadline));
+            updatePS.setInt(2, hackatonId);
+
+            updatePS.executeUpdate();
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore durante l'apertura delle registrazioni con deadline", e);
+        } finally {
+            try {
+                if (updatePS != null) updatePS.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement", e);
+            }
+        }
+    }
+
+
+    @Override
+    public void registraUtente(Integer idUtente, Integer idHackaton) {
+        PreparedStatement createTablePS = null;
+        PreparedStatement insertPS = null;
+
+        try {
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS registrazione_utente (" +
+                    "id_hackaton INTEGER NOT NULL, " +
+                    "id_utente INTEGER NOT NULL, " +
+                    "PRIMARY KEY (id_hackaton, id_utente), " +
+                    "FOREIGN KEY (id_hackaton) REFERENCES Hackaton(id), " +
+                    "FOREIGN KEY (id_utente) REFERENCES Utente(id)" +
+                    ");";
+
+            createTablePS = connection.prepareStatement(createTableSQL);
+            createTablePS.executeUpdate();
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella creazione della tabella registrazione_utente", e);
+        } finally {
+            try {
+                if (createTablePS != null) createTablePS.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement CREATE", e);
+            }
+        }
+
+        try {
+            String insertSQL = "INSERT INTO registrazione_utente (id_hackaton, id_utente) VALUES (?, ?);";
+
+            insertPS = connection.prepareStatement(insertSQL);
+            insertPS.setInt(1, idHackaton);
+            insertPS.setInt(2, idUtente);
+            insertPS.executeUpdate();
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nell'inserimento della registrazione utente", e);
+        } finally {
+            try {
+                if (insertPS != null) insertPS.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement INSERT", e);
+            }
+        }
+    }
+
+    @Override
+    public boolean isUtenteRegistrato(Integer idUtente, Integer idHackaton) {
+        PreparedStatement checkPS = null;
+        ResultSet resultSet = null;
+
+        try {
+            String checkSQL = "SELECT 1 FROM registrazione_utente WHERE id_utente = ? AND id_hackaton = ? LIMIT 1";
+
+            checkPS = connection.prepareStatement(checkSQL);
+            checkPS.setInt(1, idUtente);
+            checkPS.setInt(2, idHackaton);
+
+            resultSet = checkPS.executeQuery();
+            return resultSet.next();
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel controllo registrazione utente", e);
+            return false;
+
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura del resultSet", e);
+            }
+
+            try {
+                if (checkPS != null) checkPS.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement", e);
+            }
+        }
+    }
+
 
 }

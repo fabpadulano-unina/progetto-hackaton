@@ -1,2 +1,4 @@
-un partecipante può partecipare a più hackaton diversi MA non nello stesso periodo di tempo
+un partecipante può partecipare a più hackaton diversi MA non nello stesso periodo di tempo (trigger)
 un team deve avere l'hackaton di appartenenza (serve perchè da un hackaton voglio estrarre tutti i team)
+aggiungere flag registrwazione aperta su hackaton
+vincolo: non si può avere registrazioni aperte senza una deadline

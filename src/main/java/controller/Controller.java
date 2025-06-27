@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Controller {
-    private JFrame homeFrame;
+    private Home homeFrame;
     private HackatonDAO hackatonDAO;
     private UtenteDAO utenteDAO;
     private Utente utente;
@@ -31,7 +31,7 @@ public class Controller {
         }
     }
 
-    public void setHomeFrame(JFrame homeFrame) {
+    public void setHomeFrame(Home homeFrame) {
         this.homeFrame = homeFrame;
     }
 
@@ -51,6 +51,9 @@ public class Controller {
     }
 
     public void backToHomeFrame(JFrame frame) {
+        //riaggiorno la tabella degli hackaton
+        homeFrame.setHackatonsTable();
+
         homeFrame.setVisible(true);
         dispose(frame);
     }
@@ -144,7 +147,19 @@ public class Controller {
 
     public void openHackatonDetail(int row) {
         Hackaton hackaton = this.getListaHackaton().get(row);
-        new HackatonDetails(this, getGiudici(hackaton.getGiudici()));
+        new HackatonDetails(
+                this,
+                hackaton.getId(),
+                hackaton.getTitolo(),
+                hackaton.getSede(),
+                hackaton.getDataInizio(),
+                hackaton.getDataFine(),
+                hackaton.getNumMaxIscritti(),
+                hackaton.getDimMaxTeam(),
+                hackaton.isRegistrazioniAperte(),
+                hackaton.getOrganizzatore().getNome(),
+                hackaton.getOrganizzatore().getCognome(),
+                getGiudici(hackaton.getGiudici()));
     }
 
     public void invitaGiudici(List<Giudice> giudici, Integer hackatonId) {
@@ -152,10 +167,6 @@ public class Controller {
             utenteDAO.invitaGiudice(giudice.getId(), hackatonId);
         }
     }
-
-    public void apriRegisteazioni() {}
-
-    public void chiudiRegistrazioni() {}
 
     public void openHomeFrame() {
         new Home(this);
@@ -196,24 +207,26 @@ public class Controller {
     private List<Hackaton> getListaHackaton() {
         if(!hackatons.isEmpty()) return hackatons;
 
-        ArrayList<Integer> ids = new ArrayList<>();
-        ArrayList<String> titoli = new ArrayList<>();
-        ArrayList<String> sedi = new ArrayList<>();
-        ArrayList<LocalDate> dateInizio = new ArrayList<>();
-        ArrayList<LocalDate> dateFine = new ArrayList<>();
-        ArrayList<Integer> numMaxIscritti = new ArrayList<>();
-        ArrayList<Integer> dimMaxTeam = new ArrayList<>();
-        ArrayList<Integer> idOrganizzatori = new ArrayList<>();
+        List<Integer> ids = new ArrayList<>();
+        List<String> titoli = new ArrayList<>();
+        List<String> sedi = new ArrayList<>();
+        List<LocalDate> dateInizio = new ArrayList<>();
+        List<LocalDate> dateFine = new ArrayList<>();
+        List<Integer> numMaxIscritti = new ArrayList<>();
+        List<Integer> dimMaxTeam = new ArrayList<>();
+        List<Boolean> registrazioniAperte = new ArrayList<>();
+        List<String> nomiOrganizzatori = new ArrayList<>();
+        List<String> cognomiOrganizzatori = new ArrayList<>();
 
-        ArrayList<Integer> idGiudici = new ArrayList<>();
-        ArrayList<String> nomiGiudici = new ArrayList<>();
-        ArrayList<String> cognomiGiudici = new ArrayList<>();
-        ArrayList<String> emailGiudici = new ArrayList<>();
+        List<Integer> idGiudici = new ArrayList<>();
+        List<String> nomiGiudici = new ArrayList<>();
+        List<String> cognomiGiudici = new ArrayList<>();
+        List<String> emailGiudici = new ArrayList<>();
 
-        ArrayList<Integer> idHackatonInviti = new ArrayList<>();
-        ArrayList<Integer> idGiudiciInvitati = new ArrayList<>();
+        List<Integer> idHackatonInviti = new ArrayList<>();
+        List<Integer> idGiudiciInvitati = new ArrayList<>();
 
-        hackatonDAO.getHackatons(ids, titoli, sedi, dateInizio, dateFine, numMaxIscritti, dimMaxTeam, idOrganizzatori);
+        hackatonDAO.getHackatons(ids, titoli, sedi, dateInizio, dateFine, numMaxIscritti, dimMaxTeam, registrazioniAperte, nomiOrganizzatori, cognomiOrganizzatori);
         utenteDAO.leggiGiudici(idGiudici, nomiGiudici, cognomiGiudici, emailGiudici);
         hackatonDAO.leggiInvitiGiudice(idHackatonInviti, idGiudiciInvitati);
 
@@ -221,11 +234,11 @@ public class Controller {
 
         for (int i = 0; i < ids.size(); i++) {
             Organizzatore organizzatore = new Organizzatore(
-                    idOrganizzatori.get(i),
-                    "nome",
-                    "cognome",
-                    "email",
-                    "password"
+                    null,
+                    nomiOrganizzatori.get(i),
+                    cognomiOrganizzatori.get(i),
+                    null,
+                    null
             );
 
             List<Giudice> giudici = new ArrayList<>();
@@ -257,10 +270,23 @@ public class Controller {
                     organizzatore,
                     giudici
             );
+            h.setRegistrazioniAperte(registrazioniAperte.get(i));
             lista.add(h);
         }
 
         return lista;
     }
 
+
+    public void apriRegistrazioni(Integer idHackaton, LocalDate deadline) {
+        hackatonDAO.apriRegistrazioni(idHackaton, deadline);
+    }
+
+    public void registraUtenteHackaton(Integer idHackaton) {
+        hackatonDAO.registraUtente(this.utente.getId(), idHackaton);
+    }
+
+    public boolean isUtenteRegistrato(Integer hackatonId) {
+        return hackatonDAO.isUtenteRegistrato(this.utente.getId(), hackatonId);
+    }
 }
