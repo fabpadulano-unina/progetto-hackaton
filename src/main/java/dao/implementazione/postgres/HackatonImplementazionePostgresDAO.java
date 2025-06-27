@@ -46,12 +46,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,
                     "Errore nella creazione della tabella Hackaton", e);
         } finally {
-            try {
-                if (createTablePS != null) createTablePS.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE,
-                        "Errore nella chiusura dello statement create table", e);
-            }
+            closePs(createTablePS);
         }
 
         try {
@@ -77,18 +72,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,
                     "Errore nell'inserimento dell'Hackaton", e);
         } finally {
-            try {
-                if (generatedKeys != null) generatedKeys.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE,
-                        "Errore nella chiusura del ResultSet", e);
-            }
-            try {
-                if (insertPS != null) insertPS.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE,
-                        "Errore nella chiusura dello statement insert", e);
-            }
+            closeResources(insertPS, generatedKeys);
         }
 
         return null;
@@ -131,19 +115,11 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         } catch (SQLException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore lettura hackaton", e);
         } finally {
-            try {
-                if (ps != null) ps.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore chiusura risorse", e);
-            }
-
-            try {
-                if (rs != null) rs.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore chiusura risorse", e);
-            }
+            closeResources(ps, rs);
         }
     }
+
+
 
 
     @Override
@@ -163,17 +139,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         } catch (SQLException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore lettura inviti giudice", e);
         } finally {
-            try {
-                if (ps != null) ps.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura", e);
-            }
-
-            try {
-                if (rs != null) rs.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura", e);
-            }
+            closeResources(ps, rs);
         }
     }
 
@@ -193,11 +159,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         } catch (SQLException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore durante l'apertura delle registrazioni con deadline", e);
         } finally {
-            try {
-                if (updatePS != null) updatePS.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement", e);
-            }
+            closePs(updatePS);
         }
     }
 
@@ -222,11 +184,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         } catch (SQLException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella creazione della tabella registrazione_utente", e);
         } finally {
-            try {
-                if (createTablePS != null) createTablePS.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement CREATE", e);
-            }
+            closePs(createTablePS);
         }
 
         try {
@@ -240,11 +198,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         } catch (SQLException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nell'inserimento della registrazione utente", e);
         } finally {
-            try {
-                if (insertPS != null) insertPS.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement INSERT", e);
-            }
+            closePs(insertPS);
         }
     }
 
@@ -268,17 +222,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             return false;
 
         } finally {
-            try {
-                if (resultSet != null) resultSet.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura del resultSet", e);
-            }
-
-            try {
-                if (checkPS != null) checkPS.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement", e);
-            }
+            closeResources(checkPS, resultSet);
         }
     }
 
@@ -305,19 +249,29 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             return 0;
 
         } finally {
-            try {
-                if (resultSet != null) resultSet.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura del resultSet", e);
-            }
-
-            try {
-                if (countPS != null) countPS.close();
-            } catch (SQLException e) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement", e);
-            }
+            closeResources(countPS, resultSet);
         }
     }
 
+    private void closePs(PreparedStatement ps) {
+        try {
+            if (ps != null) ps.close();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura del PreparedStatement ", e);
+        }
+    }
 
+    private void closeResources(PreparedStatement ps, ResultSet rs) {
+        try {
+            if (ps != null) ps.close();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore chiusura ps", e);
+        }
+
+        try {
+            if (rs != null) rs.close();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore chiusura result set", e);
+        }
+    }
 }
