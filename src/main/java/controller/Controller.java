@@ -289,4 +289,8 @@ public class Controller {
     public boolean isUtenteRegistrato(Integer hackatonId) {
         return hackatonDAO.isUtenteRegistrato(this.utente.getId(), hackatonId);
     }
+
+    public int getNumeroUtentiRegistrati(Integer idHackaton) {
+        return hackatonDAO.getNumeroUtentiRegistrati(idHackaton);
+    }
 }

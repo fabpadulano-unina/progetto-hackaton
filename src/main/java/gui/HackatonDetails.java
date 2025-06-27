@@ -60,7 +60,7 @@ public class HackatonDetails extends JFrame {
         this.hackatonId = idHackaton;
 
         setDettagli(titolo, sede, dataInizio, dataFine, numMaxIscritti, dimMaxTeam, nomeOrganizzatore, cognomeOrganizzatore);
-        aggiornaVisibilitaPulsanti(isRegistrazioneAperte);
+        aggiornaVisibilitaPulsanti(isRegistrazioneAperte, numMaxIscritti);
         setTableGiudici(giudici);
         inizializzaContainerPanel();
         aggiungiEsempiFeedback();
@@ -126,7 +126,7 @@ public class HackatonDetails extends JFrame {
         aggiungiPannelloFeedback("Team Alpha - Final Submission", "Oct 28, 2024",
                 "Provide feedback to Team Alpha's Final Submission");
     }
-    private void aggiornaVisibilitaPulsanti(boolean isRegistrazioneAperte) {
+    private void aggiornaVisibilitaPulsanti(boolean isRegistrazioneAperte, int numMaxIscritti) {
         String ruolo = controller.getUtente().getTipoUtente();
         registratiBtn.setVisible(false);
         tabbedPane.remove(organizerToolTab);
@@ -137,7 +137,7 @@ public class HackatonDetails extends JFrame {
                 tabbedPane.add("Tool per organizzatori", organizerToolTab);
                 break;
             case "PARTECIPANTE":
-                if(isRegistrazioneAperte) registratiBtn.setVisible(true);
+                if(isRegistrazioneAperte && controller.getNumeroUtentiRegistrati(hackatonId) < numMaxIscritti) registratiBtn.setVisible(true);
                 break;
             case "GIUDICE":
                 tabbedPane.add("Tool per giudici", giudiciToolTab);

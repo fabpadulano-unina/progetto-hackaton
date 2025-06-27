@@ -23,5 +23,6 @@ public interface HackatonDAO {
     void apriRegistrazioni(Integer hackatonId, LocalDate deadline);
     void registraUtente(Integer idUtente, Integer idHackaton);
     boolean isUtenteRegistrato(Integer idUtente, Integer idHackaton);
+    int getNumeroUtentiRegistrati(Integer idHackaton);
 
 }

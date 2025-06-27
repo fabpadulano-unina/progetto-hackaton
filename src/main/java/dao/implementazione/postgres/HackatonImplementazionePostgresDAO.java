@@ -282,5 +282,42 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         }
     }
 
+    @Override
+    public int getNumeroUtentiRegistrati(Integer idHackaton) {
+        PreparedStatement countPS = null;
+        ResultSet resultSet = null;
+
+        try {
+            String countSQL = "SELECT COUNT(*) FROM registrazione_utente WHERE id_hackaton = ?";
+
+            countPS = connection.prepareStatement(countSQL);
+            countPS.setInt(1, idHackaton);
+
+            resultSet = countPS.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            } else {
+                return 0;
+            }
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel conteggio degli utenti registrati", e);
+            return 0;
+
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura del resultSet", e);
+            }
+
+            try {
+                if (countPS != null) countPS.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement", e);
+            }
+        }
+    }
+
 
 }
