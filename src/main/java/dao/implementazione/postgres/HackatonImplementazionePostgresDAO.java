@@ -83,11 +83,12 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             List<Integer> ids,
             List<String> titoli,
             List<String> sedi,
-            List<LocalDate> dateInizio,
-            List<LocalDate> dateFine,
+            List<Date> dateInizio,
+            List<Date> dateFine,
             List<Integer> numMaxIscritti,
             List<Integer> dimMaxTeam,
             List<Boolean> registrazioniAperte,
+            List<Date> deadlines,
             List<String> nomiOrganizzatori,
             List<String> cognomiOrganizzatori
     ) {
@@ -95,7 +96,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         ResultSet rs = null;
 
         try {
-            String query = "SELECT h.id as id, titolo, sede, data_inizio, data_fine, num_max_iscritti, dim_max_team, registrazioni_aperte, o.nome as nome, o.cognome as cognome FROM Hackaton h join Utente o on h.id_organizzatore=o.id ";
+            String query = "SELECT h.id as id, titolo, sede, data_inizio, data_fine, num_max_iscritti, dim_max_team, registrazioni_aperte, deadline_registrazioni, o.nome as nome, o.cognome as cognome FROM Hackaton h join Utente o on h.id_organizzatore=o.id ";
             ps = connection.prepareStatement(query);
             rs = ps.executeQuery();
 
@@ -103,11 +104,12 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
                 ids.add(rs.getInt("id"));
                 titoli.add(rs.getString("titolo"));
                 sedi.add(rs.getString("sede"));
-                dateInizio.add(rs.getDate("data_inizio").toLocalDate());
-                dateFine.add(rs.getDate("data_fine").toLocalDate());
+                dateInizio.add(rs.getDate("data_inizio"));
+                dateFine.add(rs.getDate("data_fine"));
                 numMaxIscritti.add(rs.getInt("num_max_iscritti"));
                 dimMaxTeam.add(rs.getInt("dim_max_team"));
                 registrazioniAperte.add(rs.getBoolean("registrazioni_aperte"));
+                deadlines.add(rs.getDate("deadline_registrazioni"));
                 nomiOrganizzatori.add(rs.getString("nome"));
                 cognomiOrganizzatori.add(rs.getString("cognome"));
             }

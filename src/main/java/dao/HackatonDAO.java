@@ -1,6 +1,7 @@
 package dao;
 
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,11 +11,12 @@ public interface HackatonDAO {
             List<Integer> ids,
             List<String> titoli,
             List<String> sedi,
-            List<LocalDate> dateInizio,
-            List<LocalDate> dateFine,
+            List<Date> dateInizio,
+            List<Date> dateFine,
             List<Integer> numMaxIscritti,
             List<Integer> dimMaxTeam,
             List<Boolean> registrazioniAperte,
+            List<Date> deadlines,
             List<String> nomiOrganizzatori,
             List<String> cognomiOrganizzatori
     );

@@ -8,6 +8,7 @@ import dao.implementazione.postgres.UtenteImplementazionePostgresDAO;
 import model.*;
 
 import javax.swing.*;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -157,6 +158,7 @@ public class Controller {
                 hackaton.getNumMaxIscritti(),
                 hackaton.getDimMaxTeam(),
                 hackaton.isRegistrazioniAperte(),
+                hackaton.getDeadline(),
                 hackaton.getOrganizzatore().getNome(),
                 hackaton.getOrganizzatore().getCognome(),
                 getGiudici(hackaton.getGiudici()));
@@ -210,11 +212,13 @@ public class Controller {
         List<Integer> ids = new ArrayList<>();
         List<String> titoli = new ArrayList<>();
         List<String> sedi = new ArrayList<>();
-        List<LocalDate> dateInizio = new ArrayList<>();
-        List<LocalDate> dateFine = new ArrayList<>();
+        List<Date> dateInizio = new ArrayList<>();
+        List<Date> dateFine = new ArrayList<>();
         List<Integer> numMaxIscritti = new ArrayList<>();
         List<Integer> dimMaxTeam = new ArrayList<>();
         List<Boolean> registrazioniAperte = new ArrayList<>();
+        List<Date> deadlines = new ArrayList<>();
+
         List<String> nomiOrganizzatori = new ArrayList<>();
         List<String> cognomiOrganizzatori = new ArrayList<>();
 
@@ -226,7 +230,7 @@ public class Controller {
         List<Integer> idHackatonInviti = new ArrayList<>();
         List<Integer> idGiudiciInvitati = new ArrayList<>();
 
-        hackatonDAO.getHackatons(ids, titoli, sedi, dateInizio, dateFine, numMaxIscritti, dimMaxTeam, registrazioniAperte, nomiOrganizzatori, cognomiOrganizzatori);
+        hackatonDAO.getHackatons(ids, titoli, sedi, dateInizio, dateFine, numMaxIscritti, dimMaxTeam, registrazioniAperte, deadlines, nomiOrganizzatori, cognomiOrganizzatori);
         utenteDAO.leggiGiudici(idGiudici, nomiGiudici, cognomiGiudici, emailGiudici);
         hackatonDAO.leggiInvitiGiudice(idHackatonInviti, idGiudiciInvitati);
 
@@ -263,14 +267,16 @@ public class Controller {
                     ids.get(i),
                     titoli.get(i),
                     sedi.get(i),
-                    dateInizio.get(i),
-                    dateFine.get(i),
+                    dateInizio.get(i).toLocalDate(),
+                    dateFine.get(i).toLocalDate(),
                     numMaxIscritti.get(i),
                     dimMaxTeam.get(i),
                     organizzatore,
                     giudici
             );
             h.setRegistrazioniAperte(registrazioniAperte.get(i));
+            Date deadline = deadlines.get(i);
+            if(deadline != null) h.setDeadline(deadline.toLocalDate());
             lista.add(h);
         }
 
