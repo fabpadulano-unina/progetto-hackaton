@@ -17,6 +17,7 @@ public interface HackatonDAO {
             List<Integer> dimMaxTeam,
             List<Boolean> registrazioniAperte,
             List<Date> deadlines,
+            List<String> descrizioniProblema,
             List<String> nomiOrganizzatori,
             List<String> cognomiOrganizzatori
     );
@@ -26,5 +27,5 @@ public interface HackatonDAO {
     void registraUtente(Integer idUtente, Integer idHackaton);
     boolean isUtenteRegistrato(Integer idUtente, Integer idHackaton);
     int getNumeroUtentiRegistrati(Integer idHackaton);
-
+    void updateDescrizioneProblema(Integer idHackaton, String descrizioneProblema);
 }

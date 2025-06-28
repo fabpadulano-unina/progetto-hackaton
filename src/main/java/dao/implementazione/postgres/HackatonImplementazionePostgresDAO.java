@@ -37,6 +37,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
                             "dim_max_team INTEGER NOT NULL, " +
                             "registrazioni_aperte BOOLEAN NOT NULL DEFAULT FALSE, " +
                             "deadline_registrazioni DATE, " +
+                            "descrizione_problema TEXT, " +
                             "id_organizzatore INTEGER NOT NULL, " +
                             "FOREIGN KEY (id_organizzatore) REFERENCES Utente(id)" +
                             ");"
@@ -89,6 +90,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             List<Integer> dimMaxTeam,
             List<Boolean> registrazioniAperte,
             List<Date> deadlines,
+            List<String> descrizioniProblema,
             List<String> nomiOrganizzatori,
             List<String> cognomiOrganizzatori
     ) {
@@ -96,7 +98,11 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         ResultSet rs = null;
 
         try {
-            String query = "SELECT h.id as id, titolo, sede, data_inizio, data_fine, num_max_iscritti, dim_max_team, registrazioni_aperte, deadline_registrazioni, o.nome as nome, o.cognome as cognome FROM Hackaton h join Utente o on h.id_organizzatore=o.id ";
+            String query = "SELECT h.id as id, titolo, sede, data_inizio," +
+                    " data_fine, num_max_iscritti, dim_max_team," +
+                    " registrazioni_aperte, deadline_registrazioni," +
+                    " descrizione_problema, o.nome as nome, o.cognome as cognome" +
+                    " FROM Hackaton h join Utente o on h.id_organizzatore=o.id ";
             ps = connection.prepareStatement(query);
             rs = ps.executeQuery();
 
@@ -110,6 +116,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
                 dimMaxTeam.add(rs.getInt("dim_max_team"));
                 registrazioniAperte.add(rs.getBoolean("registrazioni_aperte"));
                 deadlines.add(rs.getDate("deadline_registrazioni"));
+                descrizioniProblema.add(rs.getString("descrizione_problema"));
                 nomiOrganizzatori.add(rs.getString("nome"));
                 cognomiOrganizzatori.add(rs.getString("cognome"));
             }
@@ -255,6 +262,31 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         }
     }
 
+    @Override
+    public void updateDescrizioneProblema(Integer idHackaton, String descrizioneProblema) {
+        PreparedStatement updatePS = null;
+
+        try {
+            String updateSQL = "UPDATE Hackaton SET descrizione_problema = ? WHERE id = ?";
+
+            updatePS = connection.prepareStatement(updateSQL);
+            updatePS.setString(1, descrizioneProblema);
+            updatePS.setInt(2, idHackaton);
+
+            updatePS.executeUpdate();
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore durante l'aggiornamento della descrizione problema", e);
+
+        } finally {
+            try {
+                if (updatePS != null) updatePS.close();
+            } catch (SQLException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura dello statement update", e);
+            }
+        }
+    }
+
     private void closePs(PreparedStatement ps) {
         try {
             if (ps != null) ps.close();
@@ -276,4 +308,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore chiusura result set", e);
         }
     }
+
+
+
 }

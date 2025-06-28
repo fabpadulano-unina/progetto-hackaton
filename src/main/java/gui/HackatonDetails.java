@@ -21,9 +21,9 @@ public class HackatonDetails extends JFrame {
     private JTable tableGiudici;
     private JPanel containerPanel;
     private JPanel classificaTab;
-    private JLabel descrizioneLabel;
+    private JLabel titoloLabel;
     private JLabel nomeHackatonLabel;
-    private JLabel sedeLabel;
+    private JLabel descrizioneProblemaLabel;
     private JLabel organizzatoreLabel;
     private JLabel dataInizioLabel;
     private JLabel dataFineLabel;
@@ -31,9 +31,11 @@ public class HackatonDetails extends JFrame {
     private JButton apriRegistrazioniButton;
     private JTextField deadlineRegistrazioniField;
     private JLabel registrazioniOpenedLabel;
+    private JTextArea descrizioneProblemaTextArea;
+    private JButton saveDescrizioneBtn;
     private Controller controller;
     private Integer hackatonId;
-
+    private LocalDate dataInizio;
 
     public HackatonDetails(
             Controller controller,
@@ -46,6 +48,7 @@ public class HackatonDetails extends JFrame {
             int dimMaxTeam,
             boolean isRegistrazioneAperte,
             LocalDate deadline,
+            String descrizioneProblema,
             String nomeOrganizzatore,
             String cognomeOrganizzatore,
             Object[][] giudici)
@@ -58,8 +61,9 @@ public class HackatonDetails extends JFrame {
 
         this.controller = controller;
         this.hackatonId = idHackaton;
+        this.dataInizio = dataInizio;
 
-        setDettagli(titolo, sede, dataInizio, dataFine, numMaxIscritti, dimMaxTeam, isRegistrazioneAperte, nomeOrganizzatore, cognomeOrganizzatore);
+        setDettagli(titolo, sede, dataInizio, dataFine, numMaxIscritti, dimMaxTeam, isRegistrazioneAperte, descrizioneProblema, nomeOrganizzatore, cognomeOrganizzatore);
         aggiornaVisibilitaPulsanti(isRegistrazioneAperte, deadline, numMaxIscritti);
         setTableGiudici(giudici);
         inizializzaContainerPanel();
@@ -68,16 +72,27 @@ public class HackatonDetails extends JFrame {
         handleApriRegistraioni(apriRegistrazioniButton);
         handleRegistrati(registratiBtn);
         setRegistraBtnText();
+        setPubblicaDescrizione(descrizioneProblema);
+        handlePubblicazioneDescrizione();
     }
 
-
-
-    private void setDettagli(String titolo, String sede, LocalDate dataInizio, LocalDate dataFine, int numMaxIscritti, int dimMaxTeam, boolean registrazioniAperte, String nomeOrganizzatore, String cognomeOrganizzatore) {
+    private void setDettagli(
+            String titolo,
+            String sede,
+            LocalDate dataInizio,
+            LocalDate dataFine,
+            int numMaxIscritti,
+            int dimMaxTeam,
+            boolean registrazioniAperte,
+            String descrizioneProblema,
+            String nomeOrganizzatore,
+            String cognomeOrganizzatore
+    ) {
         String dataInizioFormatted = dataInizio.format(DATE_TIME_FORMATTER);
         String dataFineFormatted = dataFine.format(DATE_TIME_FORMATTER);
 
         nomeHackatonLabel.setText(titolo);
-        descrizioneLabel.setText(String.format(
+        titoloLabel.setText(String.format(
                 "L'hackaton \"%s\" si terrà presso la sede di %s dal %s al %s. " +
                         "Il numero massimo di iscritti è %d e ogni team potrà essere composto da un massimo di %d partecipanti.",
                 titolo,
@@ -88,7 +103,7 @@ public class HackatonDetails extends JFrame {
                 dimMaxTeam
         ));
 
-        sedeLabel.setText(sede);
+        setDescrizioneProblemaLabel(descrizioneProblema);
         dataInizioLabel.setText(dataInizioFormatted);
         dataFineLabel.setText(dataFineFormatted);
         organizzatoreLabel.setText(nomeOrganizzatore + " " + cognomeOrganizzatore);
@@ -97,6 +112,7 @@ public class HackatonDetails extends JFrame {
             registrazioniOpenedLabel.setText("LE REGISTRAZIONI SONO APERTE!");
         }
     }
+
 
     private void setTableGiudici(Object[][] giudici) {
         String[] columnNames = {"Nome", "Cognome", "Email"};
@@ -224,9 +240,9 @@ public class HackatonDetails extends JFrame {
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
         JButton submitButton = new JButton("Submit Feedback");
-        submitButton.setBackground(new Color(75, 110, 175));
-        submitButton.setForeground(Color.WHITE);
-        submitButton.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        submitButton.setBackground(Color.WHITE);
+        submitButton.setForeground(Color.BLACK);
+        submitButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         submitButton.setFocusPainted(false);
         submitButton.setFont(new Font(DIALOG, Font.PLAIN, 11));
 
@@ -398,4 +414,30 @@ public class HackatonDetails extends JFrame {
         apriRegistrazioniButton.setEnabled(false);
     }
 
+    private void setPubblicaDescrizione(String descrizioneProblema) {
+        if(descrizioneProblema != null || LocalDate.now().isBefore(dataInizio)) {
+            descrizioneProblemaTextArea.setText(descrizioneProblema);
+            descrizioneProblemaTextArea.setEnabled(false);
+            saveDescrizioneBtn.setEnabled(false);
+            setDescrizioneProblemaLabel(descrizioneProblema);
+        }
+    }
+
+    private void handlePubblicazioneDescrizione() {
+        saveDescrizioneBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String descirizione = descrizioneProblemaTextArea.getText();
+                controller.setDescrizioneProblema(hackatonId, descirizione);
+                setPubblicaDescrizione(descirizione);
+            }
+        });
+    }
+
+    private void setDescrizioneProblemaLabel(String descrizioneProblema) {
+        if(descrizioneProblema != null) {
+            descrizioneProblemaLabel.setText(descrizioneProblema);
+            descrizioneProblemaLabel.setFont(descrizioneProblemaLabel.getFont().deriveFont(Font.BOLD));
+        }
+    }
 }

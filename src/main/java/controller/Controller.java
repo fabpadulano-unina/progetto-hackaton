@@ -159,6 +159,7 @@ public class Controller {
                 hackaton.getDimMaxTeam(),
                 hackaton.isRegistrazioniAperte(),
                 hackaton.getDeadline(),
+                hackaton.getDescrizioneProblema(),
                 hackaton.getOrganizzatore().getNome(),
                 hackaton.getOrganizzatore().getCognome(),
                 getGiudici(hackaton.getGiudici()));
@@ -218,6 +219,7 @@ public class Controller {
         List<Integer> dimMaxTeam = new ArrayList<>();
         List<Boolean> registrazioniAperte = new ArrayList<>();
         List<Date> deadlines = new ArrayList<>();
+        List<String> descrizioniProblema = new ArrayList<>();
 
         List<String> nomiOrganizzatori = new ArrayList<>();
         List<String> cognomiOrganizzatori = new ArrayList<>();
@@ -230,7 +232,7 @@ public class Controller {
         List<Integer> idHackatonInviti = new ArrayList<>();
         List<Integer> idGiudiciInvitati = new ArrayList<>();
 
-        hackatonDAO.getHackatons(ids, titoli, sedi, dateInizio, dateFine, numMaxIscritti, dimMaxTeam, registrazioniAperte, deadlines, nomiOrganizzatori, cognomiOrganizzatori);
+        hackatonDAO.getHackatons(ids, titoli, sedi, dateInizio, dateFine, numMaxIscritti, dimMaxTeam, registrazioniAperte, deadlines, descrizioniProblema, nomiOrganizzatori, cognomiOrganizzatori);
         utenteDAO.leggiGiudici(idGiudici, nomiGiudici, cognomiGiudici, emailGiudici);
         hackatonDAO.leggiInvitiGiudice(idHackatonInviti, idGiudiciInvitati);
 
@@ -277,6 +279,7 @@ public class Controller {
             h.setRegistrazioniAperte(registrazioniAperte.get(i));
             Date deadline = deadlines.get(i);
             if(deadline != null) h.setDeadline(deadline.toLocalDate());
+            h.setDescrizioneProblema(descrizioniProblema.get(i));
             lista.add(h);
         }
 
@@ -298,5 +301,9 @@ public class Controller {
 
     public int getNumeroUtentiRegistrati(Integer idHackaton) {
         return hackatonDAO.getNumeroUtentiRegistrati(idHackaton);
+    }
+
+    public void setDescrizioneProblema(Integer hackatonId, String descirizione) {
+        hackatonDAO.updateDescrizioneProblema(hackatonId, descirizione);
     }
 }

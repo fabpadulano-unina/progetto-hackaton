@@ -13,8 +13,9 @@ public class Hackaton {
     private int numMaxIscritti;
     private int dimMaxTeam;
     private boolean registrazioniAperte;
-
     private LocalDate deadline;
+    private String descrizioneProblema;
+
     private Organizzatore organizzatore;
     private List<Partecipante> partecipanti = new ArrayList<>();
     private List<Giudice> giudici = new ArrayList<>();
@@ -159,6 +160,14 @@ public class Hackaton {
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
+    }
+
+    public String getDescrizioneProblema() {
+        return descrizioneProblema;
+    }
+
+    public void setDescrizioneProblema(String descrizioneProblema) {
+        this.descrizioneProblema = descrizioneProblema;
     }
 
 }
