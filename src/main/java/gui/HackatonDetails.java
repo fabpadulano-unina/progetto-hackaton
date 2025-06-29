@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import model.TipoUtente;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -150,23 +151,23 @@ public class HackatonDetails extends JFrame {
                 "Provide feedback to Team Alpha's Final Submission");
     }
     private void aggiornaVisibilitaPulsanti(boolean isRegistrazioneAperte, LocalDate deadline, int numMaxIscritti) {
-        String ruolo = controller.getUtente().getTipoUtente();
+        TipoUtente ruolo = controller.getUtente().getTipoUtente();
         registratiBtn.setVisible(false);
         tabbedPane.remove(organizerToolTab);
         tabbedPane.remove(giudiciToolTab);
 
         switch (ruolo) {
-            case "ORGANIZZATORE":
+            case ORGANIZZATORE:
                 tabbedPane.add("Tool per organizzatori", organizerToolTab);
                 if(deadline != null) {
                     deadlineRegistrazioniField.setText(deadline.format(DATE_TIME_FORMATTER));
                     disableDeadlineField();
                 }
                 break;
-            case "PARTECIPANTE":
+            case PARTECIPANTE:
                 if(isRegistrazioneAperte && controller.getNumeroUtentiRegistrati(hackatonId) < numMaxIscritti) registratiBtn.setVisible(true);
                 break;
-            case "GIUDICE":
+            case GIUDICE:
                 tabbedPane.add("Tool per giudici", giudiciToolTab);
                 break;
             default:

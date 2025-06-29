@@ -1,9 +1,6 @@
 package database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,4 +58,27 @@ public class ConnessioneDatabase {
 	public Connection getConnection() {
 		return connection;
 	}
+
+	public static void closePs(PreparedStatement ps) {
+		try {
+			if (ps != null) ps.close();
+		} catch (SQLException e) {
+			Logger.getLogger(ConnessioneDatabase.class.getName()).log(Level.SEVERE, "Errore nella chiusura del PreparedStatement ", e);
+		}
+	}
+
+	public static void closeResources(PreparedStatement ps, ResultSet rs) {
+		try {
+			if (ps != null) ps.close();
+		} catch (SQLException e) {
+			Logger.getLogger(ConnessioneDatabase.class.getName()).log(Level.SEVERE, "Errore chiusura ps", e);
+		}
+
+		try {
+			if (rs != null) rs.close();
+		} catch (SQLException e) {
+			Logger.getLogger(ConnessioneDatabase.class.getName()).log(Level.SEVERE, "Errore chiusura result set", e);
+		}
+	}
+
 }

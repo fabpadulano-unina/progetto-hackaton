@@ -12,13 +12,6 @@ public class Home extends JFrame {
     private JButton organizzaHackatonButton;
     private JTable hackatonsTable;
     private JTabbedPane tabbedPane1;
-    private JPanel homeTab;
-    private JPanel teamTab;
-    private JComboBox<String> teamSelect;
-    private JList<String> progressiList;
-    private JButton caricaNuovoProgressoButton;
-    private JButton uniscitiButton;
-    private JButton addTeamBtn;
     private Controller controller;
 
 
@@ -35,15 +28,14 @@ public class Home extends JFrame {
         this.organizzaHackatonButton.setVisible(controller.getUtente().isOrganizzatore());
         setHackatonsTable();
         handleClicks();
+
+        tabbedPane1.addTab("Team", new TeamTab(controller));
     }
 
 
 
     private void handleClicks() {
         handleAddHackaton();
-        handleAddTeam();
-        handleProgress();
-
     }
 
     private void handleAddHackaton() {
@@ -55,28 +47,8 @@ public class Home extends JFrame {
         });
     }
 
-    private void handleAddTeam() {
-        addTeamBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.openTeamForm();
-            }
-        });
-    }
-
-    private void handleProgress() {
-        caricaNuovoProgressoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.openProgress();
-            }
-        });
-    }
-
 
     public void setHackatonsTable() {
-
-
         String[] columnNames = {"Descrizione", "Data Inizio", "Data Fine", "Dettaglio"};
         Object[][] data = controller.getHackatons();
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {

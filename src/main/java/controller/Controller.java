@@ -107,7 +107,15 @@ public class Controller {
                 utente = new Organizzatore(id, nome, cognome, email, password);
                 break;
             case "PARTECIPANTE":
-                utente = new Partecipante(id, nome, cognome, email, password);
+                //gli hackaton a cui l'utente è registrato
+                List<Hackaton> hackatonsUtente = new ArrayList<>();
+                for (Hackaton h : getListaHackaton()) {
+                    if (hackatonDAO.isUtenteRegistrato(id, h.getId())) {
+                        hackatonsUtente.add(h);
+                    }
+                }
+
+                utente = new Partecipante(id, nome, cognome, email, password, hackatonsUtente);
                 break;
             default:
                 utente = new Utente(id, nome, cognome, email, password, tipoUtente);
@@ -280,6 +288,7 @@ public class Controller {
             Date deadline = deadlines.get(i);
             if(deadline != null) h.setDeadline(deadline.toLocalDate());
             h.setDescrizioneProblema(descrizioniProblema.get(i));
+
             lista.add(h);
         }
 
@@ -306,4 +315,16 @@ public class Controller {
     public void setDescrizioneProblema(Integer hackatonId, String descirizione) {
         hackatonDAO.updateDescrizioneProblema(hackatonId, descirizione);
     }
+
+    public List<String> getHackatonsNamesForCombobox() {
+        List<String> hackatonsNames = new ArrayList<>();
+
+        for(Hackaton hackaton : ((Partecipante) utente).getHackatons()) {
+            hackatonsNames.add(hackaton.getTitolo());
+        }
+
+        return hackatonsNames;
+    }
+
+
 }

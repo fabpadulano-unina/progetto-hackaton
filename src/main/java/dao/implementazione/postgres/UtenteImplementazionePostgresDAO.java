@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static database.ConnessioneDatabase.closePs;
+
 public class UtenteImplementazionePostgresDAO implements UtenteDAO {
 
     private final Connection connection;
@@ -21,8 +23,24 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
 
     @Override
     public void addUtente(String nome, String cognome, String email, String password, String tipoUtente) {
+        PreparedStatement createEnumTipoUtentePS = null;
         PreparedStatement createTableUtentePS = null;
         PreparedStatement insertUtentePS = null;
+
+        try {
+            createEnumTipoUtentePS = connection.prepareStatement(
+                    "CREATE TYPE  tipo_utente AS ENUM ('ORGANIZZATORE', 'PARTECIPANTE', 'GIUDICE')"
+            );
+            createEnumTipoUtentePS.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE,
+                    "Errore nella creazione del tipo ENUM stato_hackaton", e);
+        } finally {
+            closePs(createEnumTipoUtentePS);
+        }
+
+
+
         try {
             createTableUtentePS = connection.prepareStatement(
                     "CREATE TABLE IF NOT EXISTS Utente (" +
@@ -31,8 +49,7 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
                             "cognome VARCHAR(100) NOT NULL, " +
                             "email VARCHAR(100) NOT NULL UNIQUE," +
                             "password VARCHAR(100) NOT NULL," +
-                            "tipo_utente TEXT NOT NULL," +
-                            "ruolo_nel_team TEXT" + //solo per partecipante
+                            "tipo_utente VARCHAR(100) NOT NULL" +
                             ");"
             );
             createTableUtentePS.executeUpdate();

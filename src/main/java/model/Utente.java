@@ -1,12 +1,15 @@
 package model;
 
+
+
+
 public class Utente {
     private Integer id;
     private String nome;
     private String cognome;
     private String email;
     private String password;
-    private String tipoUtente;
+    private TipoUtente tipoUtente;
 
     public Utente(Integer id, String nome, String cognome, String email, String password, String tipoUtente) {
         this.setId(id);
@@ -57,14 +60,22 @@ public class Utente {
     }
 
     public void setTipoUtente(String tipoUtente) {
-        this.tipoUtente = tipoUtente;
+        this.tipoUtente = TipoUtente.fromString(tipoUtente);
     }
 
-    public String getTipoUtente() {
+    public TipoUtente getTipoUtente() {
         return tipoUtente;
     }
 
     public boolean isOrganizzatore() {
-        return this.tipoUtente.equals("ORGANIZZATORE");
+        return tipoUtente == TipoUtente.ORGANIZZATORE;
+    }
+
+    public boolean isPartecipante() {
+        return tipoUtente == TipoUtente.PARTECIPANTE;
+    }
+
+    public boolean isGiudice() {
+        return tipoUtente == TipoUtente.GIUDICE;
     }
 }

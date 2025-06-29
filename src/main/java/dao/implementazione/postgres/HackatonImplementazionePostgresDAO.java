@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static database.ConnessioneDatabase.closePs;
+import static database.ConnessioneDatabase.closeResources;
+
 
 public class HackatonImplementazionePostgresDAO implements HackatonDAO {
 
@@ -79,6 +82,36 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         return null;
     }
 
+    private void popolaListeHackaton(
+            ResultSet rs,
+            List<Integer> ids,
+            List<String> titoli,
+            List<String> sedi,
+            List<Date> dateInizio,
+            List<Date> dateFine,
+            List<Integer> numMaxIscritti,
+            List<Integer> dimMaxTeam,
+            List<Boolean> registrazioniAperte,
+            List<Date> deadlines,
+            List<String> descrizioniProblema,
+            List<String> nomiOrganizzatori,
+            List<String> cognomiOrganizzatori
+    ) throws SQLException {
+        ids.add(rs.getInt("id"));
+        titoli.add(rs.getString("titolo"));
+        sedi.add(rs.getString("sede"));
+        dateInizio.add(rs.getDate("data_inizio"));
+        dateFine.add(rs.getDate("data_fine"));
+        numMaxIscritti.add(rs.getInt("num_max_iscritti"));
+        dimMaxTeam.add(rs.getInt("dim_max_team"));
+        registrazioniAperte.add(rs.getBoolean("registrazioni_aperte"));
+        deadlines.add(rs.getDate("deadline_registrazioni"));
+        descrizioniProblema.add(rs.getString("descrizione_problema"));
+        nomiOrganizzatori.add(rs.getString("nome"));
+        cognomiOrganizzatori.add(rs.getString("cognome"));
+    }
+
+
     @Override
     public void getHackatons(
             List<Integer> ids,
@@ -107,18 +140,8 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                ids.add(rs.getInt("id"));
-                titoli.add(rs.getString("titolo"));
-                sedi.add(rs.getString("sede"));
-                dateInizio.add(rs.getDate("data_inizio"));
-                dateFine.add(rs.getDate("data_fine"));
-                numMaxIscritti.add(rs.getInt("num_max_iscritti"));
-                dimMaxTeam.add(rs.getInt("dim_max_team"));
-                registrazioniAperte.add(rs.getBoolean("registrazioni_aperte"));
-                deadlines.add(rs.getDate("deadline_registrazioni"));
-                descrizioniProblema.add(rs.getString("descrizione_problema"));
-                nomiOrganizzatori.add(rs.getString("nome"));
-                cognomiOrganizzatori.add(rs.getString("cognome"));
+                popolaListeHackaton(rs, ids, titoli, sedi, dateInizio, dateFine, numMaxIscritti,
+                        dimMaxTeam, registrazioniAperte, deadlines, descrizioniProblema, nomiOrganizzatori, cognomiOrganizzatori);
             }
 
         } catch (SQLException e) {
@@ -127,8 +150,6 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             closeResources(ps, rs);
         }
     }
-
-
 
 
     @Override
@@ -287,27 +308,6 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         }
     }
 
-    private void closePs(PreparedStatement ps) {
-        try {
-            if (ps != null) ps.close();
-        } catch (SQLException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella chiusura del PreparedStatement ", e);
-        }
-    }
-
-    private void closeResources(PreparedStatement ps, ResultSet rs) {
-        try {
-            if (ps != null) ps.close();
-        } catch (SQLException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore chiusura ps", e);
-        }
-
-        try {
-            if (rs != null) rs.close();
-        } catch (SQLException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore chiusura result set", e);
-        }
-    }
 
 
 

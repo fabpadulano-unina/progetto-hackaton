@@ -3,3 +3,4 @@ un team deve avere l'hackaton di appartenenza (serve perchè da un hackaton vogl
 aggiungere flag registrwazione aperta su hackaton
 vincolo: non si può avere registrazioni aperte senza una deadline
 aggiungere descrizione del problema in hackaton
+vincolo: in un team posso esserci al più n partecipanti (attributo dell'hackaton)

@@ -1,9 +1,13 @@
 package model;
 
-public class Partecipante extends Utente {
+import java.util.List;
 
-    public Partecipante(Integer id, String nome, String cognome, String email, String password ) {
+public class Partecipante extends Utente {
+    private List<Hackaton> hackatons;
+
+    public Partecipante(Integer id, String nome, String cognome, String email, String password, List<Hackaton> hackatons) {
         super(id, nome, cognome, email, password, "PARTECIPANTE");
+        this.hackatons = hackatons;
     }
 
 
@@ -12,4 +16,9 @@ public class Partecipante extends Utente {
     }
 
     public void creaTeam() {}
+
+    public List<Hackaton> getHackatons() {
+        return hackatons;
+    }
+
 }
