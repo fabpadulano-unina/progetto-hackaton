@@ -1,0 +1,174 @@
+package dao.implementazione.postgres;
+
+import dao.TeamDAO;
+import database.ConnessioneDatabase;
+
+import java.sql.*;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static database.ConnessioneDatabase.closePs;
+import static database.ConnessioneDatabase.closeResources;
+
+public class TeamImplementazionePostgresDAO implements TeamDAO {
+
+    private final Connection connection;
+
+    public TeamImplementazionePostgresDAO() throws SQLException {
+        this.connection = ConnessioneDatabase.getInstance().getConnection();
+    }
+
+    @Override
+    public Integer addTeam(Integer idHackaton, String nomeTeam) {
+        PreparedStatement createTableTeamPS = null;
+        PreparedStatement insertTeamPS = null;
+        ResultSet rs;
+        Integer idTeam = null;
+
+        try {
+            createTableTeamPS = connection.prepareStatement(
+                    "CREATE TABLE IF NOT EXISTS Team (" +
+                            "id SERIAL PRIMARY KEY, " +
+                            "nome VARCHAR(100) NOT NULL, " +
+                            "id_hackaton INTEGER NOT NULL, " +
+                            "UNIQUE (nome, id_hackaton), " +
+                            "FOREIGN KEY (id_hackaton) REFERENCES Hackaton(id)" +
+                            ");"
+            );
+            createTableTeamPS.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella creazione della tabella Team", e);
+        } finally {
+            closePs(createTableTeamPS);
+        }
+
+        try {
+            String insertSQL = "INSERT INTO Team (nome, id_hackaton) VALUES (?, ?);";
+            insertTeamPS = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS);
+            insertTeamPS.setString(1, nomeTeam);
+            insertTeamPS.setInt(2, idHackaton);
+            insertTeamPS.executeUpdate();
+
+            rs = insertTeamPS.getGeneratedKeys();
+            if (rs.next()) {
+                idTeam = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nell'inserimento del Team", e);
+        } finally {
+            closePs(insertTeamPS);
+        }
+
+        return idTeam;
+    }
+
+    @Override
+    public void getTeamByHackaton(Integer idHackaton, List<Integer> ids, List<String> nomiTeam) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = connection.prepareStatement("SELECT id, nome FROM Team WHERE id_hackaton = ?");
+            ps.setInt(1, idHackaton);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ids.add(rs.getInt("id"));
+                nomiTeam.add(rs.getString("nome"));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella lettura dei team", e);
+        } finally {
+            closeResources(ps, rs);
+        }
+    }
+
+    @Override
+    public void addPartecipanteAlTeam(Integer idPartecipante, Integer idTeam, Integer idHackaton) {
+        PreparedStatement createTablePS = null;
+        PreparedStatement insertPS = null;
+
+        try {
+            createTablePS = connection.prepareStatement(
+                    "CREATE TABLE IF NOT EXISTS Partecipante_Team (" +
+                            "id_partecipante INTEGER NOT NULL, " +
+                            "id_team INTEGER NOT NULL, " +
+                            "id_hackaton INTEGER NOT NULL, " +
+                            "UNIQUE (id_partecipante, id_hackaton), " +
+                            "FOREIGN KEY (id_partecipante) REFERENCES Utente(id), " +
+                            "FOREIGN KEY (id_team) REFERENCES Team(id), " +
+                            "FOREIGN KEY (id_hackaton) REFERENCES Hackaton(id)" +
+                            ");"
+            );
+            createTablePS.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore creazione tabella Partecipante_Team", e);
+        } finally {
+            closePs(createTablePS);
+        }
+
+        try {
+            String insertSQL = "INSERT INTO Partecipante_Team (id_partecipante, id_team, id_hackaton) VALUES (?, ?, ?)";
+            insertPS = connection.prepareStatement(insertSQL);
+            insertPS.setInt(1, idPartecipante);
+            insertPS.setInt(2, idTeam);
+            insertPS.setInt(3, idHackaton);
+            insertPS.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore inserimento relazione Partecipante_Team", e);
+        } finally {
+            closePs(insertPS);
+        }
+    }
+
+    @Override
+    public boolean isPartecipanteInTeam(Integer idTeam, Integer idUtente) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean presente = false;
+
+        try {
+            String checkSQL = "SELECT 1 FROM Partecipante_Team WHERE id_team = ? AND id_partecipante = ?";
+            ps = connection.prepareStatement(checkSQL);
+            ps.setInt(1, idTeam);
+            ps.setInt(2, idUtente);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                presente = true;
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel check partecipante in team", e);
+        } finally {
+            closeResources(ps, rs);
+        }
+
+        return presente;
+    }
+
+    @Override
+    public void getTeamByPartecipante(Integer idPartecipante, List<Integer> idTeam, List<String> nomiTeam) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT t.id, t.nome, t.id_hackaton " +
+                    "FROM Team t " +
+                    "JOIN Partecipante_Team pt ON t.id = pt.id_team " +
+                    "WHERE pt.id_partecipante = ?";
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, idPartecipante);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                idTeam.add(rs.getInt("id"));
+                nomiTeam.add(rs.getString("nome"));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel recupero dei team per partecipante", e);
+        } finally {
+            closeResources(ps, rs);
+        }
+    }
+}
+

@@ -8,13 +8,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TeamTab extends JPanel {
-    private JComboBox<String> teamCb;
+    private JComboBox<String> teamProgressiCb;
     private JList<String> progressiList;
     private JButton caricaNuovoProgressoButton;
     private JButton uniscitiButton;
     private JButton addTeamBtn;
     private JPanel mainPanel;
     private JComboBox<String> hackatonCb;
+    private JComboBox<String> teamCb;
     private Controller controller;
 
     public TeamTab(Controller controller) {
@@ -23,11 +24,29 @@ public class TeamTab extends JPanel {
         setLayout(new BorderLayout());
         add(mainPanel, BorderLayout.CENTER);
         handleClicks();
-        setTeamComboBoxData();
+        setTeamProgressiCbData();
+        setHackatonCbChangeListener();
+        setHackatonCbData();
 
     }
 
-    private void setTeamComboBoxData() {
+    private void setTeamProgressiCbData() {
+        for(String titolo : controller.getTeamByPartecipanteCb()) {
+            teamProgressiCb.addItem(titolo);
+        }
+    }
+
+    private void setHackatonCbChangeListener() {
+        hackatonCb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setTeamCbData();
+            }
+        });
+
+    }
+
+    private void setHackatonCbData() {
         for(String titolo : controller.getHackatonsNamesForCombobox()) {
             hackatonCb.addItem(titolo);
         }
@@ -42,9 +61,20 @@ public class TeamTab extends JPanel {
         addTeamBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.openTeamForm();
+                controller.openTeamForm(getSelectedHackaton());
+                setTeamCbData();
             }
         });
+    }
+
+    private void setTeamCbData() {
+        for(String nome : controller.getTeamByHackaton(getSelectedHackaton())) {
+            teamCb.addItem(nome);
+        }
+    }
+
+    private String getSelectedHackaton() {
+        return (String) hackatonCb.getSelectedItem();
     }
 
 

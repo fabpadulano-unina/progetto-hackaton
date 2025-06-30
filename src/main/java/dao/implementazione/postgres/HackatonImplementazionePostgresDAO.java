@@ -308,7 +308,4 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         }
     }
 
-
-
-
 }

@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Team {
+    private Integer id;
     private String nome;
+    private Hackaton hackaton;
     private List<Partecipante> partecipanti = new ArrayList<>();
     private List<Documento> documenti = new ArrayList<>();
 
-    public Team(String nome) {
+    public Team(Integer id, String nome) {
+        this.setId(id);
         this.setNome(nome);
     }
 
@@ -42,4 +45,19 @@ public class Team {
     }
 
 
+    public Hackaton getHackaton() {
+        return hackaton;
+    }
+
+    public void setHackaton(Hackaton hackaton) {
+        this.hackaton = hackaton;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

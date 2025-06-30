@@ -1,7 +1,9 @@
 package controller;
 
 import dao.HackatonDAO;
+import dao.TeamDAO;
 import dao.UtenteDAO;
+import dao.implementazione.postgres.TeamImplementazionePostgresDAO;
 import gui.*;
 import dao.implementazione.postgres.HackatonImplementazionePostgresDAO;
 import dao.implementazione.postgres.UtenteImplementazionePostgresDAO;
@@ -20,6 +22,7 @@ public class Controller {
     private Home homeFrame;
     private HackatonDAO hackatonDAO;
     private UtenteDAO utenteDAO;
+    private TeamDAO teamDAO;
     private Utente utente;
     private List<Hackaton> hackatons = new ArrayList<>();
 
@@ -27,6 +30,7 @@ public class Controller {
         try {
             hackatonDAO = new HackatonImplementazionePostgresDAO();
             utenteDAO = new UtenteImplementazionePostgresDAO();
+            teamDAO = new TeamImplementazionePostgresDAO();
         } catch (SQLException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella connessione con il db", e);
         }
@@ -47,8 +51,8 @@ public class Controller {
         }
     }
 
-    public void openTeamForm() {
-        new TeamForm(this);
+    public void openTeamForm(String titoloHackaton) {
+        new TeamForm(titoloHackaton, this);
     }
 
     public void backToHomeFrame(JFrame frame) {
@@ -319,12 +323,89 @@ public class Controller {
     public List<String> getHackatonsNamesForCombobox() {
         List<String> hackatonsNames = new ArrayList<>();
 
-        for(Hackaton hackaton : ((Partecipante) utente).getHackatons()) {
-            hackatonsNames.add(hackaton.getTitolo());
+        //tutti gli hackaton per cui è possibile creare un team (quindi se le registrazioni sono ancora aperte)
+        for(Hackaton hackaton : getPartecipanteHackatonList()) {
+            if(hackaton.isRegistrazioniAperte()) {
+                hackatonsNames.add(hackaton.getTitolo());
+            }
         }
 
         return hackatonsNames;
     }
 
+
+
+    public void addTeam(String titoloHackaton, String nomeTeam) {
+        Integer idHackaton = getIdHackatonFromName(titoloHackaton, getPartecipanteHackatonList());
+        Integer idTeam = teamDAO.addTeam(idHackaton, nomeTeam);
+        teamDAO.addPartecipanteAlTeam(utente.getId(),idTeam, idHackaton);
+    }
+
+    private Integer getIdHackatonFromName(String titoloHackaton, List<Hackaton> hackatons) {
+        Integer idHackaton = null;
+        for(Hackaton h : hackatons) {
+            if(h.getTitolo().equals(titoloHackaton)) {
+                idHackaton = h.getId();
+            }
+        }
+        return idHackaton;
+    }
+
+    private List<Hackaton> getPartecipanteHackatonList() {
+        return ((Partecipante) utente).getHackatons();
+    }
+
+    //per la combobox, lista di team a cui l'utente può unirsi
+    public List<String> getTeamByHackaton(String titoloHackaton) {
+        List<Team> teamByHackaton = getTeamByHackaton(getIdHackatonFromName(titoloHackaton, getPartecipanteHackatonList()));
+        List<String> teamNames = new ArrayList<>();
+        for(Team team : teamByHackaton) {
+            if(!teamDAO.isPartecipanteInTeam(team.getId(), utente.getId())) {
+                teamNames.add(team.getNome());
+            }
+        }
+        return teamNames;
+    }
+
+    //per la combobox, lista di team a cui l'utente è unito
+    public List<String> getTeamByPartecipanteCb() {
+        List<Team> teamByHackaton = getTeamByPartecipante();
+        List<String> teamNames = new ArrayList<>();
+        for(Team team : teamByHackaton) {
+            teamNames.add(team.getNome());
+        }
+        return teamNames;
+    }
+
+
+    private List<Team> getTeamByHackaton(Integer idHackaton) {
+        List<Integer> ids = new ArrayList<>();
+        List<String> nomiTeam = new ArrayList<>();
+        teamDAO.getTeamByHackaton(idHackaton, ids, nomiTeam);
+
+        List<Team> teams = new ArrayList<>();
+        popolaListaTeam(ids, nomiTeam, teams);
+
+        return teams;
+    }
+
+    private List<Team> getTeamByPartecipante() {
+        List<Integer> ids = new ArrayList<>();
+        List<String> nomiTeam = new ArrayList<>();
+        teamDAO.getTeamByPartecipante(utente.getId(), ids, nomiTeam);
+
+        List<Team> teams = new ArrayList<>();
+        popolaListaTeam(ids, nomiTeam, teams);
+
+        return teams;
+    }
+
+    private void popolaListaTeam(List<Integer> ids, List<String> nomiTeam, List<Team> teams) {
+        for (int i = 0; i < ids.size(); i++) {
+            Team team = new Team(ids.get(i), nomiTeam.get(i));
+            teams.add(team);
+            team.getPartecipanti().add(((Partecipante) utente));
+        }
+    }
 
 }

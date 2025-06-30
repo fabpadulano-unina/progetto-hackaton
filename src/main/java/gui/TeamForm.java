@@ -9,16 +9,17 @@ import java.awt.event.ActionListener;
 public class TeamForm extends JFrame{
     private JPanel panel;
     private JTextField nomeInput;
-    private JPanel mainPanel;
     private JButton addBtn;
     private Controller controller;
+    private String titoloHackaton;
 
-    public TeamForm( Controller controller) {
+    public TeamForm(String titoloHackaton, Controller controller) {
         this.setTitle("Crea Team");
         this.setContentPane(panel);
         this.pack();
         this.setVisible(true);
 
+        this.titoloHackaton = titoloHackaton;
         this.controller = controller;
 
         handleClicks();
@@ -28,7 +29,7 @@ public class TeamForm extends JFrame{
         addBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //todo controlloer.saveTeam(.......)
+                controller.addTeam(titoloHackaton, nomeInput.getText());
                 Controller.dispose(TeamForm.this);
             }
         });
