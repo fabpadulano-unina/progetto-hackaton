@@ -228,5 +228,61 @@ public class TeamImplementazionePostgresDAO implements TeamDAO {
         }
     }
 
+
+    @Override
+    public void getPartecipantiByTeam(
+            Integer idTeam,
+            List<String> nomiPartecipanti,
+            List<String> cognomiPartecipanti
+    ) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sql =
+                    "SELECT u.nome as nome, u.cognome as cognome " +
+                            "FROM Utente u " +
+                            "JOIN Partecipante_Team pt ON u.id = pt.id_partecipante " +
+                            "WHERE pt.id_team = ?";
+
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, idTeam);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                nomiPartecipanti.add(rs.getString("nome"));
+                cognomiPartecipanti.add(rs.getString("cognome"));
+            }
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel recupero dei partecipanti del team", e);
+        } finally {
+            closeResources(ps, rs);
+        }
+    }
+
+    @Override
+    public Integer getHackatonIdByTeamId(Integer idTeam) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT id_hackaton FROM Team WHERE id = ?";
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, idTeam);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id_hackaton");
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel recupero dell'idHackaton dal team", e);
+        } finally {
+            closeResources(ps, rs);
+        }
+
+        return null;
+    }
+
 }
 

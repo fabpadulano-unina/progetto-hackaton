@@ -187,8 +187,17 @@ public class Controller {
         new Home(this);
     }
 
-    public void openProgress() {
-        new Progress(this);
+    public void openProgress(int teamIndex) {
+        Team team = getTeamByPartecipante().get(teamIndex);
+        Hackaton hackaton = getHackatonById(teamDAO.getHackatonIdByTeamId(team.getId()));
+        new Progress(
+                this,
+                hackaton != null ? hackaton.getTitolo() : "",
+                team.getNome(),
+                getPartecipantiTeam(
+                        team.getId()
+                )
+        );
     }
 
     public Utente getUtente() {
@@ -380,7 +389,11 @@ public class Controller {
     public List<String> getTeamByHackaton(String titoloHackaton) {
         Integer idHackaton = getIdHackatonFromName(titoloHackaton);
         List<String> teamNames = new ArrayList<>();
+
         if(idHackaton == null) return teamNames;
+
+        Hackaton hackaton = getHackatonById(idHackaton);
+        if(hackaton != null && !hackaton.isRegistrazioniAperte()) return teamNames;
 
         List<Team> teamByHackaton = getTeamByHackaton(idHackaton);
         for(Team team : teamByHackaton) {
@@ -435,6 +448,31 @@ public class Controller {
             teams.add(team);
             team.getPartecipanti().add(((Partecipante) utente));
         }
+    }
+
+    private Hackaton getHackatonById(Integer idHackaton) {
+        for(Hackaton h : getListaHackaton()) {
+            if(h.getId().equals(idHackaton)) {
+                return h;
+            }
+        }
+
+        return null;
+    }
+
+    // per popolare la jlist di utenti nel dettaglio progressi
+    private List<String> getPartecipantiTeam(Integer idTeam) {
+        List<String> nomi = new ArrayList<>();
+        List<String> cognomi = new ArrayList<>();
+
+        teamDAO.getPartecipantiByTeam(idTeam, nomi, cognomi);
+
+        List<String> partecipanti = new ArrayList<>();
+        for (int i = 0; i < nomi.size(); i++) {
+            partecipanti.add(nomi.get(i) + " " + cognomi.get(i));
+        }
+
+        return partecipanti;
     }
 
 }

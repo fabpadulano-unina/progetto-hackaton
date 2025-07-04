@@ -1,27 +1,27 @@
 package model;
 
 public class Documento {
+    private Integer id;
     private String descrizione;
-    private Team team;
 
-    public Documento(String descrizione, Team team) {
+    public Documento(Integer id, String descrizione) {
+        this.setId(id);
         this.setDescrizione(descrizione);
-        this.setTeam(team);
     }
 
     public String getDescrizione() {
         return descrizione;
     }
 
-    public void setDescrizione(String descrizione) {
+    private void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
     }
 
-    public Team getTeam() {
-        return team;
+    public Integer getId() {
+        return id;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    private void setId(Integer id) {
+        this.id = id;
     }
 }

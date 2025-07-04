@@ -6,9 +6,7 @@ import java.util.List;
 public class Team {
     private Integer id;
     private String nome;
-    private Hackaton hackaton;
     private List<Partecipante> partecipanti = new ArrayList<>();
-    private List<Documento> documenti = new ArrayList<>();
     private boolean isFull;
 
     public Team(Integer id, String nome) {
@@ -29,26 +27,6 @@ public class Team {
         return partecipanti;
     }
 
-    public List<Documento> getDocumenti() {
-        return documenti;
-    }
-
-    private void addDocumento(Documento documento) {
-        documenti.add(documento);
-    }
-
-    public void caricaProgresso(Documento documento) {
-        this.documenti.add(documento);
-    }
-
-
-    public Hackaton getHackaton() {
-        return hackaton;
-    }
-
-    public void setHackaton(Hackaton hackaton) {
-        this.hackaton = hackaton;
-    }
 
     public Integer getId() {
         return id;

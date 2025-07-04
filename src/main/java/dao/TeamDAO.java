@@ -9,4 +9,6 @@ public interface TeamDAO {
     boolean isPartecipanteInTeam(Integer idTeam, Integer idUtente);
     void getTeamByPartecipante(Integer idPartecipante, List<Integer> idTeam, List<String> nomiTeam, List<Boolean> isFullList);
     void deletePartecipanteNelTeam(Integer idPartecipante, Integer idHackaton);
+    void getPartecipantiByTeam(Integer idTeam, List<String> nomiPartecipanti, List<String> cognomiPartecipanti);
+    Integer getHackatonIdByTeamId(Integer idTeam);
 }

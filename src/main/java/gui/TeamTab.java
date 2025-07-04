@@ -105,12 +105,14 @@ public class TeamTab extends JPanel {
         uniscitiButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.addPartecipanteAlTeam((String) teamCb.getSelectedItem(), getSelectedHackaton());
+                controller.addPartecipanteAlTeam(getSelectedTeam(), getSelectedHackaton());
                 setTeamCbData();
             }
         });
 
     }
+
+
 
     private void setTeamCbData() {
         //svuoto i team selezioanbili precedentemente
@@ -129,12 +131,15 @@ public class TeamTab extends JPanel {
         return (String) hackatonCb.getSelectedItem();
     }
 
+    private String getSelectedTeam() {
+        return (String) teamCb.getSelectedItem();
+    }
 
     private void handleProgress() {
         caricaNuovoProgressoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.openProgress();
+                controller.openProgress(teamProgressiCb.getSelectedIndex()-1); // -1 perchè il primo è il placebolder
             }
         });
     }
