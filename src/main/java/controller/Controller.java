@@ -1,8 +1,10 @@
 package controller;
 
+import dao.DocumentoDAO;
 import dao.HackatonDAO;
 import dao.TeamDAO;
 import dao.UtenteDAO;
+import dao.implementazione.postgres.DocumentoImplementazionePostgresDAO;
 import dao.implementazione.postgres.TeamImplementazionePostgresDAO;
 import gui.*;
 import dao.implementazione.postgres.HackatonImplementazionePostgresDAO;
@@ -23,6 +25,7 @@ public class Controller {
     private HackatonDAO hackatonDAO;
     private UtenteDAO utenteDAO;
     private TeamDAO teamDAO;
+    private DocumentoDAO documentoDAO;
     private Utente utente;
     private List<Hackaton> hackatons = new ArrayList<>();
 
@@ -31,6 +34,7 @@ public class Controller {
             hackatonDAO = new HackatonImplementazionePostgresDAO();
             utenteDAO = new UtenteImplementazionePostgresDAO();
             teamDAO = new TeamImplementazionePostgresDAO();
+            documentoDAO = new DocumentoImplementazionePostgresDAO();
         } catch (SQLException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella connessione con il db", e);
         }
@@ -475,4 +479,22 @@ public class Controller {
         return partecipanti;
     }
 
+    public void addDocumento(Integer idTeam, String descrizione) {
+        documentoDAO.addDocumento(idTeam, descrizione);
+    }
+
+    public List<String> getDocumentoByTeam(int teamIndex) {
+        Integer idTeam = getTeamByPartecipante().get(teamIndex).getId();
+
+        List<Integer> idDocumenti = new ArrayList<>();
+        List<String> descrizioni = new ArrayList<>();
+        documentoDAO.getDocumentiByTeam(idTeam, idDocumenti, descrizioni);
+
+        List<String> documenti = new ArrayList<>();
+        for (int i = 0; i < idDocumenti.size(); i++) {
+            documenti.add(descrizioni.get(i));
+        }
+
+        return documenti;
+    }
 }

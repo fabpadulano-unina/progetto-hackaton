@@ -16,6 +16,7 @@ public class TeamTab extends JPanel {
     private JPanel mainPanel;
     private JComboBox<String> hackatonCb;
     private JComboBox<String> teamCb;
+    private JButton refreshButton;
     private Controller controller;
 
     public TeamTab(Controller controller) {
@@ -37,10 +38,10 @@ public class TeamTab extends JPanel {
         setTeamCbChangeListener();
     }
 
-
-
-
     private void setTeamProgressiCbData() {
+        // svuoto per il caso di refresh
+        teamProgressiCb.removeAllItems();
+
         teamProgressiCb.addItem("-- Seleziona un team a cui appartieni--");
         for(String titolo : controller.getTeamByPartecipanteCb()) {
             teamProgressiCb.addItem(titolo);
@@ -70,13 +71,25 @@ public class TeamTab extends JPanel {
         teamProgressiCb.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //todo set progressi list
+                setProgressiList();
                 caricaNuovoProgressoButton.setEnabled(teamProgressiCb.getSelectedIndex() != 0);
             }
         });
     }
 
+    private void setProgressiList() {
+        DefaultListModel<String> model = new DefaultListModel<>();
+        for (String s : controller.getDocumentoByTeam(getTeamIndex())) {
+            model.addElement(s);
+        }
+
+        progressiList.setModel(model);
+    }
+
     private void setHackatonCbData() {
+        // svuoto per il caso di refresh
+        hackatonCb.removeAllItems();
+
         hackatonCb.addItem("-- Seleziona un hackaton --");
         for(String titolo : controller.getHackatonsNamesForCombobox()) {
             hackatonCb.addItem(titolo);
@@ -87,8 +100,18 @@ public class TeamTab extends JPanel {
         this.handleAddTeam();
         this.handleProgress();
         this.handleUnisciti();
+        this.handleRefresh();
     }
 
+    private void handleRefresh() {
+        refreshButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setProgressiList();
+                setTeamCbData();
+            }
+        });
+    }
 
 
     private void handleAddTeam() {
@@ -139,8 +162,12 @@ public class TeamTab extends JPanel {
         caricaNuovoProgressoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.openProgress(teamProgressiCb.getSelectedIndex()-1); // -1 perchè il primo è il placebolder
+                controller.openProgress(getTeamIndex());
             }
         });
+    }
+
+    private int getTeamIndex() {
+        return teamProgressiCb.getSelectedIndex() - 1; // -1 perchè il primo è il placebolder
     }
 }
