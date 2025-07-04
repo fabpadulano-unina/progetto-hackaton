@@ -24,13 +24,24 @@ public class TeamTab extends JPanel {
         setLayout(new BorderLayout());
         add(mainPanel, BorderLayout.CENTER);
         handleClicks();
+
         setTeamProgressiCbData();
-        setHackatonCbChangeListener();
         setHackatonCbData();
 
+        handleCbChangeListeners();
     }
 
+    private void handleCbChangeListeners() {
+        setTeamProgressCbChangeListener();
+        setHackatonCbChangeListener();
+        setTeamCbChangeListener();
+    }
+
+
+
+
     private void setTeamProgressiCbData() {
+        teamProgressiCb.addItem("-- Seleziona un team a cui appartieni--");
         for(String titolo : controller.getTeamByPartecipanteCb()) {
             teamProgressiCb.addItem(titolo);
         }
@@ -41,12 +52,32 @@ public class TeamTab extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setTeamCbData();
+                addTeamBtn.setEnabled(hackatonCb.getSelectedIndex() != 0);
             }
         });
+    }
 
+    private void setTeamCbChangeListener() {
+        teamCb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                uniscitiButton.setEnabled(teamCb.getSelectedIndex() != 0);
+            }
+        });
+    }
+
+    private void setTeamProgressCbChangeListener() {
+        teamProgressiCb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //todo set progressi list
+                caricaNuovoProgressoButton.setEnabled(teamProgressiCb.getSelectedIndex() != 0);
+            }
+        });
     }
 
     private void setHackatonCbData() {
+        hackatonCb.addItem("-- Seleziona un hackaton --");
         for(String titolo : controller.getHackatonsNamesForCombobox()) {
             hackatonCb.addItem(titolo);
         }
@@ -55,7 +86,10 @@ public class TeamTab extends JPanel {
     private void handleClicks() {
         this.handleAddTeam();
         this.handleProgress();
+        this.handleUnisciti();
     }
+
+
 
     private void handleAddTeam() {
         addTeamBtn.addActionListener(new ActionListener() {
@@ -67,9 +101,27 @@ public class TeamTab extends JPanel {
         });
     }
 
+    private void handleUnisciti() {
+        uniscitiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.addPartecipanteAlTeam((String) teamCb.getSelectedItem(), getSelectedHackaton());
+                setTeamCbData();
+            }
+        });
+
+    }
+
     private void setTeamCbData() {
-        for(String nome : controller.getTeamByHackaton(getSelectedHackaton())) {
-            teamCb.addItem(nome);
+        //svuoto i team selezioanbili precedentemente
+        teamCb.removeAllItems();
+
+        teamCb.addItem("-- Seleziona un team a cui unirti per l'hackaton selezionato--");
+        String selectedHackaton = getSelectedHackaton();
+        if(selectedHackaton != null) {
+            for(String nome : controller.getTeamByHackaton(selectedHackaton)) {
+                teamCb.addItem(nome);
+            }
         }
     }
 

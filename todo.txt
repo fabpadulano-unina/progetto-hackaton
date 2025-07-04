@@ -13,3 +13,4 @@ vincolo: in un team posso esserci al più n partecipanti (attributo dell'hackato
 vincolo in tabella molti a molti Partecipante_Team (Integer idPartecipante, Integer idTeam, Integer idHackaton):
 ^^^vincolo UNIQUE (id_partecipante, id_hackaton) per impedire che un partecipante sia in più team nello stesso hackathon.
 
+quando crei un team, si dovrebbe refreshare la pagina del team tab

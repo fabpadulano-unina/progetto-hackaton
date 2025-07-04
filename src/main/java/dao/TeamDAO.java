@@ -8,4 +8,5 @@ public interface TeamDAO {
     void addPartecipanteAlTeam(Integer idPartecipante, Integer idTeam, Integer idHackaton);
     boolean isPartecipanteInTeam(Integer idTeam, Integer idUtente);
     void getTeamByPartecipante(Integer idPartecipante, List<Integer> idTeam, List<String> nomiTeam);
+    void deletePartecipanteNelTeam(Integer idPartecipante, Integer idHackaton);
 }

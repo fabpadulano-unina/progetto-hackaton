@@ -336,19 +336,40 @@ public class Controller {
 
 
     public void addTeam(String titoloHackaton, String nomeTeam) {
-        Integer idHackaton = getIdHackatonFromName(titoloHackaton, getPartecipanteHackatonList());
+        Integer idHackaton = getIdHackatonFromName(titoloHackaton);
         Integer idTeam = teamDAO.addTeam(idHackaton, nomeTeam);
-        teamDAO.addPartecipanteAlTeam(utente.getId(),idTeam, idHackaton);
+        addPartecipanteAlTeam(idTeam, idHackaton);
     }
 
-    private Integer getIdHackatonFromName(String titoloHackaton, List<Hackaton> hackatons) {
+    private void addPartecipanteAlTeam(Integer idTeam, Integer idHackaton) {
+        teamDAO.deletePartecipanteNelTeam(utente.getId(), idHackaton);
+        teamDAO.addPartecipanteAlTeam(utente.getId(), idTeam, idHackaton);
+    }
+
+    public void addPartecipanteAlTeam(String nomeTeam, String nomeHackaton) {
+        Integer idHackaton = getIdHackatonFromName(nomeHackaton);
+        addPartecipanteAlTeam(getIdTeamFromName(nomeTeam, idHackaton), idHackaton);
+    }
+
+    private Integer getIdHackatonFromName(String titoloHackaton) {
         Integer idHackaton = null;
-        for(Hackaton h : hackatons) {
+        for(Hackaton h : getPartecipanteHackatonList()) {
             if(h.getTitolo().equals(titoloHackaton)) {
                 idHackaton = h.getId();
             }
         }
         return idHackaton;
+    }
+
+
+    private Integer getIdTeamFromName(String nomeTeam, Integer idHackaton) {
+        for(Team team : getTeamByHackaton(idHackaton)) {
+            if(team.getNome().equals(nomeTeam)) {
+                return team.getId();
+            }
+        }
+
+        return null;
     }
 
     private List<Hackaton> getPartecipanteHackatonList() {
@@ -357,8 +378,11 @@ public class Controller {
 
     //per la combobox, lista di team a cui l'utente può unirsi
     public List<String> getTeamByHackaton(String titoloHackaton) {
-        List<Team> teamByHackaton = getTeamByHackaton(getIdHackatonFromName(titoloHackaton, getPartecipanteHackatonList()));
+        Integer idHackaton = getIdHackatonFromName(titoloHackaton);
         List<String> teamNames = new ArrayList<>();
+        if(idHackaton == null) return teamNames;
+
+        List<Team> teamByHackaton = getTeamByHackaton(idHackaton);
         for(Team team : teamByHackaton) {
             if(!teamDAO.isPartecipanteInTeam(team.getId(), utente.getId())) {
                 teamNames.add(team.getNome());

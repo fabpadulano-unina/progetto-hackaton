@@ -170,5 +170,38 @@ public class TeamImplementazionePostgresDAO implements TeamDAO {
             closeResources(ps, rs);
         }
     }
+
+
+    @Override
+    public void deletePartecipanteNelTeam(Integer idPartecipante, Integer idHackaton) {
+        PreparedStatement checkPs = null;
+        PreparedStatement deletePs = null;
+        ResultSet rs = null;
+
+        try {
+            String checkSql = "SELECT 1 FROM Partecipante_Team " +
+                    "WHERE id_partecipante = ? AND id_hackaton = ?";
+            checkPs = connection.prepareStatement(checkSql);
+            checkPs.setInt(1, idPartecipante);
+            checkPs.setInt(2, idHackaton);
+            rs = checkPs.executeQuery();
+
+            if (rs.next()) {
+                String deleteSql = "DELETE FROM Partecipante_Team " +
+                        "WHERE id_partecipante = ? AND id_hackaton = ?";
+                deletePs = connection.prepareStatement(deleteSql);
+                deletePs.setInt(1, idPartecipante);
+                deletePs.setInt(2, idHackaton);
+                deletePs.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella rimozione del partecipante dal team", e);
+        } finally {
+            closeResources(checkPs, rs);
+            closePs(deletePs);
+        }
+    }
+
 }
 

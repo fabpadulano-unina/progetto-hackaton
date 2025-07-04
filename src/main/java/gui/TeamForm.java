@@ -10,6 +10,7 @@ public class TeamForm extends JFrame{
     private JPanel panel;
     private JTextField nomeInput;
     private JButton addBtn;
+    private JLabel hackatonLabel;
     private Controller controller;
     private String titoloHackaton;
 
@@ -20,6 +21,7 @@ public class TeamForm extends JFrame{
         this.setVisible(true);
 
         this.titoloHackaton = titoloHackaton;
+        hackatonLabel.setText("HACKATON: " + titoloHackaton);
         this.controller = controller;
 
         handleClicks();
