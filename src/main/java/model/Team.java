@@ -9,6 +9,7 @@ public class Team {
     private Hackaton hackaton;
     private List<Partecipante> partecipanti = new ArrayList<>();
     private List<Documento> documenti = new ArrayList<>();
+    private boolean isFull;
 
     public Team(Integer id, String nome) {
         this.setId(id);
@@ -36,10 +37,6 @@ public class Team {
         documenti.add(documento);
     }
 
-    public void setPartecipanti(List<Partecipante> partecipanti) {
-        this.partecipanti = partecipanti;
-    }
-
     public void caricaProgresso(Documento documento) {
         this.documenti.add(documento);
     }
@@ -59,5 +56,13 @@ public class Team {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public boolean isFull() {
+        return isFull;
+    }
+
+    public void setFull(boolean full) {
+        isFull = full;
     }
 }

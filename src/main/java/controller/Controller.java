@@ -384,7 +384,7 @@ public class Controller {
 
         List<Team> teamByHackaton = getTeamByHackaton(idHackaton);
         for(Team team : teamByHackaton) {
-            if(!teamDAO.isPartecipanteInTeam(team.getId(), utente.getId())) {
+            if(!team.isFull() && !teamDAO.isPartecipanteInTeam(team.getId(), utente.getId())) {
                 teamNames.add(team.getNome());
             }
         }
@@ -405,10 +405,12 @@ public class Controller {
     private List<Team> getTeamByHackaton(Integer idHackaton) {
         List<Integer> ids = new ArrayList<>();
         List<String> nomiTeam = new ArrayList<>();
-        teamDAO.getTeamByHackaton(idHackaton, ids, nomiTeam);
+        List<Boolean> isFullList = new ArrayList<>();
+
+        teamDAO.getTeamByHackaton(idHackaton, ids, nomiTeam, isFullList);
 
         List<Team> teams = new ArrayList<>();
-        popolaListaTeam(ids, nomiTeam, teams);
+        popolaListaTeam(ids, nomiTeam, isFullList, teams);
 
         return teams;
     }
@@ -416,17 +418,20 @@ public class Controller {
     private List<Team> getTeamByPartecipante() {
         List<Integer> ids = new ArrayList<>();
         List<String> nomiTeam = new ArrayList<>();
-        teamDAO.getTeamByPartecipante(utente.getId(), ids, nomiTeam);
+        List<Boolean> isFullList = new ArrayList<>();
+
+        teamDAO.getTeamByPartecipante(utente.getId(), ids, nomiTeam, isFullList);
 
         List<Team> teams = new ArrayList<>();
-        popolaListaTeam(ids, nomiTeam, teams);
+        popolaListaTeam(ids, nomiTeam, isFullList, teams);
 
         return teams;
     }
 
-    private void popolaListaTeam(List<Integer> ids, List<String> nomiTeam, List<Team> teams) {
+    private void popolaListaTeam(List<Integer> ids, List<String> nomiTeam, List<Boolean> isFullList, List<Team> teams) {
         for (int i = 0; i < ids.size(); i++) {
             Team team = new Team(ids.get(i), nomiTeam.get(i));
+            team.setFull(isFullList.get(i));
             teams.add(team);
             team.getPartecipanti().add(((Partecipante) utente));
         }

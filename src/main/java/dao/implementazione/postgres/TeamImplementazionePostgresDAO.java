@@ -64,18 +64,33 @@ public class TeamImplementazionePostgresDAO implements TeamDAO {
     }
 
     @Override
-    public void getTeamByHackaton(Integer idHackaton, List<Integer> ids, List<String> nomiTeam) {
+    public void getTeamByHackaton(Integer idHackaton, List<Integer> ids, List<String> nomiTeam, List<Boolean> isFullList) {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            ps = connection.prepareStatement("SELECT id, nome FROM Team WHERE id_hackaton = ?");
+            // LEFT JOIN permette di contare anche i team senza partecipanti (conta = 0)
+            String sql =
+                    "SELECT t.id as id, t.nome as nome, " +
+                            "       COUNT(pt.id_partecipante) AS partecipanti, " +
+                            "       h.dim_max_team as dim_max_team " +
+                            "FROM Team t " +
+                            "LEFT JOIN Partecipante_Team pt ON t.id = pt.id_team AND pt.id_hackaton = t.id_hackaton " +
+                            "JOIN Hackaton h ON t.id_hackaton = h.id " +
+                            "WHERE t.id_hackaton = ? " +
+                            "GROUP BY t.id, t.nome, h.dim_max_team";
+
+            ps = connection.prepareStatement(sql);
             ps.setInt(1, idHackaton);
             rs = ps.executeQuery();
 
             while (rs.next()) {
                 ids.add(rs.getInt("id"));
                 nomiTeam.add(rs.getString("nome"));
+
+                int partecipanti = rs.getInt("partecipanti");
+                int maxIscritti = rs.getInt("dim_max_team");
+                isFullList.add(partecipanti >= maxIscritti);
             }
         } catch (SQLException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella lettura dei team", e);
@@ -147,15 +162,20 @@ public class TeamImplementazionePostgresDAO implements TeamDAO {
     }
 
     @Override
-    public void getTeamByPartecipante(Integer idPartecipante, List<Integer> idTeam, List<String> nomiTeam) {
+    public void getTeamByPartecipante(Integer idPartecipante, List<Integer> idTeam, List<String> nomiTeam, List<Boolean> isFullList) {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            String sql = "SELECT t.id, t.nome, t.id_hackaton " +
-                    "FROM Team t " +
-                    "JOIN Partecipante_Team pt ON t.id = pt.id_team " +
-                    "WHERE pt.id_partecipante = ?";
+            String sql =
+                    "SELECT t.id as id, t.nome as nome, COUNT(pt2.id_partecipante) AS partecipanti, h.dim_max_team as dim_max_team " +
+                            "FROM Team t " +
+                            "JOIN Partecipante_Team pt ON t.id = pt.id_team AND t.id_hackaton = pt.id_hackaton " +
+                            "LEFT JOIN Partecipante_Team pt2 ON t.id = pt2.id_team AND t.id_hackaton = pt2.id_hackaton " +
+                            "JOIN Hackaton h ON t.id_hackaton = h.id " +
+                            "WHERE pt.id_partecipante = ? " +
+                            "GROUP BY t.id, t.nome, h.dim_max_team";
+
             ps = connection.prepareStatement(sql);
             ps.setInt(1, idPartecipante);
             rs = ps.executeQuery();
@@ -163,13 +183,18 @@ public class TeamImplementazionePostgresDAO implements TeamDAO {
             while (rs.next()) {
                 idTeam.add(rs.getInt("id"));
                 nomiTeam.add(rs.getString("nome"));
+                int partecipanti = rs.getInt("partecipanti");
+                int maxIscritti = rs.getInt("dim_max_team");
+                isFullList.add(partecipanti >= maxIscritti);
             }
+
         } catch (SQLException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel recupero dei team per partecipante", e);
         } finally {
             closeResources(ps, rs);
         }
     }
+
 
 
     @Override
