@@ -3,6 +3,10 @@ package dao.implementazione.postgres;
 import dao.DocumentoDAO;
 import database.ConnessioneDatabase;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,7 +25,7 @@ public class DocumentoImplementazionePostgresDAO implements DocumentoDAO {
     }
 
     @Override
-    public void addDocumento(Integer idTeam, String descrizione) {
+    public void addDocumento(Integer idTeam, String descrizione, File file) {
         PreparedStatement createTablePS = null;
         PreparedStatement insertPS = null;
 
@@ -31,6 +35,7 @@ public class DocumentoImplementazionePostgresDAO implements DocumentoDAO {
                             "id SERIAL PRIMARY KEY, " +
                             "id_team INTEGER NOT NULL, " +
                             "descrizione TEXT NOT NULL, " +
+                            "file BYTEA, " +
                             "FOREIGN KEY (id_team) REFERENCES Team(id)" +
                             ");"
             );
@@ -43,16 +48,26 @@ public class DocumentoImplementazionePostgresDAO implements DocumentoDAO {
 
         try {
             insertPS = connection.prepareStatement(
-                    "INSERT INTO Documento (id_team, descrizione) VALUES (?, ?)"
+                    "INSERT INTO Documento (id_team, descrizione, file) VALUES (?, ?, ?)"
             );
             insertPS.setInt(1, idTeam);
             insertPS.setString(2, descrizione);
+            insertFile(file, insertPS);
+
             insertPS.executeUpdate();
         } catch (SQLException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore inserimento documento", e);
         } finally {
             closePs(insertPS);
         }
+    }
+
+    private void insertFile(File file, PreparedStatement insertPS) throws SQLException {
+            try (InputStream fileInputStream = new FileInputStream(file)) {
+                insertPS.setBinaryStream(3, fileInputStream, (int) file.length());
+            } catch (IOException e) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella lettura del file", e);
+            }
     }
 
     @Override

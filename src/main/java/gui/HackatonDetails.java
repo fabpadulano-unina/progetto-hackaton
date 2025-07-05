@@ -1,7 +1,6 @@
 package gui;
 
 import controller.Controller;
-import model.TipoUtente;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -68,7 +67,6 @@ public class HackatonDetails extends JFrame {
         aggiornaVisibilitaPulsanti(isRegistrazioneAperte, deadline, numMaxIscritti);
         setTableGiudici(giudici);
         inizializzaContainerPanel();
-        aggiungiEsempiFeedback();
         inizializzaClassificaTab();
         handleApriRegistraioni(apriRegistrazioniButton);
         handleRegistrati(registratiBtn);
@@ -134,6 +132,7 @@ public class HackatonDetails extends JFrame {
         // Imposta il layout del container per i pannelli dinamici
         containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
         containerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        aggiungiEsempiFeedback();
     }
     private void aggiungiEsempiFeedback() {
         // Esempi di feedback come nelle immagini
@@ -150,33 +149,6 @@ public class HackatonDetails extends JFrame {
         aggiungiPannelloFeedback("Team Alpha - Final Submission", "Oct 28, 2024",
                 "Provide feedback to Team Alpha's Final Submission");
     }
-    private void aggiornaVisibilitaPulsanti(boolean isRegistrazioneAperte, LocalDate deadline, int numMaxIscritti) {
-        TipoUtente ruolo = controller.getUtente().getTipoUtente();
-        registratiBtn.setVisible(false);
-        tabbedPane.remove(organizerToolTab);
-        tabbedPane.remove(giudiciToolTab);
-
-        switch (ruolo) {
-            case ORGANIZZATORE:
-                tabbedPane.add("Tool per organizzatori", organizerToolTab);
-                if(deadline != null) {
-                    deadlineRegistrazioniField.setText(deadline.format(DATE_TIME_FORMATTER));
-                    disableDeadlineField();
-                }
-                break;
-            case PARTECIPANTE:
-                if(isRegistrazioneAperte && controller.getNumeroUtentiRegistrati(hackatonId) < numMaxIscritti) registratiBtn.setVisible(true);
-                break;
-            case GIUDICE:
-                tabbedPane.add("Tool per giudici", giudiciToolTab);
-                break;
-            default:
-                break;
-        }
-
-    }
-
-
 
     private void aggiungiPannelloFeedback(String titolo, String data, String descrizione) {
         // Crea il pannello principale per questo feedback
@@ -301,17 +273,25 @@ public class HackatonDetails extends JFrame {
         containerPanel.repaint();
     }
 
-    // Metodo per aggiungere un nuovo pannello dinamicamente
-    public void aggiungiNuovoFeedback(String titolo, String data, String descrizione) {
-        aggiungiPannelloFeedback(titolo, data, descrizione);
+
+    private void aggiornaVisibilitaPulsanti(boolean isRegistrazioneAperte, LocalDate deadline, int numMaxIscritti) {
+        registratiBtn.setVisible(false);
+        tabbedPane.remove(organizerToolTab);
+        tabbedPane.remove(giudiciToolTab);
+
+        if(controller.isOrganizzatore()) {
+            tabbedPane.add("Tool per organizzatori", organizerToolTab);
+            if(deadline != null) {
+                deadlineRegistrazioniField.setText(deadline.format(DATE_TIME_FORMATTER));
+                disableDeadlineField();
+            }
+        } else if(controller.isPartecipante()) {
+            if(isRegistrazioneAperte && controller.getNumeroUtentiRegistrati(hackatonId) < numMaxIscritti) registratiBtn.setVisible(true);
+        } else {
+            tabbedPane.add("Tool per giudici", giudiciToolTab);
+        }
     }
 
-    // Metodo per rimuovere tutti i pannelli
-    public void rimuoviTuttiFeedback() {
-        containerPanel.removeAll();
-        containerPanel.revalidate();
-        containerPanel.repaint();
-    }
 
     private void inizializzaClassificaTab() {
         // classificaTab = new JPanel(); non ho capito perchè va tolto

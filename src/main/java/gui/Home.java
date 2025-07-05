@@ -25,11 +25,11 @@ public class Home extends JFrame {
         this.controller = controller;
         controller.setHomeFrame(this);
 
-        this.organizzaHackatonButton.setVisible(controller.getUtente().isOrganizzatore());
+        this.organizzaHackatonButton.setVisible(controller.isOrganizzatore());
         setHackatonsTable();
         handleClicks();
 
-        tabbedPane1.addTab("Team", new TeamTab(controller));
+        if(controller.isPartecipante()) tabbedPane1.addTab("Team", new TeamTab(controller));
     }
 
 

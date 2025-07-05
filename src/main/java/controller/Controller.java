@@ -12,6 +12,7 @@ import dao.implementazione.postgres.UtenteImplementazionePostgresDAO;
 import model.*;
 
 import javax.swing.*;
+import java.io.File;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -197,6 +198,7 @@ public class Controller {
         new Progress(
                 this,
                 hackaton != null ? hackaton.getTitolo() : "",
+                team.getId(),
                 team.getNome(),
                 getPartecipantiTeam(
                         team.getId()
@@ -479,8 +481,8 @@ public class Controller {
         return partecipanti;
     }
 
-    public void addDocumento(Integer idTeam, String descrizione) {
-        documentoDAO.addDocumento(idTeam, descrizione);
+    public void addDocumento(Integer idTeam, String descrizione, File file) {
+        documentoDAO.addDocumento(idTeam, descrizione, file);
     }
 
     public List<String> getDocumentoByTeam(int teamIndex) {
@@ -496,5 +498,17 @@ public class Controller {
         }
 
         return documenti;
+    }
+
+    public boolean isOrganizzatore() {
+        return utente.isOrganizzatore();
+    }
+
+    public boolean isPartecipante() {
+        return utente.isPartecipante();
+    }
+
+    public boolean isGiudice() {
+        return utente.isGiudice();
     }
 }
