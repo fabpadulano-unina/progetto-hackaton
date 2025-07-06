@@ -92,4 +92,91 @@ public class DocumentoImplementazionePostgresDAO implements DocumentoDAO {
             closeResources(ps, rs);
         }
     }
+
+    @Override
+    public void getDocumentiByHackaton(Integer idHackaton, List<Integer> idDocumenti, List<String> descrizioni, List<Integer> idTeam, List<String> nomiTeam) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT d.id, d.descrizione, t.id as id_team, t.nome as nome_team " +
+                    "FROM Documento d " +
+                    "JOIN Team t ON d.id_team = t.id " +
+                    "WHERE t.id_hackaton = ?";
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, idHackaton);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                idDocumenti.add(rs.getInt("id"));
+                descrizioni.add(rs.getString("descrizione"));
+                idTeam.add(rs.getInt("id_team"));
+                nomiTeam.add(rs.getString("nome_team"));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel recupero documenti per hackaton", e);
+        } finally {
+            closeResources(ps, rs);
+        }
+    }
+
+    @Override
+    public void inserisciFeedbackGiudice(Integer idGiudice, Integer idDocumento, String feedback) {
+        PreparedStatement psCreate = null;
+        PreparedStatement psInsert = null;
+
+        try {
+            psCreate = connection.prepareStatement(
+                    "CREATE TABLE IF NOT EXISTS Feedback_Documento (" +
+                            "id_giudice INTEGER NOT NULL, " +
+                            "id_documento INTEGER NOT NULL, " +
+                            "feedback TEXT NOT NULL, " +
+                            "PRIMARY KEY (id_giudice, id_documento), " +
+                            "FOREIGN KEY (id_giudice) REFERENCES Utente(id), " +
+                            "FOREIGN KEY (id_documento) REFERENCES Documento(id))"
+            );
+            psCreate.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella creazione tabella Feedback_Documento", e);
+        } finally {
+            closePs(psCreate);
+        }
+
+        try {
+            psInsert = connection.prepareStatement(
+                    "INSERT INTO Feedback_Documento (id_giudice, id_documento, feedback) VALUES (?, ?, ?)"
+            );
+            psInsert.setInt(1, idGiudice);
+            psInsert.setInt(2, idDocumento);
+            psInsert.setString(3, feedback);
+            psInsert.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nell'inserimento feedback", e);
+        } finally {
+            closePs(psInsert);
+        }
+    }
+
+    @Override
+    public boolean haDatoFeedback(Integer idGiudice, Integer idDocumento) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String query = "SELECT 1 FROM Feedback_Documento WHERE id_giudice = ? AND id_documento = ?";
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, idGiudice);
+            ps.setInt(2, idDocumento);
+
+            rs = ps.executeQuery();
+            return rs.next();  // se c'è almeno una riga, ha già dato feedback
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel controllo feedback", e);
+            return false;
+        } finally {
+            closeResources(ps, rs);
+        }
+    }
+
+
 }

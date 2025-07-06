@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import model.Documento;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -9,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class HackatonDetails extends JFrame {
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -29,6 +31,7 @@ public class HackatonDetails extends JFrame {
     private JLabel registrazioniOpenedLabel;
     private JTextArea descrizioneProblemaTextArea;
     private JButton saveDescrizioneBtn;
+    private JScrollPane feedbackScrollPane;
     private Controller controller;
     private Integer hackatonId;
     private LocalDate dataInizio;
@@ -67,6 +70,7 @@ public class HackatonDetails extends JFrame {
         setRegistraBtnText();
         setPubblicaDescrizione(descrizioneProblema);
         handlePubblicazioneDescrizione();
+        setGiudiciDocumentiFeedbacks(controller, dataInizio, dataFine);
     }
 
     private void setDettagli(
@@ -106,7 +110,6 @@ public class HackatonDetails extends JFrame {
         }
     }
 
-
     private void setTableGiudici(Object[][] giudici) {
         String[] columnNames = {"Nome", "Cognome", "Email"};
         DefaultTableModel model = new DefaultTableModel(giudici, columnNames) {
@@ -121,7 +124,6 @@ public class HackatonDetails extends JFrame {
             tableGiudici.getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(new JTextField()));
         }
     }
-
 
     private void aggiornaVisibilitaPulsanti(boolean isRegistrazioneAperte, LocalDate deadline, int numMaxIscritti) {
         registratiBtn.setVisible(false);
@@ -140,10 +142,6 @@ public class HackatonDetails extends JFrame {
             tabbedPane.add("Tool per giudici", giudiciToolTab);
         }
     }
-
-
-
-
 
     private void handleApriRegistraioni(JButton apriRegistrazioniButton) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -204,6 +202,18 @@ public class HackatonDetails extends JFrame {
         if(descrizioneProblema != null) {
             descrizioneProblemaLabel.setText(descrizioneProblema);
             descrizioneProblemaLabel.setFont(descrizioneProblemaLabel.getFont().deriveFont(Font.BOLD));
+        }
+    }
+
+    private void setGiudiciDocumentiFeedbacks(Controller controller, LocalDate dataInizio, LocalDate dataFine) {
+        LocalDate now = LocalDate.now();
+        if (!now.isBefore(dataInizio) && !now.isAfter(dataFine)) {
+            List<Documento> documenti = controller.getDocumentiByHackatonId(hackatonId);
+            if(!documenti.isEmpty()) {
+                feedbackScrollPane.setBorder(BorderFactory.createEmptyBorder());
+                feedbackScrollPane.setViewportView(new FeedbackPanel(controller, documenti).getContainerPanel());
+            }
+
         }
     }
 }

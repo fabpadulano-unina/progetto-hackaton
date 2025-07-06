@@ -1,42 +1,53 @@
 package gui;
 
+import controller.Controller;
+import model.Documento;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
-public class FeedbackPanel  {
+public class FeedbackPanel {
     public static final String DIALOG = "Dialog";
 
     private JPanel containerPanel;
+    private Controller controller;
 
-    public FeedbackPanel() {
+    public FeedbackPanel(Controller controller, List<Documento> documenti) {
+        this.controller = controller;
         inizializzaContainerPanel();
+        aggiungiProgressi(documenti);
+    }
+
+    public JPanel getContainerPanel() {
+        return containerPanel;
+    }
+
+    private void aggiungiProgressi(List<Documento> documenti) {
+        for(Documento documento : documenti) {
+            aggiungiPannelloFeedback(documento);
+        }
     }
 
     private void inizializzaContainerPanel() {
-        if(containerPanel != null) {
+        if(getContainerPanel() != null) {
             // container dove ogni feedback andrà uno sotto l'altro (Y-AXIS)
-            containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
+            getContainerPanel().setLayout(new BoxLayout(getContainerPanel(), BoxLayout.Y_AXIS));
             // rimozione del bordo nero di default
-            containerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            aggiungiEsempiFeedback();
+            getContainerPanel().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         }
     }
-    private void aggiungiEsempiFeedback() {
-        aggiungiPannelloFeedback("Team Alpha - Initial Concept");
-        aggiungiPannelloFeedback("Team Alpha - Prototype Development");
-        aggiungiPannelloFeedback("Team Alpha - Final Submission");
-    }
 
-    private void aggiungiPannelloFeedback(String titolo) {
+    private void aggiungiPannelloFeedback(Documento documento) {
         JPanel feedbackPanel = new JPanel();
         feedbackPanel.setLayout(new BoxLayout(feedbackPanel, BoxLayout.Y_AXIS));
         feedbackPanel.setBackground(Color.WHITE);
 
         feedbackPanel.setPreferredSize(new Dimension(0, 160));
 
-        JPanel intestazionePanel = getIntestazione(titolo);
+        JPanel intestazionePanel = getIntestazione(documento.getTeam().getNome(), documento.getDescrizione() );
 
         JTextArea feedbackTextArea = getTextArea();
 
@@ -44,7 +55,7 @@ public class FeedbackPanel  {
         bottomPanel.setBackground(Color.WHITE);
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
-        JButton jButton = setAndHandleInviaBtn(titolo, feedbackTextArea);
+        JButton jButton = setAndHandleInviaBtn(documento.getId(), feedbackTextArea);
         bottomPanel.add(jButton);
 
 
@@ -52,14 +63,24 @@ public class FeedbackPanel  {
         feedbackPanel.add(feedbackTextArea, BorderLayout.CENTER);
         feedbackPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        containerPanel.add(feedbackPanel);
+        // Linea separatrice
+        feedbackPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(230, 230, 230)),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        getContainerPanel().add(feedbackPanel);
     }
 
-    private JButton setAndHandleInviaBtn(String titolo, JTextArea feedbackTextArea) {
+    private JButton setAndHandleInviaBtn(Integer idDocumento, JTextArea feedbackTextArea) {
         JButton submitButton = new JButton("Invia Feedback");
         submitButton.setBackground(Color.WHITE);
         submitButton.setForeground(Color.BLACK);
-        submitButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        submitButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK, 1),
+                BorderFactory.createEmptyBorder(8, 16, 8, 16)  // padding
+        ));
+        submitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));  // cursore a manina
+        submitButton.setPreferredSize(new Dimension(140, 35));
 
 
         submitButton.addActionListener(new ActionListener() {
@@ -68,7 +89,7 @@ public class FeedbackPanel  {
                 String feedback = feedbackTextArea.getText().trim();
                 if (!feedback.isEmpty()) {
                     submitButton.setEnabled(false);
-                    // TODO controller.inviaFeedback(titolo, feedback);
+                    controller.inserisciFeedbackGiudice(idDocumento, feedback);
                 }
             }
         });
@@ -90,11 +111,10 @@ public class FeedbackPanel  {
         return feedbackTextArea;
     }
 
-    private JPanel getIntestazione(String titolo) {
+    private JPanel getIntestazione(String nomeTeam, String descrizione) {
         JPanel headerPanel = new JPanel();
         headerPanel.setBackground(Color.WHITE);
 
-        // Icona e titolo
         JPanel titlePanel = new JPanel();
         titlePanel.setBackground(Color.WHITE);
 
@@ -102,16 +122,23 @@ public class FeedbackPanel  {
         iconLabel.setForeground(new Color(100, 100, 100));
         iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 8));
 
-        JLabel titleLabel = new JLabel(titolo);
-        titleLabel.setForeground(Color.BLACK);
-        titleLabel.setFont(new Font(DIALOG, Font.BOLD, 13));
+        JLabel teamLabel = new JLabel(nomeTeam);
+        teamLabel.setForeground(Color.BLACK);
+        teamLabel.setFont(new Font(DIALOG, Font.BOLD, 14));
+
+        JLabel descriptionLabel = new JLabel(" - " + descrizione);
+        descriptionLabel.setForeground(new Color(80, 80, 80));
+        descriptionLabel.setFont(new Font(DIALOG, Font.PLAIN, 13));
 
         titlePanel.add(iconLabel);
-        titlePanel.add(titleLabel);
+        titlePanel.add(teamLabel);
+        titlePanel.add(descriptionLabel);
 
-        headerPanel.add(titlePanel, BorderLayout.WEST);
+        headerPanel.add(titlePanel);
         return headerPanel;
     }
+
+
 
 
 }

@@ -3,6 +3,7 @@ package model;
 public class Documento {
     private Integer id;
     private String descrizione;
+    private Team team;
 
     public Documento(Integer id, String descrizione) {
         this.setId(id);
@@ -23,5 +24,13 @@ public class Documento {
 
     private void setId(Integer id) {
         this.id = id;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
