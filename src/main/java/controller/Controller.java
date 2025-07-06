@@ -421,7 +421,7 @@ public class Controller {
     }
 
 
-    private List<Team> getTeamByHackaton(Integer idHackaton) {
+    public List<Team> getTeamByHackaton(Integer idHackaton) {
         List<Integer> ids = new ArrayList<>();
         List<String> nomiTeam = new ArrayList<>();
         List<Boolean> isFullList = new ArrayList<>();
@@ -452,7 +452,6 @@ public class Controller {
             Team team = new Team(ids.get(i), nomiTeam.get(i));
             team.setFull(isFullList.get(i));
             teams.add(team);
-            team.getPartecipanti().add(((Partecipante) utente));
         }
     }
 

@@ -70,7 +70,7 @@ public class HackatonDetails extends JFrame {
         setRegistraBtnText();
         setPubblicaDescrizione(descrizioneProblema);
         handlePubblicazioneDescrizione();
-        setGiudiciDocumentiFeedbacks(controller, dataInizio, dataFine);
+        setGiudiciTabView(dataInizio, dataFine);
     }
 
     private void setDettagli(
@@ -205,15 +205,18 @@ public class HackatonDetails extends JFrame {
         }
     }
 
-    private void setGiudiciDocumentiFeedbacks(Controller controller, LocalDate dataInizio, LocalDate dataFine) {
+    private void setGiudiciTabView(LocalDate dataInizio, LocalDate dataFine) {
         LocalDate now = LocalDate.now();
+        feedbackScrollPane.setBorder(BorderFactory.createEmptyBorder());
         if (!now.isBefore(dataInizio) && !now.isAfter(dataFine)) {
             List<Documento> documenti = controller.getDocumentiByHackatonId(hackatonId);
             if(!documenti.isEmpty()) {
-                feedbackScrollPane.setBorder(BorderFactory.createEmptyBorder());
                 feedbackScrollPane.setViewportView(new FeedbackPanel(controller, documenti).getContainerPanel());
             }
+        }
 
+        if(now.isAfter(dataFine)) {
+            feedbackScrollPane.setViewportView(new Voti(controller.getTeamByHackaton(hackatonId)).getPanel());
         }
     }
 }
