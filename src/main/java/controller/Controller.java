@@ -511,4 +511,27 @@ public class Controller {
     public boolean isGiudice() {
         return utente.isGiudice();
     }
+
+    public List<Documento> getDocumentiByHackatonId(Integer idHackaton) {
+        List<Integer> idsDocumento = new ArrayList<>();
+        List<String> descrizioni = new ArrayList<>();
+        List<Integer> idsTeam = new ArrayList<>();
+        List<String> nomiTeam = new ArrayList<>();
+
+        documentoDAO.getDocumentiByHackaton(idHackaton, idsDocumento, descrizioni, idsTeam, nomiTeam);
+
+        List<Documento> documenti = new ArrayList<>();
+
+        for (int i = 0; i < idsDocumento.size(); i++) {
+            Team team = new Team(idsTeam.get(i), nomiTeam.get(i));
+
+            Documento doc = new Documento(idsDocumento.get(i), descrizioni.get(i));
+            doc.setTeam(team);
+
+            documenti.add(doc);
+        }
+
+        return documenti;
+    }
+
 }

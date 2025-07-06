@@ -29,6 +29,7 @@ public class HackatonDetails extends JFrame {
     private JLabel registrazioniOpenedLabel;
     private JTextArea descrizioneProblemaTextArea;
     private JButton saveDescrizioneBtn;
+    private JScrollPane feedbackScrollPane;
     private Controller controller;
     private Integer hackatonId;
     private LocalDate dataInizio;
@@ -67,6 +68,11 @@ public class HackatonDetails extends JFrame {
         setRegistraBtnText();
         setPubblicaDescrizione(descrizioneProblema);
         handlePubblicazioneDescrizione();
+
+        LocalDate now = LocalDate.now();
+        if (!now.isBefore(dataInizio) && !now.isAfter(dataFine)) {
+            feedbackScrollPane.setViewportView(new FeedbackPanel(controller.getDocumentiByHackatonId(hackatonId)).getContainerPanel());
+        }
     }
 
     private void setDettagli(

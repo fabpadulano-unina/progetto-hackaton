@@ -92,4 +92,33 @@ public class DocumentoImplementazionePostgresDAO implements DocumentoDAO {
             closeResources(ps, rs);
         }
     }
+
+    @Override
+    public void getDocumentiByHackaton(Integer idHackaton, List<Integer> idDocumenti, List<String> descrizioni, List<Integer> idTeam, List<String> nomiTeam) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT d.id, d.descrizione, t.id as id_team, t.nome as nome_team " +
+                    "FROM Documento d " +
+                    "JOIN Team t ON d.id_team = t.id " +
+                    "WHERE t.id_hackaton = ?";
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, idHackaton);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                idDocumenti.add(rs.getInt("id"));
+                descrizioni.add(rs.getString("descrizione"));
+                idTeam.add(rs.getInt("id_team"));
+                nomiTeam.add(rs.getString("nome_team"));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel recupero documenti per hackaton", e);
+        } finally {
+            closeResources(ps, rs);
+        }
+    }
+
+
 }

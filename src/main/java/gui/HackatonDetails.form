@@ -545,7 +545,7 @@
                       </grid>
                     </children>
                   </grid>
-                  <scrollpane id="1b703">
+                  <scrollpane id="1b703" binding="feedbackScrollPane">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -553,11 +553,7 @@
                       <verifyInputWhenFocusTarget value="true"/>
                     </properties>
                     <border type="none"/>
-                    <children>
-                      <nested-form id="ef281" form-file="gui/FeedbackPanel.form">
-                        <constraints/>
-                      </nested-form>
-                    </children>
+                    <children/>
                   </scrollpane>
                 </children>
               </grid>

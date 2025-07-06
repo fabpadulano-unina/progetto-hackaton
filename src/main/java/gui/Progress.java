@@ -18,7 +18,7 @@ public class Progress extends JFrame {
     private JLabel hackatonLabel;
     private JLabel numeroMembriLabel;
     private Controller controller;
-    private Integer idTeam;
+    private final Integer idTeam;
     private File file;
 
     public Progress(Controller controller, String hackaton, Integer idTeam, String team, List<String> partecipantiTeam) {
@@ -46,7 +46,6 @@ public class Progress extends JFrame {
                 JFileChooser fileChooser = new JFileChooser();
                 if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     // se viene selezionato correttamente un file
-
                     file = fileChooser.getSelectedFile();
                     salvaButton.setEnabled(true);
                 }
