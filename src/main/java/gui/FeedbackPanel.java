@@ -1,5 +1,6 @@
 package gui;
 
+import controller.Controller;
 import model.Documento;
 
 import javax.swing.*;
@@ -12,18 +13,20 @@ public class FeedbackPanel {
     public static final String DIALOG = "Dialog";
 
     private JPanel containerPanel;
+    private Controller controller;
 
-    public FeedbackPanel(List<Documento> documentoList) {
+    public FeedbackPanel(Controller controller, List<Documento> documenti) {
+        this.controller = controller;
         inizializzaContainerPanel();
-        aggiungiProgressi(documentoList);
+        aggiungiProgressi(documenti);
     }
 
     public JPanel getContainerPanel() {
         return containerPanel;
     }
 
-    private void aggiungiProgressi(List<Documento> documentoList) {
-        for(Documento documento : documentoList) {
+    private void aggiungiProgressi(List<Documento> documenti) {
+        for(Documento documento : documenti) {
             aggiungiPannelloFeedback(documento);
         }
     }
@@ -72,7 +75,12 @@ public class FeedbackPanel {
         JButton submitButton = new JButton("Invia Feedback");
         submitButton.setBackground(Color.WHITE);
         submitButton.setForeground(Color.BLACK);
-        submitButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        submitButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK, 1),
+                BorderFactory.createEmptyBorder(8, 16, 8, 16)  // padding
+        ));
+        submitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));  // cursore a manina
+        submitButton.setPreferredSize(new Dimension(140, 35));
 
 
         submitButton.addActionListener(new ActionListener() {
@@ -81,7 +89,7 @@ public class FeedbackPanel {
                 String feedback = feedbackTextArea.getText().trim();
                 if (!feedback.isEmpty()) {
                     submitButton.setEnabled(false);
-                    // TODO controller.inviaFeedback(titolo, feedback);
+                    controller.inserisciFeedbackGiudice(idDocumento, feedback);
                 }
             }
         });

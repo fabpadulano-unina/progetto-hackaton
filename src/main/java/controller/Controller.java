@@ -513,19 +513,20 @@ public class Controller {
     }
 
     public List<Documento> getDocumentiByHackatonId(Integer idHackaton) {
-        List<Integer> idsDocumento = new ArrayList<>();
+        List<Integer> idDocumenti = new ArrayList<>();
         List<String> descrizioni = new ArrayList<>();
         List<Integer> idsTeam = new ArrayList<>();
         List<String> nomiTeam = new ArrayList<>();
 
-        documentoDAO.getDocumentiByHackaton(idHackaton, idsDocumento, descrizioni, idsTeam, nomiTeam);
+        documentoDAO.getDocumentiByHackaton(idHackaton, idDocumenti, descrizioni, idsTeam, nomiTeam);
 
         List<Documento> documenti = new ArrayList<>();
 
-        for (int i = 0; i < idsDocumento.size(); i++) {
+        for (int i = 0; i < idDocumenti.size(); i++) {
+            if(documentoDAO.haDatoFeedback(utente.getId(), idDocumenti.get(i))) continue;
             Team team = new Team(idsTeam.get(i), nomiTeam.get(i));
 
-            Documento doc = new Documento(idsDocumento.get(i), descrizioni.get(i));
+            Documento doc = new Documento(idDocumenti.get(i), descrizioni.get(i));
             doc.setTeam(team);
 
             documenti.add(doc);
@@ -534,4 +535,7 @@ public class Controller {
         return documenti;
     }
 
+    public void inserisciFeedbackGiudice(Integer idDocumento, String feedback) {
+        documentoDAO.inserisciFeedbackGiudice(utente.getId(), idDocumento, feedback);
+    }
 }
