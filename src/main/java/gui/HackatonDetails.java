@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HackatonDetails extends JFrame {
@@ -32,6 +33,8 @@ public class HackatonDetails extends JFrame {
     private JTextArea descrizioneProblemaTextArea;
     private JButton saveDescrizioneBtn;
     private JScrollPane feedbackScrollPane;
+    private JScrollPane classificaScrollPane;
+    private JPanel classificaTab;
     private Controller controller;
     private Integer hackatonId;
     private LocalDate dataInizio;
@@ -71,6 +74,7 @@ public class HackatonDetails extends JFrame {
         setPubblicaDescrizione(descrizioneProblema);
         handlePubblicazioneDescrizione();
         setGiudiciTabView(dataInizio, dataFine);
+        setClassificaTabView(dataFine);
     }
 
     private void setDettagli(
@@ -213,10 +217,25 @@ public class HackatonDetails extends JFrame {
             if(!documenti.isEmpty()) {
                 feedbackScrollPane.setViewportView(new FeedbackPanel(controller, documenti).getContainerPanel());
             }
-        }
-
-        if(now.isAfter(dataFine)) {
-            feedbackScrollPane.setViewportView(new Voti(controller.getTeamByHackaton(hackatonId)).getPanel());
+        } else if(now.isAfter(dataFine) && !controller.giudiceHaVotatoInHackaton(hackatonId)) {
+            feedbackScrollPane.setViewportView(new VotiPanel(controller, controller.getTeamByHackaton(hackatonId)).getPanel());
+        } else {
+            tabbedPane.remove(giudiciToolTab);
         }
     }
+
+    private void setClassificaTabView(LocalDate dataFine) {
+        tabbedPane.remove(classificaTab);
+        if(LocalDate.now().isAfter(dataFine)) {
+            List<String> nomiTeam = new ArrayList<>();
+            List<Integer> voti = new ArrayList<>();
+            controller.getClassifica(hackatonId, nomiTeam, voti);
+
+            if(!nomiTeam.isEmpty()) {
+                tabbedPane.add("Classifica", classificaTab);
+                classificaScrollPane.setViewportView(new Classifica(nomiTeam, voti).getPanel());
+            }
+        }
+    }
+
 }

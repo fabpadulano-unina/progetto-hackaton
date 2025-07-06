@@ -1,22 +1,29 @@
 package gui;
 
+import controller.Controller;
 import model.Team;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Voti extends JPanel {
+public class VotiPanel extends JPanel {
     public static final String FONT = "Arial";
     private JPanel panel;
+    private final Controller controller;
+    private final List<Team> teams;
+    private final List<JComboBox<Integer>> cbs = new ArrayList<>();
 
-    public Voti(List<Team> teams) {
-        setPanel(teams);
+    public VotiPanel(Controller controller, List<Team> teams) {
+        this.controller = controller;
+        this.teams = teams;
+        setPanel();
     }
 
-    private void setPanel(List<Team> teams) {
+    private void setPanel() {
         panel = new JPanel();
         getPanel().setLayout(new BorderLayout());
 
@@ -95,7 +102,8 @@ public class Voti extends JPanel {
         // ComboBox per il voto
         Integer[] scores = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         JComboBox<Integer> cb = new JComboBox<>(scores);
-        cb.setPreferredSize(new Dimension(60, 25));
+        cb.setPreferredSize(new Dimension(70, 25));
+        cbs.add(cb);
 
         scorePanel.add(scoreLabel);
         scorePanel.add(cb);
@@ -119,7 +127,12 @@ public class Voti extends JPanel {
         inviaVotiBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                for(int i = 0; i < teams.size(); i++) {
+                    Team team = teams.get(i);
+                    Integer voto = (Integer) cbs.get(i).getSelectedItem();
+                    controller.salvaVoto(team.getId(), voto);
+                    inviaVotiBtn.setEnabled(false);
+                }
             }
         });
     }

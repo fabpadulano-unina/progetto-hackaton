@@ -537,4 +537,79 @@ public class Controller {
     public void inserisciFeedbackGiudice(Integer idDocumento, String feedback) {
         documentoDAO.inserisciFeedbackGiudice(utente.getId(), idDocumento, feedback);
     }
+
+    public void salvaVoto(Integer idTeam, Integer voto) {
+        teamDAO.addTeamVoto(utente.getId(), idTeam, voto);
+    }
+
+    public boolean giudiceHaVotatoInHackaton(Integer idHackaton) {
+        return teamDAO.giudiceHaVotatoInHackaton(utente.getId(), idHackaton);
+    }
+
+    public void getClassifica(Integer idHackaton, List<String> teamClassifica, List<Integer> punteggi) {
+        Hackaton hackaton = getHackatonById(idHackaton);
+        if (hackaton == null) return;
+
+        List<Giudice> giudici = hackaton.getGiudici();
+        List<Team> teamList = getTeamByHackaton(idHackaton);
+
+        if (!tuttiGiudiciHannoVotatoTuttiIGruppi(giudici, teamList)) return;
+
+        inizializzaClassifica(teamList, teamClassifica, punteggi);
+        sommaVotiGiudici(giudici, idHackaton, teamClassifica, punteggi);
+        ordinaClassifica(teamClassifica, punteggi);
+    }
+
+    private boolean tuttiGiudiciHannoVotatoTuttiIGruppi(List<Giudice> giudici, List<Team> teamList) {
+        for (Giudice giudice : giudici) {
+            for (Team team : teamList) {
+                if (!teamDAO.giudiceHaVotatoTeam(giudice.getId(), team.getId())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void inizializzaClassifica(List<Team> teamList, List<String> teamClassifica, List<Integer> punteggi) {
+        for (Team team : teamList) {
+            teamClassifica.add(team.getNome());
+            punteggi.add(0);
+        }
+    }
+
+    private void sommaVotiGiudici(List<Giudice> giudici, Integer idHackaton, List<String> teamClassifica, List<Integer> punteggi) {
+        for (Giudice giudice : giudici) {
+            List<String> nomiTeam = new ArrayList<>();
+            List<Integer> votiGiudice = new ArrayList<>();
+            teamDAO.getVotiDelGiudice(giudice.getId(), idHackaton, nomiTeam, votiGiudice);
+
+            for (int i = 0; i < nomiTeam.size(); i++) {
+                String nome = nomiTeam.get(i);
+                int voto = votiGiudice.get(i);
+
+                int index = teamClassifica.indexOf(nome);
+                if (index != -1) {
+                    punteggi.set(index, punteggi.get(index) + voto);
+                }
+            }
+        }
+    }
+
+    private void ordinaClassifica(List<String> teamClassifica, List<Integer> punteggi) {
+        for (int i = 0; i < punteggi.size() - 1; i++) {
+            for (int j = i + 1; j < punteggi.size(); j++) {
+                if (punteggi.get(j) > punteggi.get(i)) {
+                    int tempPunteggio = punteggi.get(i);
+                    punteggi.set(i, punteggi.get(j));
+                    punteggi.set(j, tempPunteggio);
+
+                    String tempTeam = teamClassifica.get(i);
+                    teamClassifica.set(i, teamClassifica.get(j));
+                    teamClassifica.set(j, tempTeam);
+                }
+            }
+        }
+    }
+
 }

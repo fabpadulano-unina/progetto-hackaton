@@ -11,4 +11,8 @@ public interface TeamDAO {
     void deletePartecipanteNelTeam(Integer idPartecipante, Integer idHackaton);
     void getPartecipantiByTeam(Integer idTeam, List<String> nomiPartecipanti, List<String> cognomiPartecipanti);
     Integer getHackatonIdByTeamId(Integer idTeam);
+    void addTeamVoto(Integer idGiudice, Integer idTeam, int voto);
+    boolean giudiceHaVotatoInHackaton(Integer idGiudice, Integer idHackaton);
+    boolean giudiceHaVotatoTeam(Integer idGiudice, Integer idTeam);
+    void getVotiDelGiudice(Integer idGiudice, Integer idHackaton, List<String> nomiTeam, List<Integer> voti);
 }

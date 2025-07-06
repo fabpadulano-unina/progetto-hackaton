@@ -284,5 +284,115 @@ public class TeamImplementazionePostgresDAO implements TeamDAO {
         return null;
     }
 
+    @Override
+    public void addTeamVoto(Integer idGiudice, Integer idTeam, int voto) {
+        PreparedStatement createTablePS = null;
+        PreparedStatement insertVotePS = null;
+
+        try {
+            String createSQL = "CREATE TABLE IF NOT EXISTS Voto_Team_Giudice (" +
+                    "id_giudice INTEGER NOT NULL, " +
+                    "id_team INTEGER NOT NULL, " +
+                    "voto INTEGER NOT NULL CHECK (voto BETWEEN 0 AND 10), " +
+                    "PRIMARY KEY (id_giudice, id_team), " +
+                    "FOREIGN KEY (id_giudice) REFERENCES Utente(id), " +
+                    "FOREIGN KEY (id_team) REFERENCES Team(id)" +
+                    ");";
+
+            createTablePS = connection.prepareStatement(createSQL);
+            createTablePS.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella creazione tabella voto", e);
+        } finally {
+            closePs(createTablePS);
+        }
+
+        try {
+            String insertSQL = "INSERT INTO Voto_Team_Giudice (id_giudice, id_team, voto) VALUES (?, ?, ?)";
+            insertVotePS = connection.prepareStatement(insertSQL);
+            insertVotePS.setInt(1, idGiudice);
+            insertVotePS.setInt(2, idTeam);
+            insertVotePS.setInt(3, voto);
+            insertVotePS.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nell'inserimento voto", e);
+        } finally {
+            closePs(insertVotePS);
+        }
+    }
+
+    @Override
+    public boolean giudiceHaVotatoInHackaton(Integer idGiudice, Integer idHackaton) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT 1 " +
+                    "FROM Voto_Team_Giudice vtg " +
+                    "JOIN Team t ON vtg.id_team = t.id " +
+                    "WHERE t.id_hackaton = ? AND vtg.id_giudice = ? " +
+                    "LIMIT 1";
+
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, idHackaton);
+            ps.setInt(2, idGiudice);
+
+            rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel controllo voti del giudice", e);
+            return false;
+        } finally {
+            closeResources(ps, rs);
+        }
+    }
+
+    @Override
+    public boolean giudiceHaVotatoTeam(Integer idGiudice, Integer idTeam) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT 1 FROM voto_team_giudice WHERE id_giudice = ? AND id_team = ?";
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, idGiudice);
+            ps.setInt(2, idTeam);
+            rs = ps.executeQuery();
+
+            return rs.next();
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore durante la verifica del voto del giudice", e);
+            return false;
+        } finally {
+            closeResources(ps, rs);
+        }
+    }
+
+    @Override
+    public void getVotiDelGiudice(Integer idGiudice, Integer idHackaton, List<String> nomiTeam, List<Integer> voti) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT t.nome, vt.voto " +
+                    "FROM voto_team_giudice vt " +
+                    "JOIN Team t ON vt.id_team = t.id " +
+                    "WHERE vt.id_giudice = ? AND t.id_hackaton = ?";
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, idGiudice);
+            ps.setInt(2, idHackaton);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                nomiTeam.add(rs.getString("nome"));
+                voti.add(rs.getInt("voto"));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel recupero voti del giudice", e);
+        } finally {
+            closeResources(ps, rs);
+        }
+    }
+
 }
 
