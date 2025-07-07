@@ -25,7 +25,7 @@ class ButtonEditor extends DefaultCellEditor {
     private JButton button;
     private int row = -1;
     private boolean clicked;
-    private Controller controller;
+    private final Controller controller;
 
     public ButtonEditor(JCheckBox checkBox, Controller controller) {
         super(checkBox);

@@ -1,8 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Team {
     private Integer id;
     private String nome;

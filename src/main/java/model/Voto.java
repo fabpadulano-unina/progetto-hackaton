@@ -3,12 +3,12 @@ package model;
 public class Voto {
     private Team team;
     private Giudice giudice;
-    private int voto;
+    private int votoAssegnato;
 
-    public Voto(Team team, Giudice giudice, int voto) {
+    public Voto(Team team, Giudice giudice, int votoAssegnato) {
         this.setTeam(team);
         this.setGiudice(giudice);
-        this.setVoto(voto);
+        this.setVoto(votoAssegnato);
     }
 
     public Team getTeam() {
@@ -28,10 +28,10 @@ public class Voto {
     }
 
     public int getVoto() {
-        return voto;
+        return votoAssegnato;
     }
 
-    public void setVoto(int voto) {
-        this.voto = voto;
+    public void setVoto(int votoAssegnato) {
+        this.votoAssegnato = votoAssegnato;
     }
 }
