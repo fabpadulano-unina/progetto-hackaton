@@ -1,22 +1,18 @@
 package model;
 
 public class Commento {
-    private String commento;
-    private Giudice giudice;
-    private Documento documento;
+    private final String feedback;
+    private final Giudice giudice;
+    private final Documento documento;
 
     public Commento(String commento, Giudice giudice, Documento documento) {
-        this.commento = commento;
+        this.feedback = commento;
         this.giudice = giudice;
         this.documento = documento;
     }
 
-    public String getCommento() {
-        return commento;
-    }
-
-    public void setCommento(String commento) {
-        this.commento = commento;
+    public String getFeedback() {
+        return feedback;
     }
 
     public Giudice getGiudice() {
@@ -31,7 +27,4 @@ public class Commento {
         return documento;
     }
 
-    public void setDocumento(Documento documento) {
-        this.documento = documento;
-    }
 }

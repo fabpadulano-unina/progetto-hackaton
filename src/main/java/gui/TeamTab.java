@@ -1,6 +1,7 @@
 package gui;
 
 import controller.Controller;
+import model.Commento;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +18,7 @@ public class TeamTab extends JPanel {
     private JComboBox<String> hackatonCb;
     private JComboBox<String> teamCb;
     private JButton refreshButton;
-    private Controller controller;
+    private final Controller controller;
 
     public TeamTab(Controller controller) {
         this.controller = controller;
@@ -79,8 +80,23 @@ public class TeamTab extends JPanel {
 
     private void setProgressiList() {
         DefaultListModel<String> model = new DefaultListModel<>();
-        for (String s : controller.getDocumentoByTeam(getTeamIndex())) {
-            model.addElement(s);
+        int teamIndex = getTeamIndex();
+
+        if(teamIndex >= 0) {
+            for (Commento docCommento : controller.getDocumentoAndFeedbackByTeam(teamIndex)) {
+                String descrizione = "<html>Descrizione: " + docCommento.getDocumento().getDescrizione();
+                if(docCommento.getFeedback() != null) {
+                    descrizione += "<span style='color: black; font-weight:bold;'>  | " +
+                            docCommento.getGiudice().getNome() + " " + docCommento.getGiudice().getCognome() +
+                            "</span> ha commentato:  <span style='color: red;font-weight:bold;'>" +
+                            docCommento.getFeedback() +
+                            "</span>";
+                }
+
+                descrizione += "</html>";
+                model.addElement(descrizione);
+
+            }
         }
 
         progressiList.setModel(model);
@@ -107,6 +123,8 @@ public class TeamTab extends JPanel {
         refreshButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                setTeamProgressiCbData();
+                setHackatonCbData();
                 setProgressiList();
                 setTeamCbData();
             }

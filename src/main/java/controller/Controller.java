@@ -16,6 +16,7 @@ import java.io.File;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,7 +29,7 @@ public class Controller {
     private TeamDAO teamDAO;
     private DocumentoDAO documentoDAO;
     private Utente utente;
-    private List<Hackaton> hackatons = new ArrayList<>();
+    private final List<Hackaton> hackatons = new ArrayList<>();
 
     public Controller() {
         try {
@@ -117,12 +118,7 @@ public class Controller {
                 break;
             case "PARTECIPANTE":
                 //gli hackaton a cui l'utente è registrato
-                List<Hackaton> hackatonsUtente = new ArrayList<>();
-                for (Hackaton h : getListaHackaton()) {
-                    if (hackatonDAO.isUtenteRegistrato(id, h.getId())) {
-                        hackatonsUtente.add(h);
-                    }
-                }
+                List<Hackaton> hackatonsUtente = getHackatonsPartecipante(id);
 
                 utente = new Partecipante(id, nome, cognome, email, password, hackatonsUtente);
                 break;
@@ -132,6 +128,16 @@ public class Controller {
         }
     }
 
+    private List<Hackaton> getHackatonsPartecipante(Integer idPartecipante) {
+        List<Hackaton> hackatonsUtente = new ArrayList<>();
+        for (Hackaton h : getListaHackaton()) {
+            if (hackatonDAO.isUtenteRegistrato(idPartecipante, h.getId())) {
+                hackatonsUtente.add(h);
+            }
+        }
+        return hackatonsUtente;
+    }
+
     public Object[][] getHackatons() {
         List<Hackaton> listaHackaton = getListaHackaton();
         Object[][] matrice = new Object[listaHackaton.size()][5];
@@ -139,8 +145,8 @@ public class Controller {
         for (int i = 0; i < listaHackaton.size(); i++) {
             Hackaton h = listaHackaton.get(i);
             matrice[i][0] = h.getTitolo();
-            matrice[i][1] = h.getDataInizio().toString();
-            matrice[i][2] = h.getDataFine().toString();
+            matrice[i][1] = h.getDataInizio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            matrice[i][2] = h.getDataFine().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             matrice[i][3] = "Dettaglio";
             matrice[i][4] = h.getId();
         }
@@ -248,6 +254,7 @@ public class Controller {
         List<Date> deadlines = new ArrayList<>();
         List<String> descrizioniProblema = new ArrayList<>();
 
+        List<Integer> idOrganizzatori = new ArrayList<>();
         List<String> nomiOrganizzatori = new ArrayList<>();
         List<String> cognomiOrganizzatori = new ArrayList<>();
 
@@ -259,7 +266,7 @@ public class Controller {
         List<Integer> idHackatonInviti = new ArrayList<>();
         List<Integer> idGiudiciInvitati = new ArrayList<>();
 
-        hackatonDAO.getHackatons(ids, titoli, sedi, dateInizio, dateFine, numMaxIscritti, dimMaxTeam, registrazioniAperte, deadlines, descrizioniProblema, nomiOrganizzatori, cognomiOrganizzatori);
+        hackatonDAO.getHackatons(ids, titoli, sedi, dateInizio, dateFine, numMaxIscritti, dimMaxTeam, registrazioniAperte, deadlines, descrizioniProblema, idOrganizzatori, nomiOrganizzatori, cognomiOrganizzatori);
         utenteDAO.leggiGiudici(idGiudici, nomiGiudici, cognomiGiudici, emailGiudici);
         hackatonDAO.leggiInvitiGiudice(idHackatonInviti, idGiudiciInvitati);
 
@@ -267,7 +274,7 @@ public class Controller {
 
         for (int i = 0; i < ids.size(); i++) {
             Organizzatore organizzatore = new Organizzatore(
-                    null,
+                    idOrganizzatori.get(i),
                     nomiOrganizzatori.get(i),
                     cognomiOrganizzatori.get(i),
                     null,
@@ -320,11 +327,18 @@ public class Controller {
     }
 
     public void registraUtenteHackaton(Integer idHackaton) {
-        hackatonDAO.registraUtente(this.utente.getId(), idHackaton);
+        if(utente instanceof Partecipante partecipante) {
+            hackatonDAO.registraUtente(partecipante.getId(), idHackaton);
+            partecipante.setHackatons(getHackatonsPartecipante(partecipante.getId()));
+        }
     }
 
     public boolean isUtenteRegistrato(Integer hackatonId) {
-        return hackatonDAO.isUtenteRegistrato(this.utente.getId(), hackatonId);
+        if(isPartecipante()) {
+            return hackatonDAO.isUtenteRegistrato(utente.getId(), hackatonId);
+        }
+
+        return false;
     }
 
     public int getNumeroUtentiRegistrati(Integer idHackaton) {
@@ -340,7 +354,7 @@ public class Controller {
 
         //tutti gli hackaton per cui è possibile creare un team (quindi se le registrazioni sono ancora aperte)
         for(Hackaton hackaton : getPartecipanteHackatonList()) {
-            if(hackaton.isRegistrazioniAperte()) {
+            if(hackaton.isRegistrazioniAperte() && !LocalDate.now().isAfter(hackaton.getDeadline())) {
                 hackatonsNames.add(hackaton.getTitolo());
             }
         }
@@ -484,19 +498,38 @@ public class Controller {
         documentoDAO.addDocumento(idTeam, descrizione, file);
     }
 
-    public List<String> getDocumentoByTeam(int teamIndex) {
+    public List<Commento> getDocumentoAndFeedbackByTeam(int teamIndex) {
         Integer idTeam = getTeamByPartecipante().get(teamIndex).getId();
 
         List<Integer> idDocumenti = new ArrayList<>();
         List<String> descrizioni = new ArrayList<>();
         documentoDAO.getDocumentiByTeam(idTeam, idDocumenti, descrizioni);
 
-        List<String> documenti = new ArrayList<>();
+        List<Commento> commenti = new ArrayList<>();
         for (int i = 0; i < idDocumenti.size(); i++) {
-            documenti.add(descrizioni.get(i));
+
+
+            List<String> nomiGiudici = new ArrayList<>();
+            List<String> cognomiGiudici = new ArrayList<>();
+            List<String> feedbacks = new ArrayList<>();
+
+            documentoDAO.getFeedbackByDocumento(idDocumenti.get(i), nomiGiudici, cognomiGiudici, feedbacks);
+            Documento documento = new Documento(idDocumenti.get(i), descrizioni.get(i));
+
+            if(feedbacks.isEmpty()) {
+                commenti.add(new Commento(null, null, documento));
+            } else {
+                for(int j = 0; j < feedbacks.size(); j++) {
+                    Giudice giudice = new Giudice(null, nomiGiudici.get(j), cognomiGiudici.get(j), null, null);
+                    Commento commento = new Commento(feedbacks.get(j), giudice, documento );
+                    commenti.add(commento);
+                }
+            }
+
+
         }
 
-        return documenti;
+        return commenti;
     }
 
     public boolean isOrganizzatore() {
@@ -612,4 +645,23 @@ public class Controller {
         }
     }
 
+    public boolean isOrganizzatoreOfHackaton(Integer idHackaton) {
+        Hackaton hackaton = getHackatonById(idHackaton);
+        if(hackaton == null) return false;
+
+        return hackaton.getOrganizzatore().getId().equals(utente.getId());
+    }
+
+
+    public boolean isGiudiceInHackaton(Integer idHackaton) {
+        Hackaton hackaton = getHackatonById(idHackaton);
+        if(hackaton == null) return false;
+
+        List<Giudice> giudici = hackaton.getGiudici();
+        for (Giudice giudice : giudici) {
+            if (giudice.getId().equals(utente.getId())) return true;
+        }
+
+        return false;
+    }
 }

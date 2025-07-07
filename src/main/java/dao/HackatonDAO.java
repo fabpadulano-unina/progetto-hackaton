@@ -18,6 +18,7 @@ public interface HackatonDAO {
             List<Boolean> registrazioniAperte,
             List<Date> deadlines,
             List<String> descrizioniProblema,
+            List<Integer> idOrganizzatori,
             List<String> nomiOrganizzatori,
             List<String> cognomiOrganizzatori
     );

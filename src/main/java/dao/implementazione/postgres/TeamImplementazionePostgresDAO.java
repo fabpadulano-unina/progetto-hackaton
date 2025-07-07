@@ -173,7 +173,7 @@ public class TeamImplementazionePostgresDAO implements TeamDAO {
                             "JOIN Partecipante_Team pt ON t.id = pt.id_team AND t.id_hackaton = pt.id_hackaton " +
                             "LEFT JOIN Partecipante_Team pt2 ON t.id = pt2.id_team AND t.id_hackaton = pt2.id_hackaton " +
                             "JOIN Hackaton h ON t.id_hackaton = h.id " +
-                            "WHERE pt.id_partecipante = ? " +
+                            "WHERE pt.id_partecipante = ? AND CURRENT_DATE BETWEEN h.data_inizio AND h.data_fine " +
                             "GROUP BY t.id, t.nome, h.dim_max_team";
 
             ps = connection.prepareStatement(sql);

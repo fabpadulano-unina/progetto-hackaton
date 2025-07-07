@@ -94,6 +94,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             List<Boolean> registrazioniAperte,
             List<Date> deadlines,
             List<String> descrizioniProblema,
+            List<Integer> idOrganizzatori,
             List<String> nomiOrganizzatori,
             List<String> cognomiOrganizzatori
     ) throws SQLException {
@@ -107,6 +108,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         registrazioniAperte.add(rs.getBoolean("registrazioni_aperte"));
         deadlines.add(rs.getDate("deadline_registrazioni"));
         descrizioniProblema.add(rs.getString("descrizione_problema"));
+        idOrganizzatori.add(rs.getInt("org_id"));
         nomiOrganizzatori.add(rs.getString("nome"));
         cognomiOrganizzatori.add(rs.getString("cognome"));
     }
@@ -124,6 +126,7 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             List<Boolean> registrazioniAperte,
             List<Date> deadlines,
             List<String> descrizioniProblema,
+            List<Integer> idOrganizzatori,
             List<String> nomiOrganizzatori,
             List<String> cognomiOrganizzatori
     ) {
@@ -134,14 +137,14 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
             String query = "SELECT h.id as id, titolo, sede, data_inizio," +
                     " data_fine, num_max_iscritti, dim_max_team," +
                     " registrazioni_aperte, deadline_registrazioni," +
-                    " descrizione_problema, o.nome as nome, o.cognome as cognome" +
+                    " descrizione_problema, o.id as org_id, o.nome as nome, o.cognome as cognome" +
                     " FROM Hackaton h join Utente o on h.id_organizzatore=o.id ";
             ps = connection.prepareStatement(query);
             rs = ps.executeQuery();
 
             while (rs.next()) {
                 popolaListeHackaton(rs, ids, titoli, sedi, dateInizio, dateFine, numMaxIscritti,
-                        dimMaxTeam, registrazioniAperte, deadlines, descrizioniProblema, nomiOrganizzatori, cognomiOrganizzatori);
+                        dimMaxTeam, registrazioniAperte, deadlines, descrizioniProblema, idOrganizzatori, nomiOrganizzatori, cognomiOrganizzatori);
             }
 
         } catch (SQLException e) {

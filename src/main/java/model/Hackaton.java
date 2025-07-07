@@ -17,8 +17,7 @@ public class Hackaton {
     private String descrizioneProblema;
 
     private Organizzatore organizzatore;
-    private List<Partecipante> partecipanti = new ArrayList<>();
-    private List<Giudice> giudici = new ArrayList<>();
+    private final List<Giudice> giudici = new ArrayList<>();
 
 
     public Hackaton(
@@ -116,18 +115,6 @@ public class Hackaton {
 
     public void setOrganizzatore(Organizzatore organizzatore) {
         this.organizzatore = organizzatore;
-    }
-
-    public void acquisisciVoti() {}
-
-    public void pubblicaClassifica() {}
-
-    public List<Partecipante> getPartecipanti() {
-        return partecipanti;
-    }
-
-    public void addPartecipante(Partecipante partecipante) {
-        this.partecipanti.add(partecipante);
     }
 
     public List<Giudice> getGiudici() {

@@ -32,12 +32,12 @@ public class HackatonDetails extends JFrame {
     private JLabel registrazioniOpenedLabel;
     private JTextArea descrizioneProblemaTextArea;
     private JButton saveDescrizioneBtn;
-    private JScrollPane feedbackScrollPane;
+    private JScrollPane giudiciScrollPane;
     private JScrollPane classificaScrollPane;
     private JPanel classificaTab;
-    private Controller controller;
-    private Integer hackatonId;
-    private LocalDate dataInizio;
+    private final Controller controller;
+    private final Integer hackatonId;
+    private final LocalDate dataInizio;
 
     public HackatonDetails(
             Controller controller,
@@ -66,7 +66,7 @@ public class HackatonDetails extends JFrame {
         this.dataInizio = dataInizio;
 
         setDettagli(titolo, sede, dataInizio, dataFine, numMaxIscritti, dimMaxTeam, isRegistrazioneAperte, descrizioneProblema, nomeOrganizzatore, cognomeOrganizzatore);
-        aggiornaVisibilitaPulsanti(isRegistrazioneAperte, deadline, numMaxIscritti);
+        aggiornaVisibilita(isRegistrazioneAperte, deadline, numMaxIscritti);
         setTableGiudici(giudici);
         handleApriRegistraioni(apriRegistrazioniButton);
         handleRegistrati(registratiBtn);
@@ -98,7 +98,7 @@ public class HackatonDetails extends JFrame {
                         "Il numero massimo di iscritti è %d e ogni team potrà essere composto da un massimo di %d partecipanti.",
                 titolo,
                 sede,
-                dataFineFormatted,
+                dataInizioFormatted,
                 dataFineFormatted,
                 numMaxIscritti,
                 dimMaxTeam
@@ -129,12 +129,12 @@ public class HackatonDetails extends JFrame {
         }
     }
 
-    private void aggiornaVisibilitaPulsanti(boolean isRegistrazioneAperte, LocalDate deadline, int numMaxIscritti) {
+    private void aggiornaVisibilita(boolean isRegistrazioneAperte, LocalDate deadline, int numMaxIscritti) {
         registratiBtn.setVisible(false);
         tabbedPane.remove(organizerToolTab);
         tabbedPane.remove(giudiciToolTab);
 
-        if(controller.isOrganizzatore()) {
+        if(controller.isOrganizzatore() && controller.isOrganizzatoreOfHackaton(hackatonId)) {
             tabbedPane.add("Tool per organizzatori", organizerToolTab);
             if(deadline != null) {
                 deadlineRegistrazioniField.setText(deadline.format(DATE_TIME_FORMATTER));
@@ -142,7 +142,7 @@ public class HackatonDetails extends JFrame {
             }
         } else if(controller.isPartecipante()) {
             if(isRegistrazioneAperte && controller.getNumeroUtentiRegistrati(hackatonId) < numMaxIscritti) registratiBtn.setVisible(true);
-        } else {
+        } else if(controller.isGiudice() && controller.isGiudiceInHackaton(hackatonId)){
             tabbedPane.add("Tool per giudici", giudiciToolTab);
         }
     }
@@ -211,14 +211,17 @@ public class HackatonDetails extends JFrame {
 
     private void setGiudiciTabView(LocalDate dataInizio, LocalDate dataFine) {
         LocalDate now = LocalDate.now();
-        feedbackScrollPane.setBorder(BorderFactory.createEmptyBorder());
+        giudiciScrollPane.setBorder(BorderFactory.createEmptyBorder());
         if (!now.isBefore(dataInizio) && !now.isAfter(dataFine)) {
             List<Documento> documenti = controller.getDocumentiByHackatonId(hackatonId);
             if(!documenti.isEmpty()) {
-                feedbackScrollPane.setViewportView(new FeedbackPanel(controller, documenti).getContainerPanel());
+                giudiciScrollPane.setViewportView(new FeedbackPanel(controller, documenti).getContainerPanel());
+            }
+            else {
+                giudiciScrollPane.setVisible(false);
             }
         } else if(now.isAfter(dataFine) && !controller.giudiceHaVotatoInHackaton(hackatonId)) {
-            feedbackScrollPane.setViewportView(new VotiPanel(controller, controller.getTeamByHackaton(hackatonId)).getPanel());
+            giudiciScrollPane.setViewportView(new VotiPanel(controller, controller.getTeamByHackaton(hackatonId)).getPanel());
         } else {
             tabbedPane.remove(giudiciToolTab);
         }

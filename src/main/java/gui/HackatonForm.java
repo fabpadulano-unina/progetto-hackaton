@@ -10,9 +10,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class HackatonForm extends JFrame {
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private JTextField titoloInput;
     private JTextField sedeInput;
     private JTextField dataFineInput;
@@ -22,8 +22,8 @@ public class HackatonForm extends JFrame {
     private JTextField dimensioneMaxTeamInput;
     private JPanel panel;
     private JList<String> giudiciList;
-    private Controller controller;
-    private List<Giudice> giudici;
+    private final Controller controller;
+    private final List<Giudice> giudici;
 
     public HackatonForm(Controller controller, List<Giudice> giudici) {
         this.setTitle("Crea Hackaton");
@@ -36,6 +36,8 @@ public class HackatonForm extends JFrame {
 
         this.controller = controller;
 
+        this.dataInizioInput.setText(LocalDate.now().format(DATE_TIME_FORMATTER));
+        this.dataFineInput.setText(LocalDate.now().plusDays(2).format(DATE_TIME_FORMATTER));
 
         handleClicks();
     }
@@ -55,8 +57,6 @@ public class HackatonForm extends JFrame {
         addHackatonBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                formatter = formatter.withLocale( Locale.ITALIAN );
 
                 List<Giudice> giudiciSelezionati = new ArrayList<>();
                 for (int i : giudiciList.getSelectedIndices()) {
@@ -65,8 +65,8 @@ public class HackatonForm extends JFrame {
                 controller.saveHackaton(
                         titoloInput.getText(),
                         sedeInput.getText(),
-                        LocalDate.parse(dataInizioInput.getText(), formatter),
-                        LocalDate.parse(dataFineInput.getText(), formatter),
+                        LocalDate.parse(dataInizioInput.getText(), DATE_TIME_FORMATTER),
+                        LocalDate.parse(dataFineInput.getText(), DATE_TIME_FORMATTER),
                         Integer.parseInt(numeroMaxIscrittiInput.getText()),
                         Integer.parseInt(dimensioneMaxTeamInput.getText()),
                         giudiciSelezionati

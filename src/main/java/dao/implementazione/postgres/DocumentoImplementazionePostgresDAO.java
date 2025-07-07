@@ -179,4 +179,33 @@ public class DocumentoImplementazionePostgresDAO implements DocumentoDAO {
     }
 
 
+    @Override
+    public void getFeedbackByDocumento(Integer idDocumento, List<String> nomiGiudici, List<String> cognomiGiudici, List<String> feedbacks) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT u.nome, u.cognome, fd.feedback " +
+                    "FROM feedback_documento fd " +
+                    "JOIN Utente u ON fd.id_giudice = u.id " +
+                    "WHERE fd.id_documento = ?";
+
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, idDocumento);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                nomiGiudici.add(rs.getString("nome"));
+                cognomiGiudici.add(rs.getString("cognome"));
+                feedbacks.add(rs.getString("feedback"));
+            }
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nel recupero dei feedback per documento", e);
+        } finally {
+            closeResources(ps, rs);
+        }
+    }
+
 }

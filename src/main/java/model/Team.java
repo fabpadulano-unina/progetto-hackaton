@@ -6,7 +6,6 @@ import java.util.List;
 public class Team {
     private Integer id;
     private String nome;
-    private List<Partecipante> partecipanti = new ArrayList<>();
     private boolean isFull;
 
     public Team(Integer id, String nome) {
@@ -22,11 +21,6 @@ public class Team {
     public void setNome(String nome) {
         this.nome = nome;
     }
-
-    public List<Partecipante> getPartecipanti() {
-        return partecipanti;
-    }
-
 
     public Integer getId() {
         return id;

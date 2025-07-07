@@ -10,15 +10,12 @@ public class Partecipante extends Utente {
         this.hackatons = hackatons;
     }
 
-
-    public void registra(Hackaton hackaton) {
-        hackaton.addPartecipante(this);
-    }
-
-    public void creaTeam() {}
-
     public List<Hackaton> getHackatons() {
         return hackatons;
+    }
+
+    public void setHackatons(List<Hackaton> hackatons) {
+        this.hackatons = hackatons;
     }
 
 }

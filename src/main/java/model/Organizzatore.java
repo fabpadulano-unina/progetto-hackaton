@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Organizzatore  extends Utente {
 
-    private List<Hackaton> hackatonOrganizzati = new ArrayList<>();
+    private final List<Hackaton> hackatonOrganizzati = new ArrayList<>();
 
     public Organizzatore(Integer id, String nome, String cognome, String email, String password, Hackaton hackaton) {
         super(id, nome, cognome, email, password, "ORGANIZZATORE");
@@ -21,10 +21,6 @@ public class Organizzatore  extends Utente {
     public void addHackaton(Hackaton hackaton) {
         hackaton.setOrganizzatore(this);
         hackatonOrganizzati.add(hackaton);
-    }
-
-    public List<Hackaton> getHackatonOrganizzati() {
-        return hackatonOrganizzati;
     }
 
 }
