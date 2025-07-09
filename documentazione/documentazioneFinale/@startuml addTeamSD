@@ -1,0 +1,84 @@
+    @startuml
+    skinparam sequenceMessageAlign center
+    skinparam ParticipantPadding 20
+    skinparam maxMessageSize 120
+    skinparam responseMessageBelowArrow true
+
+    actor Utente
+    participant TeamTab
+    participant Controller
+    participant TeamForm
+    participant TeamDAO
+    participant ConnessioneDatabase
+    database Database
+    participant PreparedStatement
+    participant ResultSet
+
+    Utente -> TeamTab : click addTeamBtn
+    activate TeamTab
+    TeamTab -> Controller : openTeamForm(titoloHackaton)
+    activate Controller
+    create TeamForm
+    Controller -> TeamForm : new TeamForm(titoloHackaton, TeamTab)
+    deactivate Controller
+    deactivate TeamTab
+
+    == Inserimento nuovo team ==
+    Utente -> TeamForm : adds nome team
+    Utente -> TeamForm : click addBtn
+    activate TeamForm
+    TeamForm -> Controller : addTeam(titoloHackaton, nomeInput.getText())
+    activate Controller
+    Controller -> Controller : getIdHackatonFromName(titoloHackaton)
+    activate Controller
+    deactivate Controller
+    Controller -> TeamDAO : addTeam(idHackaton, nomeTeam)
+    activate TeamDAO
+    TeamDAO -> Database : prepareStatement("CREATE TABLE IF NOT EXISTS Team (...)")
+    activate Database
+    Database --> TeamDAO : PreparedStatement
+    deactivate Database
+    TeamDAO -> PreparedStatement : executeUpdate()
+    activate PreparedStatement
+    TeamDAO -> PreparedStatement : close()
+    deactivate PreparedStatement
+    TeamDAO -> Database : prepareStatement("INSERT INTO Team (...) RETURN_GENERATED_KEYS")
+    activate Database
+    Database --> TeamDAO : PreparedStatement
+    deactivate Database
+    TeamDAO -> PreparedStatement : setString(1, nomeTeam)
+    activate PreparedStatement
+    deactivate PreparedStatement
+    TeamDAO -> PreparedStatement : setInt(2, idHackaton)
+    activate PreparedStatement
+    deactivate PreparedStatement
+    TeamDAO -> PreparedStatement : executeUpdate()
+    activate PreparedStatement
+    deactivate PreparedStatement
+    TeamDAO -> PreparedStatement : getGeneratedKeys()
+    activate PreparedStatement
+    deactivate PreparedStatement
+    PreparedStatement --> TeamDAO : ResultSet
+    deactivate PreparedStatement
+    opt ResultSet.next()
+        TeamDAO -> ResultSet : getInt(1)
+        activate ResultSet
+        deactivate ResultSet
+    end
+    TeamDAO -> ResultSet : close()
+    activate ResultSet
+    deactivate ResultSet
+    TeamDAO -> PreparedStatement : close()  
+    activate PreparedStatement
+    deactivate PreparedStatement
+    TeamDAO --> Controller : return idTeam
+    deactivate TeamDAO
+    Controller -> Controller : addPartecipanteAlTeam(idTeam, idHackaton)
+    activate Controller
+    deactivate Controller
+    deactivate Controller
+    TeamForm -> Controller : dispose()
+    activate Controller
+    deactivate Controller
+    deactivate TeamForm
+    @enduml

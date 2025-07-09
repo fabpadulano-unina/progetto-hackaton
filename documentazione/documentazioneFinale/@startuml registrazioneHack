@@ -1,0 +1,130 @@
+@startuml
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 20
+skinparam maxMessageSize 120
+skinparam responseMessageBelowArrow true
+
+actor Utente
+participant Login
+participant Controller
+participant UtenteDAO
+participant ConnessioneDatabase
+participant Connection
+database Database
+participant PreparedStatement
+participant ResultSet
+participant HackathonDetails
+participant HackatonDAO
+
+Utente -> Login : click loginButton
+activate Login
+Login -> Controller : loginUtente(email, password)
+activate Controller
+Controller -> UtenteDAO : getUtente(id, email, password, nome, cognome, tipoUtente)
+activate UtenteDAO
+UtenteDAO -> ConnessioneDatabase : getInstance()
+activate ConnessioneDatabase
+ConnessioneDatabase -> ConnessioneDatabase : getInstance()
+activate ConnessioneDatabase
+deactivate ConnessioneDatabase
+ConnessioneDatabase --> UtenteDAO : getConnection()
+deactivate ConnessioneDatabase
+UtenteDAO -> Database : prepareStatement("SELECT ...")
+activate Database
+Database --> UtenteDAO : PreparedStatement
+deactivate Database
+UtenteDAO -> PreparedStatement : setString(1, email)
+activate PreparedStatement
+deactivate PreparedStatement
+UtenteDAO -> PreparedStatement : setString(2, password)
+activate PreparedStatement
+deactivate PreparedStatement
+UtenteDAO -> PreparedStatement : executeQuery()
+activate PreparedStatement
+PreparedStatement --> UtenteDAO : ResultSet
+deactivate PreparedStatement
+UtenteDAO -> ResultSet : next()
+activate ResultSet
+deactivate ResultSet
+opt ResultSet.next() == true
+    UtenteDAO -> ResultSet : getInt("id")
+    activate ResultSet
+    deactivate ResultSet
+    UtenteDAO -> ResultSet : getString("nome")
+    activate ResultSet
+    deactivate ResultSet
+    UtenteDAO -> ResultSet : getString("cognome")
+    activate ResultSet
+    deactivate ResultSet
+    UtenteDAO -> ResultSet : getString("tipo_utente")
+    activate ResultSet
+    deactivate ResultSet
+end
+UtenteDAO -> ResultSet : close()
+activate ResultSet
+deactivate ResultSet
+UtenteDAO -> PreparedStatement : close()
+activate PreparedStatement
+deactivate PreparedStatement
+deactivate UtenteDAO
+
+alt login valido
+    Controller -> Controller : setUtente(...)
+activate Controller
+deactivate Controller
+    Controller --> Login : true
+deactivate Controller
+    Login -> Controller : openHomeFrame()
+    activate Controller
+    deactivate Controller
+else login fallito
+    Controller --> Login : false
+    Login -> Login : credentialsErrorLabel.setVisible(true)
+activate Login
+deactivate Login
+end
+deactivate Controller
+deactivate Login
+
+== Registrazione Hackathon ==
+Utente -> HackathonDetails : click registratiBtn
+activate HackathonDetails
+HackathonDetails -> Controller : registraUtenteHackaton(hackatonId)
+activate Controller
+Controller -> HackatonDAO : registraUtente(idUtente, idHackaton)
+activate HackatonDAO
+HackatonDAO -> Database : prepareStatement("CREATE TABLE IF NOT EXISTS ...")
+activate Database
+Database --> HackatonDAO : PreparedStatement
+deactivate Database
+HackatonDAO -> PreparedStatement : executeUpdate()
+activate PreparedStatement
+PreparedStatement -> HackatonDAO : close()
+deactivate PreparedStatement
+HackatonDAO -> Database : prepareStatement("INSERT INTO ...")
+activate Database
+Database --> HackatonDAO : PreparedStatement
+deactivate Database
+HackatonDAO -> PreparedStatement : setInt(1, idHackaton)
+activate PreparedStatement
+deactivate PreparedStatement
+HackatonDAO -> PreparedStatement : setInt(2, idUtente)
+activate PreparedStatement
+deactivate PreparedStatement
+HackatonDAO -> PreparedStatement : executeUpdate()
+activate PreparedStatement
+deactivate PreparedStatement
+HackatonDAO -> PreparedStatement : close()
+activate PreparedStatement
+deactivate PreparedStatement
+deactivate HackatonDAO
+Controller -> Controller : partecipante.setHackatons(getHackatonsPartecipante(...))
+activate Controller
+deactivate Controller
+Controller --> HackathonDetails : return
+deactivate Controller
+HackathonDetails -> HackathonDetails : setRegistraBtnText()
+activate HackathonDetails
+deactivate HackathonDetails
+deactivate HackathonDetails
+@enduml
