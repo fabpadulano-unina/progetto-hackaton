@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.sql.*;
 import java.util.List;
 import java.util.logging.Level;
@@ -64,7 +65,7 @@ public class DocumentoImplementazionePostgresDAO implements DocumentoDAO {
 
     private void insertFile(File file, PreparedStatement insertPS) throws SQLException {
             try (InputStream fileInputStream = new FileInputStream(file)) {
-                insertPS.setBinaryStream(3, fileInputStream, (int) file.length());
+                insertPS.setBytes(3, Files.readAllBytes(file.toPath()));
             } catch (IOException e) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nella lettura del file", e);
             }

@@ -137,7 +137,6 @@ public class TeamTab extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 controller.openTeamForm(getSelectedHackaton());
-                setTeamCbData();
             }
         });
     }

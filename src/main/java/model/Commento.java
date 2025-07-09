@@ -19,10 +19,6 @@ public class Commento {
         return giudice;
     }
 
-    public void setGiudice(Giudice giudice) {
-        this.giudice = giudice;
-    }
-
     public Documento getDocumento() {
         return documento;
     }
