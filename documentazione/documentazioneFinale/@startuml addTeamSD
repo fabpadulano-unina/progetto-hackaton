@@ -43,8 +43,9 @@
     deactivate nomeInput
     TeamForm -> Controller : addTeam(titoloHackaton, nomeTeam)
     activate Controller
-    Controller --> Controller : getIdHackatonFromName(titoloHackaton)
+    Controller -> Controller : getIdHackatonFromName(titoloHackaton)
     activate Controller
+    Controller --> Controller : idHackaton
     deactivate Controller
     Controller -> TeamDAO : addTeam(idHackaton, nomeTeam)
     activate TeamDAO
