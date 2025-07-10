@@ -31,7 +31,7 @@
     create TeamForm
     Controller -> TeamForm : new TeamForm(titoloHackaton, controller)
     deactivate Controller
-    deactivate TeamTab
+
 
     == Inserimento nuovo team ==
     Utente -> TeamForm : adds nome team
@@ -81,7 +81,7 @@
     insertTeamPS --> TeamDAO : ResultSet
     deactivate insertTeamPS
     deactivate insertTeamPS
-    opt ResultSet.next()
+    opt rs.next()
         TeamDAO -> ResultSet : getInt(1)
         activate ResultSet
         ResultSet --> TeamDAO : return idTeam
@@ -105,10 +105,11 @@
     activate Controller
     deactivate Controller
     deactivate Controller
-    deactivate TeamForm
+
     TeamForm -> Controller : dispose()
-    activate TeamForm
+
     activate Controller
     deactivate Controller
     deactivate TeamForm
+    deactivate TeamTab
     @enduml
