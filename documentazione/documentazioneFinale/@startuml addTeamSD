@@ -18,10 +18,13 @@
 
     Utente -> TeamTab : click addTeamBtn
     activate TeamTab
-    TeamTab -> hackatonCb : getSelectedHackaton()
+    TeamTab -> TeamTab : getSelectedHackaton()
+    activate TeamTab
+    TeamTab -> hackatonCb : getSelectedItem()
     activate hackatonCb
     hackatonCb --> TeamTab : selectedHackaton
     deactivate hackatonCb
+    deactivate TeamTab
 
     TeamTab -> Controller : openTeamForm(selectedHackaton)
     activate Controller
