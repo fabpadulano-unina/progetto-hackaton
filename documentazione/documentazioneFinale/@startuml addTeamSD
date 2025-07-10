@@ -14,7 +14,7 @@
     database Connection as Database
     participant "createTableTeamPS : PreparedStatement" as createTableTeamPS
     participant "insertTeamPS : PreparedStatement" as insertTeamPS
-    participant ResultSet
+    participant "rs : ResultSet" as ResultSet
 
     Utente -> TeamTab : click addTeamBtn
     activate TeamTab
@@ -83,19 +83,27 @@
         ResultSet --> TeamDAO : return idTeam
         deactivate ResultSet
     end
-    TeamDAO -> ResultSet : close()
-    activate ResultSet
-    deactivate ResultSet
-    TeamDAO -> insertTeamPS : close()
+    TeamDAO -> Database : closeResources(insertTeamPS, rs)
+    activate Database
+    Database -> insertTeamPS : close()
     activate insertTeamPS
     deactivate insertTeamPS
+
+    Database -> ResultSet : close()
+    activate ResultSet
+    deactivate ResultSet
+
+    deactivate Database
+
     TeamDAO --> Controller : return idTeam
     deactivate TeamDAO
     Controller -> Controller : addPartecipanteAlTeam(idTeam, idHackaton)
     activate Controller
     deactivate Controller
     deactivate Controller
+    deactivate TeamForm
     TeamForm -> Controller : dispose()
+    activate TeamForm
     activate Controller
     deactivate Controller
     deactivate TeamForm
