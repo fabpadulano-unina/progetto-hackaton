@@ -6,20 +6,27 @@
 
     actor Utente
     participant TeamTab
-    participant Controller
+    participant "hackatonCb : JComboBox" as hackatonCb
+    participant "controller : Controller" as Controller
     participant TeamForm
+    participant "nomeInput : JTextField" as nomeInput
     participant TeamDAO
-    participant ConnessioneDatabase
-    database Database
-    participant PreparedStatement
+    database Connection as Database
+    participant "createTableTeamPS : PreparedStatement" as createTableTeamPS
+    participant "insertTeamPS : PreparedStatement" as insertTeamPS
     participant ResultSet
 
     Utente -> TeamTab : click addTeamBtn
     activate TeamTab
-    TeamTab -> Controller : openTeamForm(titoloHackaton)
+    TeamTab -> hackatonCb : getSelectedHackaton()
+    activate hackatonCb
+    hackatonCb --> TeamTab : selectedHackaton
+    deactivate hackatonCb
+
+    TeamTab -> Controller : openTeamForm(selectedHackaton)
     activate Controller
     create TeamForm
-    Controller -> TeamForm : new TeamForm(titoloHackaton, TeamTab)
+    Controller -> TeamForm : new TeamForm(titoloHackaton, controller)
     deactivate Controller
     deactivate TeamTab
 
@@ -27,50 +34,61 @@
     Utente -> TeamForm : adds nome team
     Utente -> TeamForm : click addBtn
     activate TeamForm
-    TeamForm -> Controller : addTeam(titoloHackaton, nomeInput.getText())
+    TeamForm -> nomeInput : getText()
+    activate nomeInput
+    nomeInput --> TeamForm : nomeTeam
+    deactivate nomeInput
+    TeamForm -> Controller : addTeam(titoloHackaton, nomeTeam)
     activate Controller
-    Controller -> Controller : getIdHackatonFromName(titoloHackaton)
+    Controller --> Controller : getIdHackatonFromName(titoloHackaton)
     activate Controller
     deactivate Controller
     Controller -> TeamDAO : addTeam(idHackaton, nomeTeam)
     activate TeamDAO
     TeamDAO -> Database : prepareStatement("CREATE TABLE IF NOT EXISTS Team (...)")
     activate Database
-    Database --> TeamDAO : PreparedStatement
+    Database --> TeamDAO : createTableTeamPS
     deactivate Database
-    TeamDAO -> PreparedStatement : executeUpdate()
-    activate PreparedStatement
-    TeamDAO -> PreparedStatement : close()
-    deactivate PreparedStatement
+    TeamDAO -> createTableTeamPS : executeUpdate()
+    activate createTableTeamPS
+    deactivate createTableTeamPS
+    TeamDAO -> Database : closePs(createTableTeamPS)
+    activate Database
+    Database -> createTableTeamPS : close()
+    activate createTableTeamPS
+    deactivate createTableTeamPS
+    deactivate Database
+
     TeamDAO -> Database : prepareStatement("INSERT INTO Team (...) RETURN_GENERATED_KEYS")
     activate Database
-    Database --> TeamDAO : PreparedStatement
+    Database --> TeamDAO : insertTeamPS
     deactivate Database
-    TeamDAO -> PreparedStatement : setString(1, nomeTeam)
-    activate PreparedStatement
-    deactivate PreparedStatement
-    TeamDAO -> PreparedStatement : setInt(2, idHackaton)
-    activate PreparedStatement
-    deactivate PreparedStatement
-    TeamDAO -> PreparedStatement : executeUpdate()
-    activate PreparedStatement
-    deactivate PreparedStatement
-    TeamDAO -> PreparedStatement : getGeneratedKeys()
-    activate PreparedStatement
-    deactivate PreparedStatement
-    PreparedStatement --> TeamDAO : ResultSet
-    deactivate PreparedStatement
+    TeamDAO -> insertTeamPS : setString(1, nomeTeam)
+    activate insertTeamPS
+    deactivate insertTeamPS
+    TeamDAO -> insertTeamPS : setInt(2, idHackaton)
+    activate insertTeamPS
+    deactivate insertTeamPS
+    TeamDAO -> insertTeamPS : executeUpdate()
+    activate insertTeamPS
+    deactivate insertTeamPS
+    TeamDAO -> insertTeamPS : getGeneratedKeys()
+    activate insertTeamPS
+    insertTeamPS --> TeamDAO : ResultSet
+    deactivate insertTeamPS
+    deactivate insertTeamPS
     opt ResultSet.next()
         TeamDAO -> ResultSet : getInt(1)
         activate ResultSet
+        ResultSet --> TeamDAO : return idTeam
         deactivate ResultSet
     end
     TeamDAO -> ResultSet : close()
     activate ResultSet
     deactivate ResultSet
-    TeamDAO -> PreparedStatement : close()  
-    activate PreparedStatement
-    deactivate PreparedStatement
+    TeamDAO -> insertTeamPS : close()
+    activate insertTeamPS
+    deactivate insertTeamPS
     TeamDAO --> Controller : return idTeam
     deactivate TeamDAO
     Controller -> Controller : addPartecipanteAlTeam(idTeam, idHackaton)

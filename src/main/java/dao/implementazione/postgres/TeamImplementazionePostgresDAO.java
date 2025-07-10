@@ -23,7 +23,7 @@ public class TeamImplementazionePostgresDAO implements TeamDAO {
     public Integer addTeam(Integer idHackaton, String nomeTeam) {
         PreparedStatement createTableTeamPS = null;
         PreparedStatement insertTeamPS = null;
-        ResultSet rs;
+        ResultSet rs = null;
         Integer idTeam = null;
 
         try {
@@ -57,7 +57,7 @@ public class TeamImplementazionePostgresDAO implements TeamDAO {
         } catch (SQLException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore nell'inserimento del Team", e);
         } finally {
-            closePs(insertTeamPS);
+            closeResources(insertTeamPS, rs);
         }
 
         return idTeam;
