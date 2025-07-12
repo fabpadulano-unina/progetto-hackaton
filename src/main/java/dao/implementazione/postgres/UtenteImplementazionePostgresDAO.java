@@ -104,7 +104,7 @@ public class UtenteImplementazionePostgresDAO implements UtenteDAO {
             loginUtentePS.setString(1, email);
             loginUtentePS.setString(2, password);
 
-            var rs = loginUtentePS.executeQuery();
+            ResultSet rs = loginUtentePS.executeQuery();
             if (rs.next()) {
                 id[0] = rs.getInt("id");
                 nome.append(rs.getString("nome"));
