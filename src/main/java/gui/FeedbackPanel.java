@@ -9,31 +9,57 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+/**
+ * Pannello per la gestione dei feedback sui documenti durante l'hackathon.
+ * Permette ai giudici di visualizzare i documenti caricati dai team
+ * e di inserire commenti e valutazioni sui progressi.
+ */
 public class FeedbackPanel {
     public static final String DIALOG = "Dialog";
 
     private JPanel containerPanel;
     private Controller controller;
 
+    /**
+     * Costruttore del pannello feedback per i giudici.
+     * Inizializza il pannello e carica tutti i documenti dell'hackathon
+     * per permettere ai giudici di valutarli e commentarli.
+     *
+     * @param controller il controller per gestire le operazioni
+     * @param documenti la lista dei documenti da valutare
+     */
     public FeedbackPanel(Controller controller, List<Documento> documenti) {
         this.controller = controller;
         inizializzaContainerPanel();
         aggiungiProgressi(documenti);
     }
 
+
     public JPanel getContainerPanel() {
         return containerPanel;
     }
 
+    /**
+     * Aggiunge un pannello di feedback per ogni documento nell'hackathon.
+     * Crea un'interfaccia separata per ogni documento caricato dai team
+     * permettendo ai giudici di valutarli singolarmente.
+     *
+     * @param documenti la lista dei documenti per cui creare i pannelli
+     */
     private void aggiungiProgressi(List<Documento> documenti) {
         for(Documento documento : documenti) {
             aggiungiPannelloFeedback(documento);
         }
     }
 
+    /**
+     * Inizializza il pannello contenitore per i feedback dei giudici.
+     * Configura il layout verticale per disporre i feedback uno sotto l'altro
+     * e rimuove il bordo predefinito per un aspetto più pulito.
+     */
     private void inizializzaContainerPanel() {
         if(getContainerPanel() != null) {
-            // container dove ogni feedback andrà uno sotto l'altro (Y-AXIS)
+            // container dove ogni feedback andrà uno sotto l'altro
             getContainerPanel().setLayout(new BoxLayout(getContainerPanel(), BoxLayout.Y_AXIS));
             // rimozione del bordo nero di default
             getContainerPanel().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -71,6 +97,15 @@ public class FeedbackPanel {
         getContainerPanel().add(feedbackPanel);
     }
 
+    /**
+     * Crea e configura il pulsante per inviare feedback sui documenti.
+     * Imposta lo stile del pulsante e gestisce l'invio del feedback,
+     * disabilitando il pulsante dopo l'invio per evitare invii multipli.
+     *
+     * @param idDocumento l'ID del documento per cui inviare il feedback
+     * @param feedbackTextArea l'area di testo contenente il feedback
+     * @return il pulsante configurato per l'invio del feedback
+     */
     private JButton setAndHandleInviaBtn(Integer idDocumento, JTextArea feedbackTextArea) {
         JButton submitButton = new JButton("Invia Feedback");
         submitButton.setBackground(Color.WHITE);

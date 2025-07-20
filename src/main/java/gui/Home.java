@@ -7,6 +7,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Finestra principale dell'applicazione hackathon.
+ * Mostra la lista degli hackathon e gestisce la navigazione.
+ */
 public class Home extends JFrame {
     private JPanel mainPanel;
     private JButton organizzaHackatonButton;
@@ -15,7 +19,12 @@ public class Home extends JFrame {
     private Controller controller;
 
 
-
+    /**
+     * Crea e inizializza la finestra principale.
+     * Configura l'interfaccia in base al tipo di utente.
+     *
+     * @param controller il controller dell'applicazione
+     */
     public Home(Controller controller) {
         this.setContentPane(mainPanel);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -38,6 +47,10 @@ public class Home extends JFrame {
         handleAddHackaton();
     }
 
+    /**
+     * Gestisce il click del pulsante organizza hackathon.
+     * Apre il form per creare un nuovo hackathon.
+     */
     private void handleAddHackaton() {
         organizzaHackatonButton.addActionListener(new ActionListener() {
             @Override
@@ -48,6 +61,10 @@ public class Home extends JFrame {
     }
 
 
+    /**
+     * Inizializza e configura la tabella degli hackathon.
+     * Imposta le colonne e i renderer per i pulsanti.
+     */
     public void setHackatonsTable() {
         String[] columnNames = {"Descrizione", "Data Inizio", "Data Fine", "Dettaglio"};
         Object[][] data = controller.getHackatons();

@@ -6,6 +6,10 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Finestra di registrazione per nuovi utenti.
+ * Permette di creare un nuovo utente specificandone il tipo.
+ */
 public class RegistrationForm extends JFrame {
     private JPanel panel;
     private JTextField nomeInput;
@@ -18,6 +22,12 @@ public class RegistrationForm extends JFrame {
     private Login loginFrame;
     private Controller controller;
 
+    /**
+     * Costruttore. Inizializza l'interfaccia e configura la selezione del tipo utente.
+     *
+     * @param loginFrame finestra di login di riferimento
+     * @param controller controller per la logica
+     */
     public RegistrationForm(Login loginFrame, Controller controller) {
         this.setTitle("Registra");
         this.setContentPane(panel);
@@ -35,6 +45,10 @@ public class RegistrationForm extends JFrame {
         tipoUtenteSelect.setListData(tipiUtente);
     }
 
+    /**
+     * Configura l'event listener per il pulsante di registrazione.
+     * Salva l'utente e pre-compila i campi nella finestra di login.
+     */
     private void handleClicks() {
         registerBtn.addActionListener(new ActionListener() {
             @Override

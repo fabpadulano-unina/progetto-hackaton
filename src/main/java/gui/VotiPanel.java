@@ -10,6 +10,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Pannello per la gestione dei voti dei giudici agli hackathon.
+ * Permette ai giudici di assegnare voti da 0 a 10 ai team partecipanti.
+ */
 public class VotiPanel extends JPanel {
     public static final String FONT = "Arial";
     private JPanel panel;
@@ -17,12 +21,25 @@ public class VotiPanel extends JPanel {
     private final List<Team> teams;
     private final List<JComboBox<Integer>> cbs = new ArrayList<>();
 
+    /**
+     * Costruttore del pannello di voto.
+     * Inizializza il pannello con i team da valutare e configura
+     * l'interfaccia per l'assegnazione dei voti.
+     *
+     * @param controller il controller principale dell'applicazione
+     * @param teams lista dei team da valutare
+     */
     public VotiPanel(Controller controller, List<Team> teams) {
         this.controller = controller;
         this.teams = teams;
         setPanel();
     }
 
+    /**
+     * Configura e inizializza il layout del pannello di voto.
+     * Crea la struttura con titolo, lista dei team con combo box per i voti
+     * e pulsante per confermare la votazione.
+     */
     private void setPanel() {
         panel = new JPanel();
         getPanel().setLayout(new BorderLayout());
@@ -50,7 +67,10 @@ public class VotiPanel extends JPanel {
         return panel;
     }
 
-
+    /**
+     * Crea e posiziona il titolo del pannello di voto.
+     * Aggiunge un'etichetta "Team Rankings" centrata nella parte superiore.
+     */
     private void getTitolo() {
         JLabel titoloLabel = new JLabel("Team Rankings");
         titoloLabel.setFont(new Font(FONT, Font.BOLD, 20));
@@ -59,6 +79,13 @@ public class VotiPanel extends JPanel {
         getPanel().add(titoloLabel, BorderLayout.NORTH);
     }
 
+    /**
+     * Crea il pannello con il pulsante per inviare i voti.
+     * Configura il pulsante "Invia voti" con lo stile appropriato
+     * e collega l'event handler per l'invio.
+     *
+     * @return il pannello contenente il pulsante di invio
+     */
     private JPanel getBottone() {
         JPanel btnPanel = new JPanel(new FlowLayout());
         JButton inviaVotiBtn = new JButton("Invia voti");
@@ -79,7 +106,13 @@ public class VotiPanel extends JPanel {
     }
 
 
-
+    /**
+     * Aggiunge un team al pannello con la relativa combo box per il voto.
+     * Crea una riga con il nome del team a sinistra e il selettore del voto a destra.
+     *
+     * @param container il pannello contenitore dove aggiungere il team
+     * @param teamName il nome del team da visualizzare
+     */
     private void aggiungiTeamConVoto(JPanel container, String teamName) {
         JPanel teamPanel = new JPanel();
         teamPanel.setLayout(new BorderLayout());
@@ -122,7 +155,12 @@ public class VotiPanel extends JPanel {
 
 
 
-
+    /**
+     * Configura l'event handler per il pulsante di invio dei voti.
+     * Quando premuto, salva tutti i voti assegnati ai team e disabilita il pulsante.
+     *
+     * @param inviaVotiBtn il pulsante a cui collegare l'event handler
+     */
     private void handleInviaVoti(JButton inviaVotiBtn) {
         inviaVotiBtn.addActionListener(new ActionListener() {
             @Override

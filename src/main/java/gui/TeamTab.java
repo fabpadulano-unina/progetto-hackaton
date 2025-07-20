@@ -8,6 +8,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Pannello per la gestione dei team negli hackathon.
+ * Permette ai partecipanti di creare team, unirsi a team esistenti
+ * e caricare progressi durante lo svolgimento degli hackathon.
+ */
 public class TeamTab extends JPanel {
     private JComboBox<String> teamProgressiCb;
     private JList<String> progressiList;
@@ -20,6 +25,14 @@ public class TeamTab extends JPanel {
     private JButton refreshButton;
     private final Controller controller;
 
+
+    /**
+     * Costruttore del pannello team.
+     * Inizializza l'interfaccia grafica, imposta i dati delle combo box
+     * e configura i listener per gestire le interazioni dell'utente.
+     *
+     * @param controller il controller principale dell'applicazione
+     */
     public TeamTab(Controller controller) {
         this.controller = controller;
         //aggiungo il mainpanel al root del panel esteso
@@ -39,6 +52,11 @@ public class TeamTab extends JPanel {
         setTeamCbChangeListener();
     }
 
+    /**
+     * Popola la combo box dei team di cui l'utente fa parte.
+     * Carica i team del partecipante corrente e li inserisce
+     * nella combo box per la selezione dei progressi.
+     */
     private void setTeamProgressiCbData() {
         // svuoto per il caso di refresh
         teamProgressiCb.removeAllItems();
@@ -49,6 +67,11 @@ public class TeamTab extends JPanel {
         }
     }
 
+    /**
+     * Imposta il listener per i cambiamenti nella combo box degli hackathon.
+     * Quando viene selezionato un hackathon, aggiorna la lista dei team
+     * e abilita il pulsante per creare un nuovo team.
+     */
     private void setHackatonCbChangeListener() {
         hackatonCb.addActionListener(new ActionListener() {
             @Override
@@ -68,6 +91,11 @@ public class TeamTab extends JPanel {
         });
     }
 
+    /**
+     * Imposta il listener per i cambiamenti nella combo box dei progressi team.
+     * Quando viene selezionato un team, carica i suoi progressi
+     * e abilita il pulsante per caricare nuovi progressi.
+     */
     private void setTeamProgressCbChangeListener() {
         teamProgressiCb.addActionListener(new ActionListener() {
             @Override
@@ -78,6 +106,11 @@ public class TeamTab extends JPanel {
         });
     }
 
+    /**
+     * Carica e visualizza i progressi del team selezionato.
+     * Recupera documenti e feedback per il team e li formatta
+     * in HTML per la visualizzazione nella lista dei progressi.
+     */
     private void setProgressiList() {
         DefaultListModel<String> model = new DefaultListModel<>();
         int teamIndex = getTeamIndex();
@@ -102,6 +135,11 @@ public class TeamTab extends JPanel {
         progressiList.setModel(model);
     }
 
+    /**
+     * Popola la combo box con la lista degli hackathon disponibili.
+     * Svuota la combo box e aggiunge un'opzione di default seguita
+     * dai titoli di tutti gli hackathon.
+     */
     private void setHackatonCbData() {
         // svuoto per il caso di refresh
         hackatonCb.removeAllItems();
@@ -112,6 +150,11 @@ public class TeamTab extends JPanel {
         }
     }
 
+    /**
+     * Configura tutti i gestori di eventi per i pulsanti.
+     * Imposta i listener per i pulsanti di creazione team,
+     * caricamento progressi, unione al team e refresh.
+     */
     private void handleClicks() {
         this.handleAddTeam();
         this.handleProgress();
@@ -131,7 +174,11 @@ public class TeamTab extends JPanel {
         });
     }
 
-
+    /**
+     * Configura il gestore per il pulsante di creazione team.
+     * Quando premuto, apre il form per creare un nuovo team
+     * per l'hackathon selezionato.
+     */
     private void handleAddTeam() {
         addTeamBtn.addActionListener(new ActionListener() {
             @Override
@@ -141,6 +188,11 @@ public class TeamTab extends JPanel {
         });
     }
 
+    /**
+     * Configura il gestore per il pulsante di unione al team.
+     * Quando premuto, aggiunge il partecipante corrente
+     * al team selezionato e aggiorna la lista dei team.
+     */
     private void handleUnisciti() {
         uniscitiButton.addActionListener(new ActionListener() {
             @Override
@@ -153,7 +205,11 @@ public class TeamTab extends JPanel {
     }
 
 
-
+    /**
+     * Popola la combo box dei team disponibili per l'hackathon selezionato.
+     * Carica tutti i team dell'hackathon corrente e permette
+     * all'utente di selezionarne uno per unirsi.
+     */
     private void setTeamCbData() {
         //svuoto i team selezioanbili precedentemente
         teamCb.removeAllItems();
@@ -167,14 +223,30 @@ public class TeamTab extends JPanel {
         }
     }
 
+    /**
+     * Restituisce l'hackathon attualmente selezionato nella combo box.
+     *
+     * @return il nome dell'hackathon selezionato
+     */
     private String getSelectedHackaton() {
         return (String) hackatonCb.getSelectedItem();
     }
 
+    /**
+     * Restituisce il team attualmente selezionato nella combo box.
+     *
+     * @return il nome del team selezionato
+     */
     private String getSelectedTeam() {
         return (String) teamCb.getSelectedItem();
     }
 
+
+    /**
+     * Configura il gestore per il pulsante di caricamento progressi.
+     * Quando premuto, apre il form per caricare un nuovo progresso
+     * per il team selezionato.
+     */
     private void handleProgress() {
         caricaNuovoProgressoButton.addActionListener(new ActionListener() {
             @Override
@@ -184,6 +256,13 @@ public class TeamTab extends JPanel {
         });
     }
 
+
+    /**
+     * Restituisce l'indice del team selezionato nella combo box progressi.
+     * Sottrae 1 per compensare l'elemento placeholder nella combo box.
+     *
+     * @return l'indice del team selezionato, -1 se nessun team valido
+     */
     private int getTeamIndex() {
         return teamProgressiCb.getSelectedIndex() - 1; // -1 perchè il primo è il placebolder
     }

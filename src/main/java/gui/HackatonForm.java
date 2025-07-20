@@ -11,6 +11,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Form per la creazione di un nuovo hackathon.
+ * Permette all'organizzatore di inserire i dettagli e selezionare i giudici.
+ */
 public class HackatonForm extends JFrame {
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private JTextField titoloInput;
@@ -25,6 +30,13 @@ public class HackatonForm extends JFrame {
     private final Controller controller;
     private final List<Giudice> giudici;
 
+    /**
+     * Crea il form con i campi precompilati e la lista dei giudici disponibili.
+     * Inizializza le date di default e configura i componenti.
+     *
+     * @param controller il controller per gestire le operazioni
+     * @param giudici la lista dei giudici disponibili per la selezione
+     */
     public HackatonForm(Controller controller, List<Giudice> giudici) {
         this.setTitle("Crea Hackaton");
         this.setContentPane(panel);
@@ -42,6 +54,10 @@ public class HackatonForm extends JFrame {
         handleClicks();
     }
 
+    /**
+     * Configura la lista dei giudici disponibili per la selezione multipla.
+     * Mostra i nomi dei giudici e permette di selezionarne più di uno.
+     */
     private void setGiudiciList() {
         giudiciList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         String[] nomiGiudici = new String[giudici.size()];
@@ -53,6 +69,10 @@ public class HackatonForm extends JFrame {
         giudiciList.setListData(nomiGiudici);
     }
 
+    /**
+     * Gestisce il click sul pulsante di creazione hackathon.
+     * Raccoglie i dati inseriti e salva il nuovo hackathon con i giudici selezionati.
+     */
     private void handleClicks() {
         addHackatonBtn.addActionListener(new ActionListener() {
             @Override
