@@ -53,7 +53,12 @@ public class Controller {
         }
     }
 
-
+    /**
+     * Imposta il riferimento alla finestra principale.
+     * Collega il controller alla home per permettere aggiornamenti dell'interfaccia.
+     *
+     * @param homeFrame la finestra principale dell'applicazione
+     */
     public void setHomeFrame(Home homeFrame) {
         this.homeFrame = homeFrame;
     }
@@ -91,12 +96,12 @@ public class Controller {
     }
 
     /**
-     * Back to home frame.
+     * Torna alla finestra principale chiudendo quella corrente.
+     * Aggiorna la tabella degli hackathon e mostra nuovamente la home.
      *
-     * @param frame the frame
+     * @param frame la finestra da chiudere per tornare alla home
      */
     public void backToHomeFrame(JFrame frame) {
-        //riaggiorno la tabella degli hackaton
         homeFrame.setHackatonsTable();
 
         homeFrame.setVisible(true);
@@ -250,10 +255,11 @@ public class Controller {
     }
 
     /**
-     * Get giudici object [ ] [ ].
+     * Converte una lista di giudici in una matrice per la visualizzazione in tabella.
+     * Estrae nome, cognome ed email di ogni giudice organizzandoli in righe.
      *
-     * @param giudici the giudici
-     * @return the object [ ] [ ]
+     * @param giudici la lista dei giudici da convertire
+     * @return matrice bidimensionale con i dati dei giudici (nome, cognome, email)
      */
     public Object[][] getGiudici(List<Giudice> giudici) {
         Object[][] matrice = new Object[giudici.size()][3];
@@ -339,18 +345,19 @@ public class Controller {
     }
 
     /**
-     * Gets utente.
+     * Restituisce l'utente attualmente loggato nel sistema.
      *
-     * @return the utente
+     * @return l'oggetto utente della sessione corrente
      */
     public Utente getUtente() {
         return utente;
     }
 
     /**
-     * Gets lista giudici.
+     * Recupera la lista completa dei giudici registrati nel sistema.
+     * Carica i dati dal database tramite il DAO e costruisce gli oggetti Giudice.
      *
-     * @return the lista giudici
+     * @return lista di tutti i giudici presenti nel database
      */
     public List<Giudice> getListaGiudici() {
         List<Integer> ids = new ArrayList<>();
@@ -607,7 +614,14 @@ public class Controller {
         return idHackaton;
     }
 
-
+    /**
+     * Trova l'identificativo di un team in base al nome e all'hackathon.
+     * Cerca tra tutti i team dell'hackathon specificato quello con il nome corrispondente.
+     *
+     * @param nomeTeam il nome del team da cercare
+     * @param idHackaton l'identificativo dell'hackathon di riferimento
+     * @return l'ID del team se trovato, null altrimenti
+     */
     private Integer getIdTeamFromName(String nomeTeam, Integer idHackaton) {
         for(Team team : getTeamByHackaton(idHackaton)) {
             if(team.getNome().equals(nomeTeam)) {
