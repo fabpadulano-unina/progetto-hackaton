@@ -41,6 +41,7 @@ public class HackatonDetails extends JFrame {
     private JScrollPane giudiciScrollPane;
     private JScrollPane classificaScrollPane;
     private JPanel classificaTab;
+    private JButton chiudiRegistrazioniButton;
     private final Controller controller;
     private final Integer hackatonId;
     private final LocalDate dataInizio;
@@ -101,6 +102,8 @@ public class HackatonDetails extends JFrame {
         handlePubblicazioneDescrizione();
         setGiudiciTabView(dataInizio, dataFine);
         setClassificaTabView(dataFine);
+        handleChiudiRegistrazioni(chiudiRegistrazioniButton);
+
     }
 
     /**
@@ -177,7 +180,7 @@ public class HackatonDetails extends JFrame {
     }
 
     /**
-     * Gestisce la visibilità dei componenti in base al ruolo utente.
+     * Gestisce la visibilità dei componenti in base al ruolo utente e lo stato dell'hackathon.
      * Mostra o nasconde pulsanti e tab specifici per organizzatori,
      * partecipanti e giudici dell'hackathon.
      *
@@ -201,6 +204,10 @@ public class HackatonDetails extends JFrame {
         } else if(controller.isGiudice() && controller.isGiudiceInHackaton(hackatonId)){
             tabbedPane.add("Tool per giudici", giudiciToolTab);
         }
+
+        if(!isRegistrazioneAperte){
+            chiudiRegistrazioniButton.setVisible(false);
+        }
     }
 
     /**
@@ -218,6 +225,20 @@ public class HackatonDetails extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 controller.apriRegistrazioni(hackatonId, LocalDate.parse(deadlineRegistrazioniField.getText(), formatter));
                 disableDeadlineField();
+            }
+        });
+    }
+
+    /**
+     * Configura l'event handler per il pulsante di chiusura registrazioni.
+     * @param chiudiRegistrazioniButton il pulsante a cui collegare l'event handler
+     */
+    private void handleChiudiRegistrazioni(JButton chiudiRegistrazioniButton) {
+
+        chiudiRegistrazioniButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.chiudiRegistrazioni(hackatonId);
             }
         });
     }

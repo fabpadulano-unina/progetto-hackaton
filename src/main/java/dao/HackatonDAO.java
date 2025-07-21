@@ -75,6 +75,14 @@ public interface HackatonDAO {
     void apriRegistrazioni(Integer hackatonId, LocalDate deadline);
 
     /**
+     * Chiude le registrazioni per un hackathon nel database.
+     * Aggiorna lo stato dell'hackathon per impedire nuove iscrizioni.
+     *
+     * @param hackatonId l'identificativo dell'hackathon di cui chiudere le registrazioni
+     */
+    void chiudiRegistrazioni(Integer hackatonId);
+
+    /**
      * Registra un utente a un hackathon.
      *
      * @param idUtente l'ID dell'utente

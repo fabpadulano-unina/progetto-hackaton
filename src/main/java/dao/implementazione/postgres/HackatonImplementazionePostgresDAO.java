@@ -196,6 +196,25 @@ public class HackatonImplementazionePostgresDAO implements HackatonDAO {
         }
     }
 
+    @Override
+    public void chiudiRegistrazioni(Integer hackatonId) {
+        PreparedStatement updatePS = null;
+
+        try {
+            String updateSQL = "UPDATE Hackaton SET registrazioni_aperte = FALSE WHERE id = ?";
+
+            updatePS = connection.prepareStatement(updateSQL);
+            updatePS.setInt(1, hackatonId);
+
+            updatePS.executeUpdate();
+
+        } catch (SQLException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Errore durante la chiusura delle registrazioni", e);
+        } finally {
+            closePs(updatePS);
+        }
+    }
+
 
     @Override
     public void registraUtente(Integer idUtente, Integer idHackaton) {

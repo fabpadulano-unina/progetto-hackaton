@@ -482,6 +482,10 @@ public class Controller {
         hackatonDAO.apriRegistrazioni(idHackaton, deadline);
     }
 
+    public void chiudiRegistrazioni(Integer idHackaton) {
+        hackatonDAO.chiudiRegistrazioni(idHackaton);
+    }
+
     /**
      * Registra utente hackaton.
      *
