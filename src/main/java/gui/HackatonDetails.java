@@ -225,6 +225,7 @@ public class HackatonDetails extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 controller.apriRegistrazioni(hackatonId, LocalDate.parse(deadlineRegistrazioniField.getText(), formatter));
                 disableDeadlineField();
+                chiudiRegistrazioniButton.setVisible(true);
             }
         });
     }
@@ -239,6 +240,7 @@ public class HackatonDetails extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 controller.chiudiRegistrazioni(hackatonId);
+                chiudiRegistrazioniButton.setEnabled(false);
             }
         });
     }
